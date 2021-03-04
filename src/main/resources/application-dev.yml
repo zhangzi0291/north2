@@ -1,0 +1,13 @@
+spring:
+  #数据库配置
+  datasource:
+    url: jdbc:postgresql://47.96.23.168:5432/north
+    username: postgres
+    password: postgres
+  #redis配置
+  redis:
+    database: 1
+    host: 127.0.0.1
+    port: 6379
+    #    password:
+    timeout: 5000
