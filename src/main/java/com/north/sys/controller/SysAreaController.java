@@ -28,6 +28,7 @@ public class SysAreaController extends BaseController<SysArea, ISysAreaService> 
     protected QueryWrapper<SysArea> setListWrapper(SysArea bean, Map<String, String> map) {
         QueryWrapper<SysArea> qw = super.setListWrapper(bean, map);
         LambdaQueryWrapper<SysArea> qwlambda = qw.lambda();
+        qwlambda.orderByAsc(SysArea::getId);
         if (StringUtils.hasLength(bean.getAreaName())) {
             qwlambda.like(SysArea::getAreaName, bean.getAreaName());
         }
@@ -39,4 +40,5 @@ public class SysAreaController extends BaseController<SysArea, ISysAreaService> 
         }
         return qw;
     }
+
 }

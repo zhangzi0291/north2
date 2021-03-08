@@ -6,6 +6,7 @@ import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.api.R;
 import com.north.sys.entity.SysRole;
 import com.north.sys.entity.SysUser;
+import com.north.sys.service.ISysLogService;
 import com.north.sys.service.ISysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +32,8 @@ public class SysLoginController {
 
     @Resource
     private ISysUserService sysUserService;
-
+    @Resource
+    private ISysLogService sysLogService;
     /**
      * 登陆
      *
@@ -53,7 +55,8 @@ public class SysLoginController {
         result.put("roles", roles);
         //记录登陆的userId
         StpUtil.setLoginId(sysUser.getId());
-
+        StpUtil.getSession().setAttribute("nickname",sysUser.getNickname());
+        sysLogService.addLoginLog();
         return R.ok(result);
     }
 
@@ -65,6 +68,7 @@ public class SysLoginController {
     @Operation(summary = "注销", description = "退出登陆")
     @RequestMapping(path = "logout", method = {RequestMethod.GET, RequestMethod.POST})
     public R logout() {
+        sysLogService.addLogoutLog();
         StpUtil.logout();
         return R.ok();
     }

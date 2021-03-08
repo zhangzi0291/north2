@@ -1511,6 +1511,167 @@
             }
           ],
           "chnname": "字典表"
+        },
+        {
+          "title": "sys_log",
+          "fields": [
+            {
+              "name": "id",
+              "type": "IdOrKey",
+              "remark": "",
+              "chnname": "ID",
+              "pk": true,
+              "notNull": true
+            },
+            {
+              "name": "uesr_id",
+              "type": "IdOrKey",
+              "remark": "",
+              "chnname": "用户ID"
+            },
+            {
+              "name": "nickname",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "昵称"
+            },
+            {
+              "name": "module_name",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "模块名称"
+            },
+            {
+              "name": "operation_name",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "操作名称"
+            },
+            {
+              "name": "log_type",
+              "type": "Integer",
+              "remark": "日志类型,1登录，2退出",
+              "chnname": "日志类型"
+            },
+            {
+              "name": "class_name",
+              "type": "MiddleString",
+              "remark": "",
+              "chnname": "类名"
+            },
+            {
+              "name": "method_name",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "方法名"
+            },
+            {
+              "name": "ip_addr",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "IP"
+            },
+            {
+              "name": "remakr",
+              "type": "MiddleString",
+              "remark": "",
+              "chnname": "备注"
+            },
+            {
+              "name": "is_deleted",
+              "type": "Integer",
+              "remark": "是否删除,0：未删除;1：已删除",
+              "chnname": "是否删除",
+              "relationNoShow": true,
+              "defaultValue": "0"
+            },
+            {
+              "name": "revision",
+              "type": "Integer",
+              "remark": "",
+              "chnname": "乐观锁",
+              "relationNoShow": true,
+              "defaultValue": "1"
+            },
+            {
+              "name": "created_by",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "创建人",
+              "relationNoShow": true
+            },
+            {
+              "name": "created_time",
+              "type": "DateTime",
+              "remark": "",
+              "chnname": "创建时间",
+              "relationNoShow": true,
+              "defaultValue": "now()"
+            },
+            {
+              "name": "updated_by",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "更新人",
+              "relationNoShow": true
+            },
+            {
+              "name": "update_time",
+              "type": "DateTime",
+              "remark": "",
+              "chnname": "更新时间",
+              "relationNoShow": true,
+              "defaultValue": "now()"
+            }
+          ],
+          "indexs": [],
+          "headers": [
+            {
+              "fieldName": "chnname",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "name",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "type",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "dataType",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "remark",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "pk",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "notNull",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "autoIncrement",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "defaultValue",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "relationNoShow",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "uiHint",
+              "relationNoShow": true
+            }
+          ],
+          "chnname": "系统日志"
         }
       ],
       "graphCanvas": {
@@ -2021,7 +2182,7 @@
       {
         "name": "is_deleted",
         "type": "Integer",
-        "remark": "0：未删除;1：已删除",
+        "remark": "是否删除,0：未删除;1：已删除",
         "chnname": "是否删除",
         "relationNoShow": true,
         "defaultValue": "0"

@@ -66,4 +66,10 @@ public interface ISysUserService extends IService<SysUser> {
      * @return
      */
     Boolean checkNickname(String nickname);
+
+    /**
+     * 获取在线用户总数
+     * @return
+     */
+    Long getTotalOnlineNum();
 }

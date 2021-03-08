@@ -11,6 +11,8 @@ import com.north.sys.entity.SysUser;
 import com.north.sys.mapper.SysUserMapper;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
+import org.redisson.api.RKeys;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,6 +33,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Resource
     private ISysUserRoleService sysUserRoleService;
+
+    @Resource
+    private RedissonClient redissonClient;
 
     @Override
     public List<SysRole> getUserRole(String userId) {
@@ -87,5 +92,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Long getTotalOnlineNum() {
+        RKeys rKeys = redissonClient.getKeys();
+        Iterable<String> keys  = rKeys.getKeysByPattern("satoken:login:session:*");
+        Long total = 0L;
+        for (String key : keys) {
+            total += 1;
+        }
+        return total;
     }
 }

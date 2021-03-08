@@ -36,7 +36,7 @@ public class MybatisPlusGenerator {
         String TEMPLATE_PATH = "src\\main\\resources\\ftl\\";
         String CLASS_PATH = "D:\\mybatis";
         String packageName = "com.north.sys";
-        String[] tableName = new String[]{"sys_area"};
+        String[] tableName = new String[]{"sys_log"};
 //
 //
 //

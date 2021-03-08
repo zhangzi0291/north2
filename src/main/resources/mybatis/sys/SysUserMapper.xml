@@ -11,10 +11,12 @@
         select r.* from sys_role r
             left join sys_user_role ur on r.id = ur.role_id
             left join sys_user u on u.id = ur.user_id
-        where
-        <if test="userId!=null and userId!=''">
-            u.id = #{userId}
-        </if>
+        <where>
+            u.is_deleted = 0
+            <if test="userId!=null and userId!=''">
+                and u.id = #{userId}
+            </if>
+        </where>
     </select>
 
     <select id="getUserResource" resultType="com.north.sys.entity.SysResource">
@@ -24,8 +26,9 @@
             left join sys_user_role ur on r.id = ur.role_id
             left join sys_user u on u.id = ur.user_id
         <where>
+            res.is_deleted = 0
             <if test="userId!=null and userId!=''">
-                u.id = #{userId}
+                and u.id = #{userId}
             </if>
         </where>
         order by resource_order

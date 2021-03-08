@@ -5,13 +5,13 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.north.base.BaseController;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
 import com.north.base.exception.curd.InsertFailedException;
 import com.north.base.exception.curd.UpdateFailedException;
 import com.north.sys.dto.UploadDto;
-import com.north.sys.entity.SysRole;
 import com.north.sys.entity.SysUser;
 import com.north.sys.entity.SysUserRole;
 import com.north.sys.service.ISysUserRoleService;
@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,10 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
             } catch (IOException e) {
                 throw new InsertFailedException("保存图片失败");
             }
-        }
+        };
+        //两次MD5编码
+        bean.setPassword(MD5.create().digestHex(bean.getPassword(), StandardCharsets.UTF_8));
+        bean.setPassword(MD5.create().digestHex(bean.getPassword(), StandardCharsets.UTF_8));
         //保存用户信息
         R r = super.addJson(bean);
         if (ApiErrorCode.SUCCESS.getCode() != r.getCode()) {
@@ -272,6 +276,30 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         if (!sysUserService.checkUsername(checkValue)) {
             return R.failed(ApiErrorCode.CheckFieldError, "角色名称不可重复");
         }
+        return R.ok();
+    }
+
+    @RequestMapping("onlineUserList")
+    public R getOnlineUserList(Page page) {
+        Page<SysUser> pageList = new Page<>(page.getCurrent(),page.getSize());
+        Long total = sysUserService.getTotalOnlineNum();
+        List<String> sessionIds = StpUtil.searchSessionId("", (int) ((page.getCurrent()-1) * page.getSize()), (int) page.getSize());
+        if(sessionIds.size() == 0){
+            return R.ok(page);
+        }
+        List<String> ids = new ArrayList<>();
+        for (String sessionId : sessionIds) {
+            ids.add(sessionId.replace("satoken:login:session:",""));
+        }
+        List<SysUser> list = sysUserService.listByIds(ids);
+        pageList.setRecords(list);
+        pageList.setTotal(total);
+        return R.ok(pageList);
+    }
+
+    @RequestMapping("kickUser")
+    public R kickUser(String id){
+        StpUtil.logoutByLoginId(id);
         return R.ok();
     }
 }

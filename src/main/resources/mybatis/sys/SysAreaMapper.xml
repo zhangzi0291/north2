@@ -4,7 +4,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, parent_id, area_name, area_level, tree_id, area_order, describe, is_deleted, revision, created_by, created_time, updated_by, update_time
+        is_deleted,
+        revision,
+        created_by,
+        created_time,
+        updated_by,
+        update_time,
+        id, parent_id, area_name, area_level, tree_id, area_order, describe, town_code
     </sql>
 
 </mapper>
