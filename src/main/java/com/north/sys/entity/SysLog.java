@@ -1,8 +1,11 @@
 package com.north.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.north.base.BaseModel;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.StringJoiner;
 
 /**
@@ -26,7 +29,7 @@ public class SysLog extends BaseModel {
     /**
      * 用户ID
      */
-    private String uesrId;
+    private String userId;
 
     /**
      * 昵称
@@ -68,6 +71,15 @@ public class SysLog extends BaseModel {
      */
     private String remakr;
 
+    /**
+     * 执行时间
+     */
+    private Long useTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdTime;
+
     public String getId() {
         return id;
     }
@@ -75,12 +87,12 @@ public class SysLog extends BaseModel {
     public void setId(String id) {
         this.id = id;
     }
-    public String getUesrId() {
-        return uesrId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUesrId(String uesrId) {
-        this.uesrId = uesrId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
     public String getModuleName() {
         return moduleName;
@@ -141,10 +153,28 @@ public class SysLog extends BaseModel {
     }
 
     @Override
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
+    @Override
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public Long getUseTime() {
+        return useTime;
+    }
+
+    public void setUseTime(Long useTime) {
+        this.useTime = useTime;
+    }
+
+    @Override
     public String toString() {
         return new StringJoiner(", ", SysLog.class.getSimpleName() + "[", "]")
                 .add("id='" + id + "'")
-                .add("uesrId='" + uesrId + "'")
+                .add("uesrId='" + userId + "'")
                 .add("nickname='" + nickname + "'")
                 .add("moduleName='" + moduleName + "'")
                 .add("operationName='" + operationName + "'")
@@ -153,6 +183,8 @@ public class SysLog extends BaseModel {
                 .add("methodName='" + methodName + "'")
                 .add("ipAddr='" + ipAddr + "'")
                 .add("remakr='" + remakr + "'")
+                .add("useTime=" + useTime)
+                .add("createdTime=" + createdTime)
                 .toString();
     }
 }

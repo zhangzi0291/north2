@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SysLogMapper extends BaseMapper<SysLog> {
 
+    Long getTodayUser();
 }

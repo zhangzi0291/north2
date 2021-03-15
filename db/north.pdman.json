@@ -1524,7 +1524,7 @@
               "notNull": true
             },
             {
-              "name": "uesr_id",
+              "name": "user_id",
               "type": "IdOrKey",
               "remark": "",
               "chnname": "用户ID"
@@ -1570,6 +1570,12 @@
               "type": "ShortString",
               "remark": "",
               "chnname": "IP"
+            },
+            {
+              "name": "use_time",
+              "type": "Integer",
+              "remark": "",
+              "chnname": "运行时间"
             },
             {
               "name": "remakr",

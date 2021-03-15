@@ -1,6 +1,7 @@
 package com.north.sys.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.north.sys.entity.SysLog;
 import com.north.sys.mapper.SysLogMapper;
 import com.north.sys.service.ISysLogService;
@@ -28,7 +29,7 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         SysLog log = new SysLog();
         log.setLogType(1);
-        log.setUesrId(StpUtil.getLoginIdAsString());
+        log.setUserId(StpUtil.getLoginIdAsString());
         Object nickname = StpUtil.getSession().getAttribute("nickname");
         if(nickname != null ) {
             log.setNickname(nickname.toString());
@@ -44,7 +45,7 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         SysLog log = new SysLog();
         log.setLogType(2);
-        log.setUesrId(StpUtil.getLoginIdAsString());
+        log.setUserId(StpUtil.getLoginIdAsString());
         Object nickname = StpUtil.getSession().getAttribute("nickname");
         if(nickname != null ) {
             log.setNickname(nickname.toString());
@@ -55,4 +56,8 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
         this.save(log);
     }
 
+    @Override
+    public Long getTodayUser() {
+        return baseMapper.getTodayUser();
+    }
 }

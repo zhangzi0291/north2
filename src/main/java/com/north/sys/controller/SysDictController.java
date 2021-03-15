@@ -6,6 +6,7 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.north.aop.autolog.AutoLog;
 import com.north.aop.validator.ValidateParam;
 import com.north.aop.validator.ValidateParams;
 import com.north.aop.validator.ValidatorEnum;

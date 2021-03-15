@@ -3,7 +3,12 @@ package com.north.sys.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.north.aop.autolog.AutoLog;
+import com.north.aop.autolog.LogTypeEnum;
 import com.north.base.BaseController;
+import com.north.base.api.R;
 import com.north.sys.entity.SysLog;
 import com.north.sys.service.ISysLogService;
 import org.springframework.util.StringUtils;
@@ -23,6 +28,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/sysLog")
 public class SysLogController extends BaseController<SysLog, ISysLogService> {
+
+    @Override
+    public R<IPage<SysLog>> listJson(SysLog bean, Page page, Map<String, String> map) {
+        throw new RuntimeException("123");
+//        return super.listJson(bean, page, map);
+    }
 
     @Override
     protected QueryWrapper<SysLog> setListWrapper(SysLog bean, Map<String, String> map) {

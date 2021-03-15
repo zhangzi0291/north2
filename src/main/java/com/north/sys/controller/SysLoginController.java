@@ -2,6 +2,8 @@ package com.north.sys.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.crypto.digest.MD5;
+import com.north.aop.autolog.AutoLog;
+import com.north.aop.autolog.LogTypeEnum;
 import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.api.R;
 import com.north.sys.entity.SysRole;
@@ -41,6 +43,7 @@ public class SysLoginController {
      * @param password 密码为明文密码md5编码之后的值
      * @return
      */
+
     @NorthWithoutLogin
     @Operation(summary = "登陆", description = "登陆")
     @RequestMapping(path = "login", method = RequestMethod.POST)

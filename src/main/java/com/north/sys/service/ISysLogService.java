@@ -17,4 +17,5 @@ public interface ISysLogService extends IService<SysLog> {
 
     void addLogoutLog();
 
+    Long getTodayUser();
 }
