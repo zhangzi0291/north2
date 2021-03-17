@@ -58,7 +58,9 @@ public class SysLoginController {
         result.put("roles", roles);
         //记录登陆的userId
         StpUtil.setLoginId(sysUser.getId());
+        result.put("token", StpUtil.getTokenValue());
         StpUtil.getSession().setAttribute("nickname",sysUser.getNickname());
+        StpUtil.getSession().setAttribute("userId",sysUser.getId());
         sysLogService.addLoginLog();
         return R.ok(result);
     }

@@ -46,10 +46,8 @@ public class AutoLogAspect {
         SysLog log = new SysLog();
         log.setLogType(1);
         log.setUserId(StpUtil.getLoginIdAsString());
-        Object nickname = StpUtil.getSession().getAttribute("nickname");
-        if(nickname != null ) {
-            log.setNickname(nickname.toString());
-        }
+        String nickname = StpUtil.getSession().getDataMap().getOrDefault("nickname","").toString();
+        log.setNickname(nickname);
         log.setIpAddr(IpUtil.getIp(request));
         log.setModuleName("test");
         log.setOperationName("test");

@@ -15,7 +15,7 @@ import org.springframework.core.convert.converter.Converter;
 import java.util.Set;
 
 @Configuration
-public class    WebConfiguration {
+public class WebConfiguration {
 
     /**
      * 添加转换器

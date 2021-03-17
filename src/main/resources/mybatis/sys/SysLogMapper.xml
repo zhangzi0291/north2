@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.north.sys.mapper.SysLogMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted,
+        revision,
+        created_by,
+        created_time,
+        updated_by,
+        update_time,
+        id, user_id, module_name, operation_name, log_type, class_name, method_name, ip_addr, remakr
+    </sql>
+    <select id="getTodayUser" resultType="java.lang.Long">
+        select count(1) from (
+            SELECT user_id FROM sys_log
+            WHERE is_deleted=0  and log_type = 1
+            <![CDATA[
+              and created_time > current_date and created_time < current_date + interval '1 day'
+            ]]>
+            GROUP BY user_id
+        ) t
+    </select>
+
+</mapper>

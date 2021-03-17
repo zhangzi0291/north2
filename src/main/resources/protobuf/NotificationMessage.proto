@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message NotificationMessage{
+  reserved 2 to 10;
+  string id = 1;
+  string title = 20;
+  string message = 21;
+}
