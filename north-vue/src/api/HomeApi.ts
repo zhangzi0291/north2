@@ -9,6 +9,7 @@ const url = {
     getTotalUser: "/home/getTotalUser",
     getOnlineUser: "/home/getOnlineUser",
     getTodayUser: "/home/getTodayUser",
+    getHardwareInfo: "/home/getHardwareInfo",
 
 }
 
@@ -36,4 +37,10 @@ export default class HomeApi {
         })
     }
 
+    public static getHardwareInfo(): Promise<AxiosResponse> {
+        return axios({
+            method: 'get',
+            url: url.getHardwareInfo,
+        })
+    }
 }
