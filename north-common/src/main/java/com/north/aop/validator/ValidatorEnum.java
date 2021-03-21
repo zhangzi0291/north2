@@ -14,13 +14,16 @@ public enum ValidatorEnum {
     NOT_EMPTY("参数必须不为空", ValidateUtil::NotEmpty),
     ASSERT_TRUE("参数必须为true", ValidateUtil::AssertTrue),
     ASSERT_FLASE("参数必须为false", ValidateUtil::AssertFalse),
-    Past("参数必须是一个过去的日期", ValidateUtil::Past),
-    Future("参数必须是一个将来的日期", ValidateUtil::Future),
-    Range("参数必须在合适的范围内", ValidateUtil::Range),
-    Length("参数长度必须在指定范围内", ValidateUtil::Length),
+    PAST("参数必须是一个过去的日期", ValidateUtil::Past),
+    FUTURE("参数必须是一个将来的日期", ValidateUtil::Future),
+    RANGE("参数必须在合适的范围内", ValidateUtil::Range),
+    LENGTH("参数长度必须在指定范围内", ValidateUtil::Length),
     IS_INTEGER("参数必须是整数", ValidateUtil::IsInteger),
     IS_DIGITS("参数必须是数字", ValidateUtil::IsDigits),
-    Pattern("参数必须符合指定的正则表达式", ValidateUtil::Pattern);;
+    PATTERN("参数必须符合指定的正则表达式", ValidateUtil::Pattern),
+    ENUM("参数不在枚举中", ValidateUtil::Enum),
+    ENUM_CLASS("参数不在枚举中", ValidateUtil::EnumClass)
+    ;
 
     public String msg;
 

@@ -2,8 +2,11 @@ package com.north.sys.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.north.aop.permissions.NorthWithoutLogin;
+import com.north.aop.validator.ValidateParam;
+import com.north.aop.validator.ValidateParams;
+import com.north.aop.validator.ValidatorEnum;
 import com.north.base.api.R;
-import com.north.sys.entity.SysRole;
+import com.north.constant.DeviceTypeEnum;
 import com.north.sys.entity.SysUser;
 import com.north.sys.service.ISysLogService;
 import com.north.sys.service.ISysUserService;
@@ -43,21 +46,26 @@ public class SysLoginController {
     @NorthWithoutLogin
     @Operation(summary = "登陆", description = "登陆")
     @RequestMapping(path = "login", method = RequestMethod.POST)
-    public R login(String username, String password) {
+    @ValidateParams(
+            @ValidateParam(value = ValidatorEnum.ENUM_CLASS,parameterName="deviceType",express = "DeviceTypeEnum")
+    )
+    public R login(String username, String password, String deviceType) {
         //检查密码是否可以登陆
-        SysUser sysUser = sysUserService.checkUserLogin(username, password);
+        SysUser sysUser = sysUserService.checkCanUserLogin(username, password);
         //获取角色返回
-        List<SysRole> roles = sysUserService.getUserRole(sysUser.getId());
+        List<String> roles = sysUserService.getRoleList(sysUser.getId());
+        //获取权限返回
+        List<String> permissions = sysUserService.getPermissionLis(sysUser.getId());
+
+        //登录
+        sysUserService.login(sysUser, DeviceTypeEnum.WEB.value);
+
         Map<String, Object> result = new HashMap<>();
         sysUser.setPassword(null);
         result.put("user", sysUser);
-        result.put("roles", roles);
-        //记录登陆的userId
-        StpUtil.setLoginId(sysUser.getId());
         result.put("token", StpUtil.getTokenValue());
-        StpUtil.getSession().setAttribute("nickname",sysUser.getNickname());
-        StpUtil.getSession().setAttribute("userId",sysUser.getId());
-        sysLogService.addLoginLog();
+        result.put("roles", roles);
+        result.put("permissions", permissions);
         return R.ok(result);
     }
 
@@ -68,9 +76,8 @@ public class SysLoginController {
      */
     @Operation(summary = "注销", description = "退出登陆")
     @RequestMapping(path = "logout", method = {RequestMethod.GET, RequestMethod.POST})
-    public R logout() {
-        sysLogService.addLogoutLog();
-        StpUtil.logout();
+    public R logout(String deviceType) {
+        sysUserService.logout(deviceType);
         return R.ok();
     }
 }

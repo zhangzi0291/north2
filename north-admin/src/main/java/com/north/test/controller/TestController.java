@@ -1,5 +1,6 @@
 package com.north.test.controller;
 
+import cn.dev33.satoken.stp.StpLogic;
 import cn.dev33.satoken.stp.StpUtil;
 import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.aop.permissions.NorthWithoutPermissions;
@@ -48,6 +49,9 @@ public class TestController {
 
     @RequestMapping(path = "test3", method = {RequestMethod.GET})
     public R test3() {
+        System.out.println(StpUtil.getSessionTimeout());
+        System.out.println(StpUtil.getTokenTimeout());
+        System.out.println(StpUtil.getTokenActivityTimeout());
         return R.ok("checkLogin");
     }
 }

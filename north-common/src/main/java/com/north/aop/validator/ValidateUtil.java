@@ -1,7 +1,10 @@
 package com.north.aop.validator;
 
+import com.north.constant.DeviceTypeEnum;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -116,7 +119,7 @@ public class ValidateUtil {
      */
     public static Boolean Range(Object value, String express) {
         if (IsNull(value, express)) {
-            return Boolean.FALSE;
+            return Boolean.TRUE;
         }
         try {
             Double d = Double.valueOf(value.toString());
@@ -148,7 +151,7 @@ public class ValidateUtil {
      */
     public static Boolean Length(Object value, String express) {
         if (IsNull(value, null)) {
-            return Boolean.FALSE;
+            return Boolean.TRUE;
         }
         if (value instanceof String) {
             Integer length = Integer.valueOf(express);
@@ -181,7 +184,7 @@ public class ValidateUtil {
      */
     public static Boolean Past(Object value, String express) {
         if (IsNull(value, express)) {
-            return Boolean.FALSE;
+            return Boolean.TRUE;
         }
         if (!StringUtils.hasLength(express)) {
             express = "yyyy-MM-dd'T'HH:mm:ss.SSS";
@@ -211,7 +214,7 @@ public class ValidateUtil {
      */
     public static Boolean Future(Object value, String express) {
         if (IsNull(value, express)) {
-            return Boolean.FALSE;
+            return Boolean.TRUE;
         }
         if (!StringUtils.hasLength(express)) {
             express = "yyyy-MM-dd'T'HH:mm:ss.SSS";
@@ -241,7 +244,7 @@ public class ValidateUtil {
      */
     public static Boolean Pattern(Object value, String express) {
         if (IsNull(value, null)) {
-            return Boolean.FALSE;
+            return Boolean.TRUE;
         }
         if (value instanceof String) {
             Pattern p = Pattern.compile(express);
@@ -262,7 +265,7 @@ public class ValidateUtil {
      */
     public static Boolean IsEmpty(Object value, String express) {
         if (IsNull(value, null)) {
-            return Boolean.FALSE;
+            return Boolean.TRUE;
         }
         return !StringUtils.hasLength(value.toString());
     }
@@ -290,7 +293,7 @@ public class ValidateUtil {
      */
     public static Boolean Enum(Object value, String express) {
         if (IsNull(value, null)) {
-            return Boolean.FALSE;
+            return Boolean.TRUE;
         }
         if (IsEmpty(value, express)) {
             return Boolean.FALSE;
@@ -298,5 +301,62 @@ public class ValidateUtil {
         String[] array = express.split(",");
         Set<String> set = new HashSet<>(Arrays.asList(array));
         return set.contains(value.toString());
+    }
+
+    /**
+     * 判断元素是否在枚举的数据中
+     *
+     * @param value
+     * @param express Enum的完全限定类名
+     * @return
+     */
+    public static Boolean EnumClass(Object value, String express) {
+        if (IsNull(value, null)) {
+            return Boolean.TRUE;
+        }
+        if (IsEmpty(value, express)) {
+            return Boolean.FALSE;
+        }
+        Class clazz = null;
+        try {
+            clazz = Class.forName(express);
+            if(clazz.isEnum()){
+                Object[] enums = clazz.getEnumConstants();
+                for (Object o : enums) {
+                    Class enumClass = o.getClass();
+                    Field f = enumClass.getDeclaredField("value");
+                    if(value.equals(f.get(o))){
+                        return Boolean.TRUE;
+                    }
+                }
+            }
+            return Boolean.FALSE;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Boolean.FALSE;
+        }
+    }
+
+    public static void main(String[] args) {
+        String value = "1";
+        String express = "com.north.constant.DeviceTypeEnum";
+
+        try {
+            Class clazz = Class.forName(express);
+            if(clazz.isEnum()){
+                Object[] enums = clazz.getEnumConstants();
+                for (Object o : enums) {
+                    Class enumClass = o.getClass();
+                    Field f = enumClass.getDeclaredField("value");
+                    if(value.equals(f.get(o))){
+                        System.out.println("ok");
+                        break;
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

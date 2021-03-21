@@ -69,26 +69,12 @@ public class AdminGlobalExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler(value = ConstraintViolationException.class)
-    public R violationExceptionHandler(HttpServletRequest request, HttpServletResponse response, ConstraintViolationException e) {
-        logger.error("Exception:", e);
-        for (ConstraintViolation<?> constraintViolation : e.getConstraintViolations()) {
-            System.out.println(constraintViolation.getPropertyPath());
-            return R.failed(constraintViolation.getMessage());
-        }
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
+    public R dataIntegrityViolationHandler(HttpServletRequest request, HttpServletResponse response, DataIntegrityViolationException e) {
+        logger.error("Database Exception:", e);
         response.setStatus(500);
-        return R.failed("字段校验失败异常");
+        return R.failed("数据库错误");
     }
 
-    @ResponseBody
-    @ExceptionHandler(value = Exception.class)
-    public R businessExceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception e) {
-        logger.error("Exception:", e);
-        response.setStatus(500);
-        if (e instanceof DataIntegrityViolationException) {
-            return R.failed("数据库错误");
-        }
-        return R.failed("服务器异常");
-    }
 
 }

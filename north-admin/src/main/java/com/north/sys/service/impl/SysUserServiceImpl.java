@@ -1,5 +1,6 @@
 package com.north.sys.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -9,6 +10,7 @@ import com.north.sys.entity.SysResource;
 import com.north.sys.entity.SysRole;
 import com.north.sys.entity.SysUser;
 import com.north.sys.mapper.SysUserMapper;
+import com.north.sys.service.ISysLogService;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
 import org.redisson.api.RKeys;
@@ -19,6 +21,7 @@ import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -32,8 +35,7 @@ import java.util.List;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements ISysUserService {
 
     @Resource
-    private ISysUserRoleService sysUserRoleService;
-
+    private ISysLogService sysLogService;
     @Resource
     private RedissonClient redissonClient;
 
@@ -48,7 +50,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUser checkUserLogin(String usernaem, String password) {
+    public SysUser checkCanUserLogin(String usernaem, String password) {
         password = MD5.create().digestHex(password, StandardCharsets.UTF_8);
         LambdaQueryWrapper<SysUser> qw = Wrappers.lambdaQuery();
         qw.eq(SysUser::getUsername, usernaem);
@@ -67,6 +69,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw LoginFailedException.newInstance(LoginFailedException.LoginFailedEnum.LOCKING_ERROR);
         }
         return sysUser;
+    }
+
+    @Override
+    public void login(SysUser user,String deviceType) {
+        StpUtil.setLoginId(user.getId());
+        StpUtil.getSession().setAttribute("nickname",user.getNickname());
+        StpUtil.getSession().setAttribute("userId",user.getId());
+        //记录登陆日志
+        sysLogService.addLoginLog();
+    }
+
+    @Override
+    public void logout(String deviceType) {
+        sysLogService.addLogoutLog();
+        StpUtil.logoutByLoginId(deviceType);
     }
 
     @Override
@@ -103,5 +120,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             total += 1;
         }
         return total;
+    }
+
+    @Override
+    public List<String> getPermissionLis(String userId) {
+        List<SysResource> roles = getUserResource(userId);
+        List<String> list = roles.stream().map(SysResource::getResourceName).collect(Collectors.toList());
+        return list;
+    }
+
+    @Override
+    public List<String> getRoleList(String userId) {
+        List<SysRole> roles = getUserRole(userId);
+        List<String> list = roles.stream().map(SysRole::getRoleName).collect(Collectors.toList());
+        return list;
     }
 }

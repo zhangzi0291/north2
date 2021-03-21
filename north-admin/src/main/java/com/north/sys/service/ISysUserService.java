@@ -40,7 +40,21 @@ public interface ISysUserService extends IService<SysUser> {
      * @param password 密码为明文密码md5编码之后的值
      * @return
      */
-    SysUser checkUserLogin(String usernaem, String password);
+    SysUser checkCanUserLogin(String usernaem, String password);
+
+    /**
+     * 登录
+     *
+     * @param user
+     */
+    void login(SysUser user, String deviceType);
+
+    /**
+     * 注销
+     *
+     * @param deviceType
+     */
+    void logout(String deviceType);
 
     /**
      * 检查用户的密码是否正确
@@ -69,7 +83,22 @@ public interface ISysUserService extends IService<SysUser> {
 
     /**
      * 获取在线用户总数
+     *
      * @return
      */
     Long getTotalOnlineNum();
+
+    /**
+     * 获取用户权限
+     *
+     * @return
+     */
+    List<String> getPermissionLis(String userId);
+
+    /**
+     * 获取用户角色
+     *
+     * @return
+     */
+    List<String> getRoleList(String userId);
 }

@@ -91,7 +91,7 @@ const loginApi = new SysLoginApi()
           }
           window.localStorage.setItem("user",JSON.stringify(user))
           window.localStorage.setItem("token",res.data.data.token)
-          document.cookie="satoken="+res.data.data.token
+          // document.cookie="satoken="+res.data.data.token
           this.$router.push({path: '/',})
         }).catch(() => {
           this.loginData.password = this.tmpPwd;

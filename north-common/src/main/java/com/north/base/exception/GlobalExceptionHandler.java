@@ -3,6 +3,7 @@ package com.north.base.exception;
 import com.north.base.api.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 
 /**
  * 统一异常处理
@@ -34,21 +33,30 @@ public class GlobalExceptionHandler {
         if (StringUtils.hasLength(e.getMessage())) {
             failedMsg = e.getMessage();
         }
-
         return R.failed(failedMsg);
     }
 
     @ResponseBody
-    @ExceptionHandler(value = ConstraintViolationException.class)
-    public R violationExceptionHandler(HttpServletRequest request, HttpServletResponse response, ConstraintViolationException e) {
+    @ExceptionHandler(value = ValidatorException.class)
+    public R validatorExceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception e) {
         logger.error("Exception:", e);
-        for (ConstraintViolation<?> constraintViolation : e.getConstraintViolations()) {
-            System.out.println(constraintViolation.getPropertyPath());
-            return R.failed(constraintViolation.getMessage());
+        String failedMsg = DEFALT_ERROR_MSG;
+        if (StringUtils.hasLength(e.getMessage())) {
+            failedMsg = e.getMessage();
         }
-        response.setStatus(500);
-        return R.failed("字段校验失败异常");
+        return R.failed(failedMsg);
     }
 
+
+    @ResponseBody
+    @ExceptionHandler(value = Exception.class)
+    public R businessExceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception e) {
+        logger.error("Exception:", e);
+        response.setStatus(500);
+        if (e instanceof DataIntegrityViolationException) {
+            return R.failed("数据库错误");
+        }
+        return R.failed("服务器异常");
+    }
 
 }
