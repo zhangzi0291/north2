@@ -1,5 +1,4 @@
 import {AxiosResponse} from "axios"
-import Qs from "qs";
 
 const app = window.vm
 

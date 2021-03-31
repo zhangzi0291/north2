@@ -36,9 +36,9 @@
     <modules>
         <module>north-admin</module>
         <module>north-common</module>
+        <module>north-file-control</module>
     </modules>
     <dependencies>
-
 
 
     </dependencies>

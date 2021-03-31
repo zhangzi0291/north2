@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
-import java.util.function.Supplier;
 
 /**
  * 类的描述
@@ -40,17 +39,17 @@ public class MybatisConfiguration implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         LocalDateTime nowTime = LocalDateTime.now();
-        this.setFieldValByName(CREATED_BY, "fillTest", metaObject );
-        this.setFieldValByName(CREATED_TIME, nowTime, metaObject );
-        this.setFieldValByName(UPDATED_BY, "fillTest", metaObject );
-        this.setFieldValByName(UPDATE_TIME, nowTime, metaObject );
+        this.setFieldValByName(CREATED_BY, "fillTest", metaObject);
+        this.setFieldValByName(CREATED_TIME, nowTime, metaObject);
+        this.setFieldValByName(UPDATED_BY, "fillTest", metaObject);
+        this.setFieldValByName(UPDATE_TIME, nowTime, metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         LocalDateTime nowTime = LocalDateTime.now();
-        this.setFieldValByName(UPDATED_BY, "fillTest", metaObject );
-        this.setFieldValByName(UPDATE_TIME, nowTime, metaObject );
+        this.setFieldValByName(UPDATED_BY, "fillTest", metaObject);
+        this.setFieldValByName(UPDATE_TIME, nowTime, metaObject);
     }
 
 }

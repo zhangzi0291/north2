@@ -1,14 +1,14 @@
 package com.north.sys.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.north.sys.entity.SysArea;
 import com.north.sys.mapper.SysAreaMapper;
 import com.north.sys.service.ISysAreaService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author NorthZX

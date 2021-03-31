@@ -1,10 +1,8 @@
 package com.north.aop.validator;
 
-import com.north.constant.DeviceTypeEnum;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -320,12 +318,12 @@ public class ValidateUtil {
         Class clazz = null;
         try {
             clazz = Class.forName(express);
-            if(clazz.isEnum()){
+            if (clazz.isEnum()) {
                 Object[] enums = clazz.getEnumConstants();
                 for (Object o : enums) {
                     Class enumClass = o.getClass();
                     Field f = enumClass.getDeclaredField("value");
-                    if(value.equals(f.get(o))){
+                    if (value.equals(f.get(o))) {
                         return Boolean.TRUE;
                     }
                 }
@@ -343,12 +341,12 @@ public class ValidateUtil {
 
         try {
             Class clazz = Class.forName(express);
-            if(clazz.isEnum()){
+            if (clazz.isEnum()) {
                 Object[] enums = clazz.getEnumConstants();
                 for (Object o : enums) {
                     Class enumClass = o.getClass();
                     Field f = enumClass.getDeclaredField("value");
-                    if(value.equals(f.get(o))){
+                    if (value.equals(f.get(o))) {
                         System.out.println("ok");
                         break;
                     }

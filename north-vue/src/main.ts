@@ -12,13 +12,13 @@ const app = createApp(App)
 
 app.mixin({
     methods: {
-        getCookie(name:string) {
+        getCookie(name: string) {
             let allCookies = document.cookie
             console.log(allCookies)
             let arrcookie = allCookies.split(";");
             for (let cookie of arrcookie) {
                 let arr = cookie.split("=");
-                if(arr[0]==name){
+                if (arr[0] == name) {
                     return arr[1]
                 }
             }

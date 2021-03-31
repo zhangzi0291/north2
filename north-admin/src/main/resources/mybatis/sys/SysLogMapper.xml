@@ -4,7 +4,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        is_deleted,
+        is_deleted
+        ,
         revision,
         created_by,
         created_time,
@@ -13,14 +14,18 @@
         id, user_id, module_name, operation_name, log_type, class_name, method_name, ip_addr, remakr
     </sql>
     <select id="getTodayUser" resultType="java.lang.Long">
-        select count(1) from (
-            SELECT user_id FROM sys_log
-            WHERE is_deleted=0  and log_type = 1
+        select count(1)
+        from (
+                 SELECT user_id
+                 FROM sys_log
+                 WHERE is_deleted = 0
+                   and log_type = 1
             <![CDATA[
-              and created_time > current_date and created_time < current_date + interval '1 day'
+                   and created_time > current_date
+                   and created_time < current_date + interval '1 day'
             ]]>
             GROUP BY user_id
-        ) t
+             ) t
     </select>
 
 </mapper>

@@ -4,7 +4,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, resource_name, resource_type, resource_url, parent_id, resource_icon, resource_order, describe, is_deleted, revision, created_by, created_time, updated_by, update_time
+        id
+        , resource_name, resource_type, resource_url, parent_id, resource_icon, resource_order, describe, is_deleted, revision, created_by, created_time, updated_by, update_time
     </sql>
 
 </mapper>

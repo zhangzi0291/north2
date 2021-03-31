@@ -30,49 +30,53 @@ public class HomePageController {
 
     /**
      * 总用户数量
+     *
      * @return
      */
     @RequestMapping("getTotalUser")
-    public R<Long> getTotalUser(){
+    public R<Long> getTotalUser() {
         return R.ok(sysUserService.count());
     }
 
     /**
      * 当前在线用户数量
+     *
      * @return
      */
     @RequestMapping("getOnlineUser")
-    public R<Long> getOnlineUser(){
+    public R<Long> getOnlineUser() {
         return R.ok(sysUserService.getTotalOnlineNum());
     }
 
     /**
      * 今日登录过的用户数量
+     *
      * @return
      */
     @RequestMapping("getTodayUser")
-    public R<Long> getTodayUser(){
+    public R<Long> getTodayUser() {
         return R.ok(sysLogService.getTodayUser());
     }
 
     @RequestMapping("notificationTest")
-    public R notificationTest(){
-        WebSocketUtil.notifyAllUser("通知接口测试","通知接口内容");
-        WebSocketUtil.notifyUser(StpUtil.getLoginIdAsString(),"通知接口测试","通知接口内容");
-        WebSocketUtil.notifyUser("2","通知接口测试","通知接口内容");
+    public R notificationTest() {
+        WebSocketUtil.notifyAllUser("通知接口测试", "通知接口内容");
+        WebSocketUtil.notifyUser(StpUtil.getLoginIdAsString(), "通知接口测试", "通知接口内容");
+        WebSocketUtil.notifyUser("2", "通知接口测试", "通知接口内容");
         return R.ok();
     }
 
     /**
      * 当前服务器硬件监控
+     *
      * @return
      */
     @RequestMapping(path = "getHardwareInfo", method = {RequestMethod.GET})
     public R getHardwareInfo() {
-        Map<String,Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         result.put("cpu", SystemUtil.getSystemCpu());
-        result.put("memery",SystemUtil.getSystemMemery());
-        result.put("disk",SystemUtil.getSystemDisk());
+        result.put("memery", SystemUtil.getSystemMemery());
+        result.put("disk", SystemUtil.getSystemDisk());
         return R.ok(result);
     }
 }

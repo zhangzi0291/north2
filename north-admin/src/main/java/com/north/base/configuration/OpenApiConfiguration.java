@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(
                 title = "north", version = "1.0",
                 description = "swagger-ui3.0描述信息",
-                contact = @Contact(name="North",email = "zhangszi0291@gmail.com"),
-                license = @License(name = "",url = "")
+                contact = @Contact(name = "North", email = "zhangszi0291@gmail.com"),
+                license = @License(name = "", url = "")
         ),
         externalDocs = @ExternalDocumentation(description = "参考文档",
                 url = "https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations"

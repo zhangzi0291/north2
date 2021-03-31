@@ -8,9 +8,10 @@ import java.util.Map;
 @Service
 public class ${entityName}ExcelService extends ExcelServiceAbstract<${entityName}, ${serviceName}> {
 
-    @Override
-    protected void checkValue(${entityName} bean, Map<String, String> errorMap) {
+@Override
+protected void checkValue(${entityName} bean, Map
+<String, String> errorMap) {
 
-    }
+}
 
 }

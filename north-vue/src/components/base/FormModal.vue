@@ -47,7 +47,7 @@
         </a-form-item>
         <!--  上传文件  -->
         <a-form-item v-else-if="canEdit(item.key) && item.type == 'File'" :label="item.title" :name="item.key">
-          <a-upload :before-upload="beforeUpload" :file-list="fileList[item.key]" @change="handleChange($event, item)">
+          <a-upload :before-upload="beforeUpload" :file-list="fileList[item.key]" @change="handleChange($event, item)" :customRequest="customRequest">
             <a-button v-if="fileList.length < item.ext.fileNum">
               <upload-outlined></upload-outlined>
               上传

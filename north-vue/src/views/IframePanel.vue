@@ -12,8 +12,6 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import InfoBlock from "@/views/home/InfoBlock.vue";
-import HomeApi from "@/api/HomeApi";
 
 @Options({
   name: "IframePanel",

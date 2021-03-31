@@ -4,13 +4,14 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, org_id, username, password, nickname, phone, email, status, expired_time, icon_url, describe, is_deleted, revision, created_by, created_time, updated_by, update_time
+        id
+        , org_id, username, password, nickname, phone, email, status, expired_time, icon_url, describe, is_deleted, revision, created_by, created_time, updated_by, update_time
     </sql>
 
     <select id="getUserRole" resultType="com.north.sys.entity.SysRole">
         select r.* from sys_role r
-            left join sys_user_role ur on r.id = ur.role_id
-            left join sys_user u on u.id = ur.user_id
+        left join sys_user_role ur on r.id = ur.role_id
+        left join sys_user u on u.id = ur.user_id
         <where>
             u.is_deleted = 0
             <if test="userId!=null and userId!=''">
@@ -21,10 +22,10 @@
 
     <select id="getUserResource" resultType="com.north.sys.entity.SysResource">
         select distinct res.* from sys_resource res
-            left join sys_role_resource rr on res.id = rr.resource_id
-            left join sys_role r on r.id = rr.role_id
-            left join sys_user_role ur on r.id = ur.role_id
-            left join sys_user u on u.id = ur.user_id
+        left join sys_role_resource rr on res.id = rr.resource_id
+        left join sys_role r on r.id = rr.role_id
+        left join sys_user_role ur on r.id = ur.role_id
+        left join sys_user u on u.id = ur.user_id
         <where>
             res.is_deleted = 0
             <if test="userId!=null and userId!=''">

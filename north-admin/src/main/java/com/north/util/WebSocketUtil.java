@@ -14,6 +14,7 @@ public class WebSocketUtil {
 
     /**
      * 发送ws通知单个用户
+     *
      * @param userId
      * @param title
      * @param message
@@ -25,6 +26,7 @@ public class WebSocketUtil {
 
     /**
      * 发送ws通知所有用户
+     *
      * @param title
      * @param message
      */

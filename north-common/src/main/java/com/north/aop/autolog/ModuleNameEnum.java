@@ -2,8 +2,8 @@ package com.north.aop.autolog;
 
 public enum ModuleNameEnum {
 
-    LOGIN("登录",1),
-    SYSTEM("系统",2),
+    LOGIN("登录", 1),
+    SYSTEM("系统", 2),
     ;
 
     private String name;

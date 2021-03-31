@@ -1,5 +1,6 @@
 package com.north.base.exception;
 
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import com.north.base.api.ApiErrorCode;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * 统一异常处理
@@ -72,9 +73,21 @@ public class AdminGlobalExceptionHandler {
     @ExceptionHandler(value = DataIntegrityViolationException.class)
     public R dataIntegrityViolationHandler(HttpServletRequest request, HttpServletResponse response, DataIntegrityViolationException e) {
         logger.error("Database Exception:", e);
-        response.setStatus(500);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return R.failed("数据库错误");
     }
 
-
+    @ResponseBody
+    @ExceptionHandler(value = NorthImportException.class)
+    public R businessExceptionHandler(HttpServletRequest request, HttpServletResponse response, NorthImportException e) throws IOException {
+        logger.error("Exception:", e);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        ExcelImportResult<Map<String, Object>> result = e.getImportResult();
+        if (result == null) {
+            return R.failed(e.getMessage());
+        }
+        response.setStatus((int)ApiErrorCode.ImportFieldError.getCode());
+        result.getFailWorkbook().write(response.getOutputStream());
+        return null;
+    }
 }

@@ -24,9 +24,7 @@
         </a-form-item>
         <a-form-item v-for="(item,index,i) in hardwareInfo.disk">
           <progress-block :title="'磁盘 '+index" :percent="diskPercent[i]" :strokeColor="getDashboardColor(diskPercent[i])" />
-
         </a-form-item>
-
       </a-form>
 
       <a-card>
@@ -65,6 +63,7 @@ import HomeApi from "@/api/HomeApi";
       totalUser: undefined,
       onlineUser: undefined,
       todyUser: undefined,
+      hardwareInterval:{},
     }
   },
   computed: {
@@ -85,7 +84,6 @@ import HomeApi from "@/api/HomeApi";
       var list = []
       for (let diskKey in this.hardwareInfo.disk) {
         if (!!this.hardwareInfo.disk[diskKey].used && !!this.hardwareInfo.disk[diskKey].total) {
-          console.log(this.hardwareInfo.disk[diskKey].used.replace('G', ''))
           var p = <number><unknown>(this.hardwareInfo.disk[diskKey].used.replace('G', '') / this.hardwareInfo.disk[diskKey].total.replace('G', '') * 100).toFixed(2)
           list.push(p / 1)
         }
@@ -130,8 +128,14 @@ import HomeApi from "@/api/HomeApi";
     this.getOnlineUser();
     this.getTodayUser();
     this.getHardwareInfo();
-
+    this.hardwareInterval = setInterval( ()=>{
+      this.getHardwareInfo();
+    },30000)
+  },
+  unmounted() {
+    clearInterval(this.hardwareInterval)
   }
+
 })
 export default class Home extends Vue {
 }

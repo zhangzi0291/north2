@@ -37,6 +37,7 @@ var install = function install(app: App) {
     );
 
     //响应前置
+    //错误统一处理
     axios.interceptors.response.use(response => {
         if (response.data.code == 500 || response.data.code == 403) {
             app.config.globalProperties.$message.error(response.config.url + " " + response.data.msg)
@@ -47,7 +48,7 @@ var install = function install(app: App) {
         if (error.response == undefined) {
             app.config.globalProperties.$message.error("服务器无响应")
         }
-        if(!error.response){
+        if (!error.response) {
             return Promise.reject(error);
         }
         if (error.response.status === 401) {
@@ -60,6 +61,21 @@ var install = function install(app: App) {
         if (error.response.status == 500) {
             app.config.globalProperties.$message.error(
                 error.response.config.url + " " + error.response.data.msg
+            )
+        }
+
+        if (error.response.status == 550) {
+            const blob = new Blob([error.response.data])
+            console.log(window.URL)
+            var objectUrl = window.URL.createObjectURL(blob)//创建新的URL表示指定Blob对象
+            var a = document.createElement('a')//创建a标签
+            a.href = objectUrl//指定下载链接
+            a.download = "错误报告.xlsx"//指定下载文件名
+            a.click()//触发下载
+            a.remove()//除a标签
+            window.URL.revokeObjectURL(objectUrl)//释放
+            app.config.globalProperties.$message.error(
+                error.response.config.url + " 导入失败，下载错误报告"
             )
         }
         // if(error.response.status != 200 || error.response.status != 302) {

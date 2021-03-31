@@ -6,6 +6,7 @@ import com.north.sys.entity.SysRole;
 import com.north.sys.entity.SysUser;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -101,4 +102,30 @@ public interface ISysUserService extends IService<SysUser> {
      * @return
      */
     List<String> getRoleList(String userId);
+
+    /**
+     * 生成验证码，并保存到redis待验证
+     *
+     * @param key         reids保存的key，一般是手机号
+     * @param invalidTime
+     * @return
+     */
+    String createVerificationCode(String key, Integer invalidTime);
+
+    /**
+     * 校验验证码
+     *
+     * @param key
+     * @param verificationCode
+     * @return
+     */
+    Boolean checkVerificationCode(String key, String verificationCode);
+
+    /**
+     * 导入用户和相应的权限
+     * map的key user:SysUser 用户,roleList:List<SysRole> 角色列表
+     *
+     * @param list
+     */
+    void importSysUserList(List<Map<String, Object>> list);
 }

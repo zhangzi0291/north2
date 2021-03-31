@@ -1,11 +1,11 @@
 package com.north.sys.mapper;
 
-import com.north.sys.entity.SysLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.north.sys.entity.SysLog;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author NorthZX

@@ -5,7 +5,6 @@ import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.aop.permissions.NorthWithoutPermissions;
 import com.north.base.api.R;
 import com.north.utils.SystemUtil;
-import com.sun.management.OperatingSystemMXBean;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,9 +36,9 @@ public class TestController {
         b = StpUtil.isLogin();
         System.out.println(b);
         System.out.println(StpUtil.getTokenName());
-        b=StpUtil.hasPermission("abc");
+        b = StpUtil.hasPermission("abc");
         System.out.println(b);
-        b=StpUtil.hasPermission("101");
+        b = StpUtil.hasPermission("101");
         System.out.println(b);
         return R.ok("12312312dsfasfdasfas");
     }
@@ -54,10 +51,10 @@ public class TestController {
 
     @RequestMapping(path = "test3", method = {RequestMethod.GET})
     public R test3() {
-        Map<String,Object> result = new HashMap<>();
-        result.put("cpu",SystemUtil.getSystemCpu());
-        result.put("memery",SystemUtil.getSystemMemery());
-        result.put("disk",SystemUtil.getSystemDisk());
+        Map<String, Object> result = new HashMap<>();
+        result.put("cpu", SystemUtil.getSystemCpu());
+        result.put("memery", SystemUtil.getSystemMemery());
+        result.put("disk", SystemUtil.getSystemDisk());
 
         return R.ok(result);
     }

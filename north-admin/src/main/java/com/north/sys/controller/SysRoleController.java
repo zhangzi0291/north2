@@ -44,11 +44,11 @@ public class SysRoleController extends BaseController<SysRole, ISysRoleService> 
 
     @Override
     protected QueryWrapper<SysRole> setListWrapper(SysRole bean, Map<String, String> map) {
-        QueryWrapper<SysRole> qw = super.setListWrapper(bean,map);
+        QueryWrapper<SysRole> qw = super.setListWrapper(bean, map);
         LambdaQueryWrapper<SysRole> qwlambda = qw.lambda();
 
         qwlambda.orderByDesc(SysRole::getCreatedTime);
-        if(StringUtils.hasLength(bean.getRoleName())) {
+        if (StringUtils.hasLength(bean.getRoleName())) {
             qwlambda.like(SysRole::getRoleName, bean.getRoleName());
         }
         return qw;

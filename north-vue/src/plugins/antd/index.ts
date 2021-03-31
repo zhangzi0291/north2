@@ -1,8 +1,6 @@
-import {App, Component} from 'vue';
-// import { UserOutlined,MenuUnfoldOutlined,MenuFoldOutlined } from '@ant-design/icons-vue';
+import {App} from 'vue';
 import *  as icons from '@ant-design/icons-vue';
-import Antd from 'ant-design-vue';
-import {Modal, message,notification} from 'ant-design-vue';
+import Antd, {message, Modal, notification} from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
 

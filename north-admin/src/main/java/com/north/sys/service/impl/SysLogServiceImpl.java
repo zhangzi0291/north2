@@ -1,10 +1,10 @@
 package com.north.sys.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.north.sys.entity.SysLog;
 import com.north.sys.mapper.SysLogMapper;
 import com.north.sys.service.ISysLogService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.north.utils.IpUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author NorthZX
@@ -30,7 +30,7 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
         log.setLogType(1);
         log.setUserId(StpUtil.getLoginIdAsString());
         Object nickname = StpUtil.getSession().getAttribute("nickname");
-        if(nickname != null ) {
+        if (nickname != null) {
             log.setNickname(nickname.toString());
         }
         log.setIpAddr(IpUtil.getIp(request));
@@ -46,7 +46,7 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
         log.setLogType(2);
         log.setUserId(StpUtil.getLoginIdAsString());
         Object nickname = StpUtil.getSession().getAttribute("nickname");
-        if(nickname != null ) {
+        if (nickname != null) {
             log.setNickname(nickname.toString());
         }
         log.setIpAddr(IpUtil.getIp(request));

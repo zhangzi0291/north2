@@ -7,6 +7,7 @@
       <template #content>
         <a-page-header sub-title="字典配置" title="字典">
           <template #extra>
+            <a-button type="primary" @click="openExport()">导出</a-button>
             <a-button type="primary" @click="openAdd()">新增</a-button>
             <a-button type="primary" @click="load({current:1})">查询</a-button>
           </template>
@@ -79,6 +80,7 @@ let api = new SysDictApi();
         get: "/sysDict/get",
         add: "/sysDict/add",
         edit: "/sysDict/edit",
+        export: "/sysDict/export",
       },
       //面包屑
       breadcrumbs: [
@@ -174,7 +176,9 @@ let api = new SysDictApi();
         },
       });
     },
-
+    openExport(){
+      this.$download(this.url.export,"get","数据字典.xlsx",this.search)
+    },
   },
   created() {
     this.load()

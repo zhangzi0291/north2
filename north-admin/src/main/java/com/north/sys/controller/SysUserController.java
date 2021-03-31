@@ -1,23 +1,31 @@
 package com.north.sys.controller;
 
 
+import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.BaseController;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
 import com.north.base.exception.curd.InsertFailedException;
 import com.north.base.exception.curd.UpdateFailedException;
+import com.north.excel.verify.SysUserExcelVerifyHandler;
+import com.north.redis.cache.SysUserRedisCacheService;
 import com.north.sys.dto.UploadDto;
+import com.north.sys.entity.SysRole;
 import com.north.sys.entity.SysUser;
 import com.north.sys.entity.SysUserRole;
+import com.north.sys.service.ISysRoleService;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
+import com.north.util.ExcelUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.redisson.api.RedissonClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -32,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +58,11 @@ import java.util.Map;
 public class SysUserController extends BaseController<SysUser, ISysUserService> {
 
     @Resource
+    private RedissonClient redissonClient;
+    @Resource
     private ISysUserService sysUserService;
+    @Resource
+    private ISysRoleService sysRoleService;
     @Resource
     private ISysUserRoleService sysUserRoleService;
     @Resource
@@ -89,7 +102,8 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
             } catch (IOException e) {
                 throw new InsertFailedException("保存图片失败");
             }
-        };
+        }
+        ;
         //两次MD5编码
         bean.setPassword(MD5.create().digestHex(bean.getPassword(), StandardCharsets.UTF_8));
         bean.setPassword(MD5.create().digestHex(bean.getPassword(), StandardCharsets.UTF_8));
@@ -148,13 +162,18 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
     @Transactional
     @Override
     public R delJson(@RequestParam("ids") List<String> ids) {
-        if(ids.contains("1")){
+        if (ids.contains("1")) {
             return R.failed("不能删除admin用户");
         }
         //删除用户和角色的关联信息
         LambdaQueryWrapper<SysUserRole> qw = new QueryWrapper().lambda();
         qw.in(SysUserRole::getUserId, ids);
         sysUserRoleService.remove(qw);
+
+        for (String id : ids) {
+            SysUser user = new SysUser();
+            user.setId(id);
+        }
         //删除用户
         return super.delJson(ids);
     }
@@ -281,15 +300,15 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
 
     @RequestMapping("onlineUserList")
     public R getOnlineUserList(Page page) {
-        Page<SysUser> pageList = new Page<>(page.getCurrent(),page.getSize());
+        Page<SysUser> pageList = new Page<>(page.getCurrent(), page.getSize());
         Long total = sysUserService.getTotalOnlineNum();
-        List<String> sessionIds = StpUtil.searchSessionId("", (int) ((page.getCurrent()-1) * page.getSize()), (int) page.getSize());
-        if(sessionIds.size() == 0){
+        List<String> sessionIds = StpUtil.searchSessionId("", (int) ((page.getCurrent() - 1) * page.getSize()), (int) page.getSize());
+        if (sessionIds.size() == 0) {
             return R.ok(page);
         }
         List<String> ids = new ArrayList<>();
         for (String sessionId : sessionIds) {
-            ids.add(sessionId.replace("satoken:login:session:",""));
+            ids.add(sessionId.replace("satoken:login:session:", ""));
         }
         List<SysUser> list = sysUserService.listByIds(ids);
         pageList.setRecords(list);
@@ -298,8 +317,45 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
     }
 
     @RequestMapping("kickUser")
-    public R kickUser(String id){
+    public R kickUser(String id) {
         StpUtil.logoutByLoginId(id);
         return R.ok();
     }
+
+    @RequestMapping("import")
+    public R importExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        ImportParams importParams = new ImportParams();
+
+        List<Map<String, Object>> list = ExcelUtil.importExcel(file.getInputStream(), new SysUserExcelVerifyHandler(new SysUserRedisCacheService(redissonClient, sysUserService)));
+        List<Map<String, Object>> importList = new ArrayList<>();
+        for (Map<String, Object> map : list) {
+            SysUser sysUser = new SysUser();
+            sysUser.setUsername(ExcelUtil.getMapStringValue(map, "用户名"));
+            sysUser.setPassword(MD5.create().digestHex(MD5.create().digestHex("888888", StandardCharsets.UTF_8)));
+            sysUser.setNickname(ExcelUtil.getMapStringValue(map, "昵称"));
+            sysUser.setPhone(ExcelUtil.getMapStringValue(map, "手机号"));
+            sysUser.setEmail(ExcelUtil.getMapStringValue(map, "EMail"));
+            sysUser.setExpiredTime(ExcelUtil.getMapDateValue(map, "过期时间"));
+            sysUser.setDescribe(ExcelUtil.getMapStringValue(map, "描述"));
+
+            List<SysRole> sysRoleList = new ArrayList<>();
+            String roles = ExcelUtil.getMapStringValue(map, "角色");
+            for (String roleNmae : roles.split(",")) {
+                QueryWrapper<SysRole> qw = new QueryWrapper<>();
+                qw.lambda().eq(SysRole::getRoleName, roleNmae);
+                SysRole role = sysRoleService.getOne(qw, false);
+                sysRoleList.add(role);
+            }
+
+            Map<String, Object> importMap = new HashMap<>();
+            importMap.put("user", sysUser);
+            importMap.put("roleList", sysRoleList);
+
+            importList.add(importMap);
+        }
+        sysUserService.importSysUserList(importList);
+
+        return R.ok();
+    }
+
 }

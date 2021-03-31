@@ -3,8 +3,8 @@ package com.north.sys.controller;
 
 import cn.hutool.crypto.digest.MD5;
 import com.north.base.BaseController;
-import com.north.base.Constant;
 import com.north.base.api.R;
+import com.north.file.FileControlHandler;
 import com.north.sys.dto.UploadDto;
 import com.north.sys.entity.SysFile;
 import com.north.sys.service.ISysFileService;
@@ -19,11 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -44,6 +43,9 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
 
     @Resource
     private ISysFileService sysFileService;
+    @Resource
+    private FileControlHandler fileControlHandler;
+
 
     /**
      * 上传文件
@@ -56,28 +58,22 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
     @Operation(summary = "上传文件", description = "md5相同的文件直接返回记录")
     @RequestMapping(path = "upload", method = {RequestMethod.GET, RequestMethod.POST})
     public R<UploadDto> upload(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
-        //创建文件保存路径
-        Path saveDir = Paths.get(Constant.UPLOAD_PATH);
-        if (Files.notExists(saveDir)) {
-            Files.createDirectories(saveDir);
-        }
         //校验文件md5，如果md5相同是同一个文件不需要重复保存
         String md5 = MD5.create().digestHex(file.getInputStream());
         SysFile sysFile = sysFileService.getSysFileByMD5(md5);
         if (sysFile == null) {
-            //保存文件到本地
+            //保存文件
             String uuid = UUID.randomUUID().toString();
             String originalFilename = file.getOriginalFilename();
             String fileName = uuid + originalFilename.substring(originalFilename.lastIndexOf("."));
-            Path savePath = Paths.get(saveDir.toAbsolutePath().toString(), fileName);
-            file.transferTo(savePath.toFile());
+            fileControlHandler.saveFile(file.getInputStream(), fileName);
             //记录文件记录
             sysFile = new SysFile();
             sysFile.setFileName(fileName);
             sysFile.setOriginalName(originalFilename);
             sysFile.setFileSize(file.getSize());
             sysFile.setUploadTime(LocalDateTime.now());
-            sysFile.setFilePath(savePath.toAbsolutePath().toString());
+            sysFile.setFilePath(fileName);
             sysFile.setMd5Value(md5);
             super.addJson(sysFile);
         }
@@ -110,7 +106,7 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
         response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(file.getOriginalName(), "UTF-8"));
 
         try {
-            FileInputStream inputStream = new FileInputStream(filePath.toFile());
+            InputStream inputStream = fileControlHandler.loadFileInputStream(file.getFilePath());
             OutputStream outputStream = response.getOutputStream();
             byte[] bytes = new byte[1024 * 1024];
             int len;
@@ -125,5 +121,10 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
         }
 
         return null;
+    }
+
+    public static void main(String[] args) {
+        Path saveDir = Paths.get("./upload");
+        System.out.println(saveDir.toUri().toString());
     }
 }

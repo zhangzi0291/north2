@@ -40,13 +40,13 @@ public class AutoLogAspect {
         long start = System.currentTimeMillis();
 
         String fullName = joinPoint.getSignature().toString();//类名和方法
-        String className = fullName.substring(0,fullName.lastIndexOf("."));
-        String methodName = fullName.substring(fullName.lastIndexOf(".")+1);
+        String className = fullName.substring(0, fullName.lastIndexOf("."));
+        String methodName = fullName.substring(fullName.lastIndexOf(".") + 1);
 
         SysLog log = new SysLog();
         log.setLogType(1);
         log.setUserId(StpUtil.getLoginIdAsString());
-        String nickname = StpUtil.getSession().getDataMap().getOrDefault("nickname","").toString();
+        String nickname = StpUtil.getSession().getDataMap().getOrDefault("nickname", "").toString();
         log.setNickname(nickname);
         log.setIpAddr(IpUtil.getIp(request));
         log.setModuleName("test");

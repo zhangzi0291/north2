@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author NorthZX
@@ -87,6 +87,7 @@ public class SysLog extends BaseModel {
     public void setId(String id) {
         this.id = id;
     }
+
     public String getUserId() {
         return userId;
     }
@@ -94,6 +95,7 @@ public class SysLog extends BaseModel {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
     public String getModuleName() {
         return moduleName;
     }
@@ -101,6 +103,7 @@ public class SysLog extends BaseModel {
     public void setModuleName(String moduleName) {
         this.moduleName = moduleName;
     }
+
     public String getOperationName() {
         return operationName;
     }
@@ -108,6 +111,7 @@ public class SysLog extends BaseModel {
     public void setOperationName(String operationName) {
         this.operationName = operationName;
     }
+
     public Integer getLogType() {
         return logType;
     }
@@ -115,6 +119,7 @@ public class SysLog extends BaseModel {
     public void setLogType(Integer logType) {
         this.logType = logType;
     }
+
     public String getClassName() {
         return className;
     }
@@ -122,6 +127,7 @@ public class SysLog extends BaseModel {
     public void setClassName(String className) {
         this.className = className;
     }
+
     public String getMethodName() {
         return methodName;
     }
@@ -129,6 +135,7 @@ public class SysLog extends BaseModel {
     public void setMethodName(String methodName) {
         this.methodName = methodName;
     }
+
     public String getIpAddr() {
         return ipAddr;
     }
@@ -136,6 +143,7 @@ public class SysLog extends BaseModel {
     public void setIpAddr(String ipAddr) {
         this.ipAddr = ipAddr;
     }
+
     public String getRemakr() {
         return remakr;
     }

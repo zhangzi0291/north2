@@ -26,59 +26,58 @@ goog.exportSymbol('proto.NotificationMessage', null, global);
  * @extends {jspb.Message}
  * @constructor
  */
-proto.NotificationMessage = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+proto.NotificationMessage = function (opt_data) {
+    jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.NotificationMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  /**
-   * @public
-   * @override
-   */
-  proto.NotificationMessage.displayName = 'proto.NotificationMessage';
+    /**
+     * @public
+     * @override
+     */
+    proto.NotificationMessage.displayName = 'proto.NotificationMessage';
 }
 
 
-
 if (jspb.Message.GENERATE_TO_OBJECT) {
-/**
- * Creates an object representation of this proto.
- * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
- * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
- * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @return {!Object}
- */
-proto.NotificationMessage.prototype.toObject = function(opt_includeInstance) {
-  return proto.NotificationMessage.toObject(opt_includeInstance, this);
-};
+    /**
+     * Creates an object representation of this proto.
+     * Field names that are reserved in JavaScript and will be renamed to pb_name.
+     * Optional fields that are not set will be set to undefined.
+     * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+     * For the list of reserved names please see:
+     *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+     * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+     *     JSPB instance for transitional soy proto support:
+     *     http://goto/soy-param-migration
+     * @return {!Object}
+     */
+    proto.NotificationMessage.prototype.toObject = function (opt_includeInstance) {
+        return proto.NotificationMessage.toObject(opt_includeInstance, this);
+    };
 
 
-/**
- * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @param {!proto.NotificationMessage} msg The msg instance to transform.
- * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.NotificationMessage.toObject = function(includeInstance, msg) {
-  var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    title: jspb.Message.getFieldWithDefault(msg, 20, ""),
-    message: jspb.Message.getFieldWithDefault(msg, 21, "")
-  };
+    /**
+     * Static version of the {@see toObject} method.
+     * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+     *     the JSPB instance for transitional soy proto support:
+     *     http://goto/soy-param-migration
+     * @param {!proto.NotificationMessage} msg The msg instance to transform.
+     * @return {!Object}
+     * @suppress {unusedLocalVariables} f is only used for nested messages
+     */
+    proto.NotificationMessage.toObject = function (includeInstance, msg) {
+        var f, obj = {
+            id: jspb.Message.getFieldWithDefault(msg, 1, ""),
+            title: jspb.Message.getFieldWithDefault(msg, 20, ""),
+            message: jspb.Message.getFieldWithDefault(msg, 21, "")
+        };
 
-  if (includeInstance) {
-    obj.$jspbMessageInstance = msg;
-  }
-  return obj;
-};
+        if (includeInstance) {
+            obj.$jspbMessageInstance = msg;
+        }
+        return obj;
+    };
 }
 
 
@@ -87,10 +86,10 @@ proto.NotificationMessage.toObject = function(includeInstance, msg) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.NotificationMessage}
  */
-proto.NotificationMessage.deserializeBinary = function(bytes) {
-  var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.NotificationMessage;
-  return proto.NotificationMessage.deserializeBinaryFromReader(msg, reader);
+proto.NotificationMessage.deserializeBinary = function (bytes) {
+    var reader = new jspb.BinaryReader(bytes);
+    var msg = new proto.NotificationMessage;
+    return proto.NotificationMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
@@ -101,31 +100,31 @@ proto.NotificationMessage.deserializeBinary = function(bytes) {
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.NotificationMessage}
  */
-proto.NotificationMessage.deserializeBinaryFromReader = function(msg, reader) {
-  while (reader.nextField()) {
-    if (reader.isEndGroup()) {
-      break;
+proto.NotificationMessage.deserializeBinaryFromReader = function (msg, reader) {
+    while (reader.nextField()) {
+        if (reader.isEndGroup()) {
+            break;
+        }
+        var field = reader.getFieldNumber();
+        switch (field) {
+            case 1:
+                var value = /** @type {string} */ (reader.readString());
+                msg.setId(value);
+                break;
+            case 20:
+                var value = /** @type {string} */ (reader.readString());
+                msg.setTitle(value);
+                break;
+            case 21:
+                var value = /** @type {string} */ (reader.readString());
+                msg.setMessage(value);
+                break;
+            default:
+                reader.skipField();
+                break;
+        }
     }
-    var field = reader.getFieldNumber();
-    switch (field) {
-    case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setId(value);
-      break;
-    case 20:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setTitle(value);
-      break;
-    case 21:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setMessage(value);
-      break;
-    default:
-      reader.skipField();
-      break;
-    }
-  }
-  return msg;
+    return msg;
 };
 
 
@@ -133,10 +132,10 @@ proto.NotificationMessage.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.NotificationMessage.prototype.serializeBinary = function() {
-  var writer = new jspb.BinaryWriter();
-  proto.NotificationMessage.serializeBinaryToWriter(this, writer);
-  return writer.getResultBuffer();
+proto.NotificationMessage.prototype.serializeBinary = function () {
+    var writer = new jspb.BinaryWriter();
+    proto.NotificationMessage.serializeBinaryToWriter(this, writer);
+    return writer.getResultBuffer();
 };
 
 
@@ -147,29 +146,29 @@ proto.NotificationMessage.prototype.serializeBinary = function() {
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.NotificationMessage.serializeBinaryToWriter = function(message, writer) {
-  var f = undefined;
-  f = message.getId();
-  if (f.length > 0) {
-    writer.writeString(
-      1,
-      f
-    );
-  }
-  f = message.getTitle();
-  if (f.length > 0) {
-    writer.writeString(
-      20,
-      f
-    );
-  }
-  f = message.getMessage();
-  if (f.length > 0) {
-    writer.writeString(
-      21,
-      f
-    );
-  }
+proto.NotificationMessage.serializeBinaryToWriter = function (message, writer) {
+    var f = undefined;
+    f = message.getId();
+    if (f.length > 0) {
+        writer.writeString(
+            1,
+            f
+        );
+    }
+    f = message.getTitle();
+    if (f.length > 0) {
+        writer.writeString(
+            20,
+            f
+        );
+    }
+    f = message.getMessage();
+    if (f.length > 0) {
+        writer.writeString(
+            21,
+            f
+        );
+    }
 };
 
 
@@ -177,8 +176,8 @@ proto.NotificationMessage.serializeBinaryToWriter = function(message, writer) {
  * optional string id = 1;
  * @return {string}
  */
-proto.NotificationMessage.prototype.getId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+proto.NotificationMessage.prototype.getId = function () {
+    return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -186,8 +185,8 @@ proto.NotificationMessage.prototype.getId = function() {
  * @param {string} value
  * @return {!proto.NotificationMessage} returns this
  */
-proto.NotificationMessage.prototype.setId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+proto.NotificationMessage.prototype.setId = function (value) {
+    return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -195,8 +194,8 @@ proto.NotificationMessage.prototype.setId = function(value) {
  * optional string title = 20;
  * @return {string}
  */
-proto.NotificationMessage.prototype.getTitle = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 20, ""));
+proto.NotificationMessage.prototype.getTitle = function () {
+    return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 20, ""));
 };
 
 
@@ -204,8 +203,8 @@ proto.NotificationMessage.prototype.getTitle = function() {
  * @param {string} value
  * @return {!proto.NotificationMessage} returns this
  */
-proto.NotificationMessage.prototype.setTitle = function(value) {
-  return jspb.Message.setProto3StringField(this, 20, value);
+proto.NotificationMessage.prototype.setTitle = function (value) {
+    return jspb.Message.setProto3StringField(this, 20, value);
 };
 
 
@@ -213,8 +212,8 @@ proto.NotificationMessage.prototype.setTitle = function(value) {
  * optional string message = 21;
  * @return {string}
  */
-proto.NotificationMessage.prototype.getMessage = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+proto.NotificationMessage.prototype.getMessage = function () {
+    return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
 };
 
 
@@ -222,8 +221,8 @@ proto.NotificationMessage.prototype.getMessage = function() {
  * @param {string} value
  * @return {!proto.NotificationMessage} returns this
  */
-proto.NotificationMessage.prototype.setMessage = function(value) {
-  return jspb.Message.setProto3StringField(this, 21, value);
+proto.NotificationMessage.prototype.setMessage = function (value) {
+    return jspb.Message.setProto3StringField(this, 21, value);
 };
 
 

@@ -20,12 +20,12 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler(),"/ws")
+        registry.addHandler(webSocketHandler(), "/ws")
                 .addInterceptors(new SpringWebSocketHandlerInterceptor()).setAllowedOrigins("*");
     }
 
     @Bean
-    public TextWebSocketHandler webSocketHandler(){
+    public TextWebSocketHandler webSocketHandler() {
         return new SpringWebSocketHandler();
     }
 }

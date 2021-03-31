@@ -24,12 +24,12 @@ export default class SysUserOnlineApi {
         })
     }
 
-    public static kickUser(id:string): Promise<AxiosResponse> {
+    public static kickUser(id: string): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.kickUser,
-            data:Qs.stringify({
-                id:id
+            data: Qs.stringify({
+                id: id
             })
         })
     }

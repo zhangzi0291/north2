@@ -23,7 +23,7 @@ public class SpringWebSocketHandlerInterceptor extends HttpSessionHandshakeInter
                                    Map<String, Object> attributes) throws Exception {
         if (StpUtil.isLogin()) {
             WebSocketUserInfo userInfo = getUserinfo(StpUtil.getTokenValue());
-            attributes.put("userInfo",userInfo);
+            attributes.put("userInfo", userInfo);
         }
         return super.beforeHandshake(request, response, wsHandler, attributes);
 

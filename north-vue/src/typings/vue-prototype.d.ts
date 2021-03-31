@@ -1,13 +1,13 @@
-import { AxiosInstance } from 'axios'
-import { App } from 'vue'
- 
+import {AxiosInstance} from 'axios'
+import {App} from 'vue'
+
 declare module 'Vue/types/vue' {
-  interface Vue {
-    $axios: AxiosInstance
-  }
+    interface Vue {
+        $axios: AxiosInstance
+    }
 }
 
-declare global{
+declare global {
     interface Window {
         vm: App;
         title: string;

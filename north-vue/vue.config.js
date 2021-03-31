@@ -1,10 +1,10 @@
 module.exports = {
-  pluginOptions: {
-    'style-resources-loader': {
-      preProcessor: 'less',
-      patterns: []
-    }
-  },
+    pluginOptions: {
+        'style-resources-loader': {
+            preProcessor: 'less',
+            patterns: []
+        }
+    },
 
-  lintOnSave: false
+    lintOnSave: false
 }

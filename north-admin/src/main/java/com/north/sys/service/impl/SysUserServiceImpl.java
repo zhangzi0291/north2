@@ -9,10 +9,12 @@ import com.north.base.exception.LoginFailedException;
 import com.north.sys.entity.SysResource;
 import com.north.sys.entity.SysRole;
 import com.north.sys.entity.SysUser;
+import com.north.sys.entity.SysUserRole;
 import com.north.sys.mapper.SysUserMapper;
 import com.north.sys.service.ISysLogService;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
+import org.redisson.api.RBucket;
 import org.redisson.api.RKeys;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +43,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private ISysLogService sysLogService;
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private ISysUserRoleService sysUserRoleService;
 
     @Override
     public List<SysRole> getUserRole(String userId) {
@@ -72,10 +79,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public void login(SysUser user,String deviceType) {
+    public void login(SysUser user, String deviceType) {
         StpUtil.setLoginId(user.getId());
-        StpUtil.getSession().setAttribute("nickname",user.getNickname());
-        StpUtil.getSession().setAttribute("userId",user.getId());
+        StpUtil.getSession().setAttribute("nickname", user.getNickname());
+        StpUtil.getSession().setAttribute("userId", user.getId());
         //记录登陆日志
         sysLogService.addLoginLog();
     }
@@ -114,7 +121,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public Long getTotalOnlineNum() {
         RKeys rKeys = redissonClient.getKeys();
-        Iterable<String> keys  = rKeys.getKeysByPattern("satoken:login:session:*");
+        Iterable<String> keys = rKeys.getKeysByPattern("satoken:login:session:*");
         Long total = 0L;
         for (String key : keys) {
             total += 1;
@@ -135,4 +142,43 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         List<String> list = roles.stream().map(SysRole::getRoleName).collect(Collectors.toList());
         return list;
     }
+
+    @Override
+    public String createVerificationCode(String key, Integer invalidTime) {
+//        String verificationCode = RandomUtil.getRandom(RandomUtil.NUMBERS.toCharArray(), 6);
+        String verificationCode = "123456";
+        RBucket<String> bucket = redissonClient.getBucket(key);
+        bucket.set(verificationCode);
+        bucket.expire(invalidTime, TimeUnit.MINUTES);
+        return verificationCode;
+    }
+
+    @Override
+    public Boolean checkVerificationCode(String key, String verificationCode) {
+        RBucket<String> bucket = redissonClient.getBucket(key);
+        String value = bucket.get();
+        if (value != null && value.equals(verificationCode)) {
+            bucket.delete();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void importSysUserList(List<Map<String, Object>> list) {
+        List<SysUserRole> sysUserRoleList = new ArrayList<>();
+        for (Map<String, Object> som : list) {
+            SysUser sysUser = (SysUser) som.get("user");
+            List<SysRole> sysRoleList = (List<SysRole>) som.get("roleList");
+            this.save(sysUser);
+            for (SysRole sysRole : sysRoleList) {
+                SysUserRole sysUserRole = new SysUserRole();
+                sysUserRole.setUserId(sysUser.getId());
+                sysUserRole.setRoleId(sysRole.getId());
+                sysUserRoleList.add(sysUserRole);
+            }
+        }
+        sysUserRoleService.saveBatch(sysUserRoleList);
+    }
+
 }

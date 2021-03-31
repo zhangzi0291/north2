@@ -39,7 +39,7 @@ public class SysResourceController extends BaseController<SysResource, ISysResou
 
     @Override
     protected QueryWrapper<SysResource> setListWrapper(SysResource bean, Map<String, String> map) {
-        QueryWrapper<SysResource> qw = super.setListWrapper(bean,map);
+        QueryWrapper<SysResource> qw = super.setListWrapper(bean, map);
         LambdaQueryWrapper<SysResource> qwlambda = qw.lambda();
 
         qwlambda.orderByDesc(SysResource::getCreatedTime);

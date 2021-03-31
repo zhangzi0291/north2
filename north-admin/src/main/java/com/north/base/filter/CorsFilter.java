@@ -27,7 +27,7 @@ public class CorsFilter extends GenericFilterBean {
         String origin = request.getHeader("ORIGIN");
         String secFetchMode = request.getHeader("Sec-Fetch-Mode");
 
-        if ( origin == null || !"cors".equals(secFetchMode)) {
+        if (origin == null || !"cors".equals(secFetchMode)) {
             filterChain.doFilter(request, response);
         } else {
             response.setHeader("Access-Control-Allow-Origin", origin);//* or origin as u prefer

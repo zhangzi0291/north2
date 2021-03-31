@@ -19,9 +19,18 @@ public enum ApiErrorCode implements IErrorCode {
      */
     FORBIDDEN(403, "无权限访问"),
     /**
+     * 请求方式不支持
+     */
+    MethodNotAllowed(405, "请求方式不支持"),
+    /**
      * 字段校验失败
      */
     CheckFieldError(40001, "字段校验失败"),
+
+    /**
+     * 导入失败，输出错误Excel
+     */
+    ImportFieldError(550, "导入失败，输出错误Excel"),
 
     ;
     private final long code;

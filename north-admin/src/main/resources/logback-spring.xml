@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration  scan="true" scanPeriod="60 seconds" debug="false">
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
     <contextName>logback</contextName>
-    <property name="log.path" value="logs" />
+    <property name="log.path" value="logs"/>
     <!--输出到控制台-->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <!-- <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -62,27 +62,27 @@
     </appender>
 
     <root level="info">
-        <appender-ref ref="console" />
-        <appender-ref ref="file" />
-        <appender-ref ref="debugFile" />
-        <appender-ref ref="errorFile" />
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+        <appender-ref ref="debugFile"/>
+        <appender-ref ref="errorFile"/>
     </root>
-<!--    <logger name="org" level="info" />-->
-<!--    <logger name="io" level="info" />-->
+    <!--    <logger name="org" level="info" />-->
+    <!--    <logger name="io" level="info" />-->
 
-    <logger name="org.springframework" level="warn" />
-    <logger name="org.apache.shiro" level="warn" />
-    <logger name="org.apache.http" level="warn" />
-    <logger name="com.baomidou" level="warn" />
-    <logger name="org.mybatis.spring" level="warn" />
-    <logger name="com.zaxxer.hikari" level="warn" />
-    <logger name="io.lettuce" level="warn" />
-    <logger name="io.netty" level="warn" />
-    <logger name="org.redisson" level="warn" />
-    <logger name="io.swagger" level="warn" />
+    <logger name="org.springframework" level="warn"/>
+    <logger name="org.apache.shiro" level="warn"/>
+    <logger name="org.apache.http" level="warn"/>
+    <logger name="com.baomidou" level="warn"/>
+    <logger name="org.mybatis.spring" level="warn"/>
+    <logger name="com.zaxxer.hikari" level="warn"/>
+    <logger name="io.lettuce" level="warn"/>
+    <logger name="io.netty" level="warn"/>
+    <logger name="org.redisson" level="warn"/>
+    <logger name="io.swagger" level="warn"/>
 
     <!-- 输出mybaits的sql -->
-    <logger name="dao" level="debug" />
+    <logger name="dao" level="debug"/>
     <logger name="com.north" level="debug"/>
 
 

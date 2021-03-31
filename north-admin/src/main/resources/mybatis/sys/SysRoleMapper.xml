@@ -8,10 +8,12 @@
     </sql>
 
     <select id="getSysRoleByUrl" resultType="com.north.sys.entity.SysRole">
-        select r.* from sys_role r
-            left join sys_role_resource rr on r.id = rr.role_id
-            left join sys_resource res on rr.resource_id = res.id
-        where res.resource_url = #{url} and res.is_deleted = 0
+        select r.*
+        from sys_role r
+                 left join sys_role_resource rr on r.id = rr.role_id
+                 left join sys_resource res on rr.resource_id = res.id
+        where res.resource_url = #{url}
+          and res.is_deleted = 0
     </select>
 
 </mapper>

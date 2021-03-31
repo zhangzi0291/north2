@@ -12,7 +12,7 @@
     <a-space align="center" direction="vertical">
       <a-progress :percent="percent" :strokeColor="strokeColor" :strokeWidth="15"
                   gapPosition="left" type="dashboard"/>
-      {{title}}
+      <b>{{title}}</b>
     </a-space>
   </a-card>
 </template>

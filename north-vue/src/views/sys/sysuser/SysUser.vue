@@ -7,6 +7,7 @@
       <template #content>
         <a-page-header sub-title="用户管理" title="用户">
           <template #extra>
+            <a-button type="primary" @click="openImport()">导入</a-button>
             <a-button type="primary" @click="openAdd()">新增</a-button>
             <a-button type="primary" @click="load({current:1})">查询</a-button>
           </template>
@@ -91,12 +92,16 @@
     </form-modal>
     <menu-modal ref="menuModal"></menu-modal>
     <menu-modal ref="menuModal2" :okCallback="menuModalOkCallback"></menu-modal>
+
+    <import-modal ref="importModal" :title="'用户导入'" :url="url.import"></import-modal>
+
     <change-password ref="cp"></change-password>
   </div>
 </template>
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 import FormModal, {Ext, ModalField, SelectField} from "@/components/base/FormModal.vue";
+import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
 import SysUserApi from "@/api/SysUserApi";
@@ -111,7 +116,7 @@ let dictApi = new SysDictApi();
 @Options({
   name: 'SysUser',
   components: {
-    FormModal, MenuModal, ChangePassword
+    FormModal, MenuModal, ChangePassword, ImportModal
   },
   data() {
     return {
@@ -122,6 +127,7 @@ let dictApi = new SysDictApi();
         get: "/sysUser/get",
         add: "/sysUser/addWithRole",
         edit: "/sysUser/editWithRole",
+        import: "/sysUser/import",
       },
       //面包屑
       breadcrumbs: [
@@ -292,7 +298,11 @@ let dictApi = new SysDictApi();
           })
         },
       });
-    }
+    },
+    openImport(){
+      this.$refs.importModal.open()
+    },
+
   },
   created() {
     this.load()

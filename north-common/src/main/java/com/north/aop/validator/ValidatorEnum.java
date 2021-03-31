@@ -22,8 +22,7 @@ public enum ValidatorEnum {
     IS_DIGITS("参数必须是数字", ValidateUtil::IsDigits),
     PATTERN("参数必须符合指定的正则表达式", ValidateUtil::Pattern),
     ENUM("参数不在枚举中", ValidateUtil::Enum),
-    ENUM_CLASS("参数不在枚举中", ValidateUtil::EnumClass)
-    ;
+    ENUM_CLASS("参数不在枚举中", ValidateUtil::EnumClass);
 
     public String msg;
 

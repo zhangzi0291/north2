@@ -35,7 +35,7 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        if(session.getAttributes().get("userInfo")==null){
+        if (session.getAttributes().get("userInfo") == null) {
             return;
         }
         WebSocketUserInfo userInfo = (WebSocketUserInfo) session.getAttributes().get("userInfo");
@@ -53,7 +53,7 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        if(session.getAttributes().get("userInfo")==null){
+        if (session.getAttributes().get("userInfo") == null) {
             return;
         }
         WebSocketUserInfo userInfo = (WebSocketUserInfo) session.getAttributes().get("userInfo");
