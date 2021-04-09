@@ -12,7 +12,6 @@ import com.north.constant.DeviceTypeEnum;
 import com.north.msg.service.IMsgService;
 import com.north.msg.service.impl.EmailMsgService;
 import com.north.sys.entity.SysUser;
-import com.north.sys.service.ISysLogService;
 import com.north.sys.service.ISysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,8 +37,6 @@ public class SysLoginController {
 
     @Resource
     private ISysUserService sysUserService;
-    @Resource
-    private ISysLogService sysLogService;
     @Resource
     private Map<String, IMsgService> msgService;
 
@@ -76,22 +73,44 @@ public class SysLoginController {
         return R.ok(result);
     }
 
+    /**
+     * 通过Email获取验证码
+     *
+     * @param target
+     * @return
+     */
     @NorthWithoutLogin
     @RequestMapping(path = "getVerificationCodeWithEmail", method = RequestMethod.GET)
     public R getVerificationCodeWithEmail(String target) {
-        String VerificationCode = sysUserService.createVerificationCode(target, 15);
+        QueryWrapper<SysUser> qw = new QueryWrapper<>();
+        qw.lambda().eq(SysUser::getEmail, target);
+        SysUser sysUser = sysUserService.getOne(qw, false);
+        if (sysUser == null) {
+            return R.failed("用户不存在");
+        }
+        String VerificationCode = sysUserService.createVerificationCode(sysUser.getId(), 15);
         msgService.get(StrUtil.lowerFirst(EmailMsgService.class.getSimpleName())).sendMsg(Arrays.asList(new String[]{target}), "North验证码", VerificationCode);
         return R.ok(VerificationCode);
     }
 
+    /**
+     * 校验email对应的验证码
+     *
+     * @param target
+     * @param verificationCode
+     * @return
+     */
     @NorthWithoutLogin
     @RequestMapping(path = "loginByVerificationCodeWithEmail", method = RequestMethod.POST)
     public R loginByVerificationCodeWithEmail(String target, String verificationCode) {
-        boolean b = sysUserService.checkVerificationCode(target, verificationCode);
+        QueryWrapper<SysUser> qw = new QueryWrapper<>();
+        qw.lambda().eq(SysUser::getEmail, target);
+        SysUser sysUser = sysUserService.getOne(qw, false);
+        if (sysUser == null) {
+            return R.failed("用户不存在");
+        }
+        boolean b = sysUserService.checkVerificationCode(sysUser.getId(), verificationCode);
         if (b) {
-            QueryWrapper<SysUser> qw = new QueryWrapper<>();
-            qw.lambda().eq(SysUser::getEmail, target);
-            SysUser sysUser = sysUserService.getOne(qw);
             if (sysUser != null) {
                 sysUserService.login(sysUser, DeviceTypeEnum.WEB.value);
                 //获取角色返回

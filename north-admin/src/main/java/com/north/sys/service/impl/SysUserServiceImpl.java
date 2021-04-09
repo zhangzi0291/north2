@@ -144,10 +144,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public String createVerificationCode(String key, Integer invalidTime) {
+    public String createVerificationCode(String userId, Integer invalidTime) {
 //        String verificationCode = RandomUtil.getRandom(RandomUtil.NUMBERS.toCharArray(), 6);
         String verificationCode = "123456";
-        RBucket<String> bucket = redissonClient.getBucket(key);
+        RBucket<String> bucket = redissonClient.getBucket(userId);
         bucket.set(verificationCode);
         bucket.expire(invalidTime, TimeUnit.MINUTES);
         return verificationCode;

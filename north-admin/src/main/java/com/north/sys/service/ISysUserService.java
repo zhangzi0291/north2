@@ -106,20 +106,20 @@ public interface ISysUserService extends IService<SysUser> {
     /**
      * 生成验证码，并保存到redis待验证
      *
-     * @param key         reids保存的key，一般是手机号
+     * @param userId         reids保存的key，用户id
      * @param invalidTime
      * @return
      */
-    String createVerificationCode(String key, Integer invalidTime);
+    String createVerificationCode(String userId, Integer invalidTime);
 
     /**
      * 校验验证码
      *
-     * @param key
+     * @param userId
      * @param verificationCode
      * @return
      */
-    Boolean checkVerificationCode(String key, String verificationCode);
+    Boolean checkVerificationCode(String userId, String verificationCode);
 
     /**
      * 导入用户和相应的权限
