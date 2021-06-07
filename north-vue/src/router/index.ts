@@ -2,16 +2,26 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 
 var About = () => import(/* webpackChunkName: "About" */ '@/views/About.vue')
 var Index = () => import(/* webpackChunkName: "Index" */ '@/views/Index.vue')
-var Home = () => import(/* webpackChunkName: "Home" */ '@/views/home/Home.vue')
-var Login = () => import(/* webpackChunkName: "Login" */ '@/views/login/Login.vue')
-var SysResource = () => import(/* webpackChunkName: "SysResource" */ '@/views/sys/sysresource/SysResource.vue')
-var SysUser = () => import(/* webpackChunkName: "SysUser" */ '@/views/sys/sysuser/SysUser.vue')
-var SysOnlineUser = () => import(/* webpackChunkName: "SysOnlineUser" */ '@/views/sys/onlineuser/SysOnlineUser.vue')
-var SysRole = () => import(/* webpackChunkName: "SysRole" */ '@/views/sys/sysrole/SysRole.vue')
-var SysDict = () => import(/* webpackChunkName: "SysDict" */ '@/views/sys/sysdict/SysDict.vue')
-var SysArea = () => import(/* webpackChunkName: "SysArea" */ '@/views/sys/sysarea/SysArea.vue')
-var SysLog = () => import(/* webpackChunkName: "SysLog" */ '@/views/sys/syslog/SysLog.vue')
-var IframePanel = () => import(/* webpackChunkName: "IframePanel" */ '@/views/IframePanel.vue')
+var Home = () => import(/* webpackChunkName: "Home" */ '@/views/home/HomePage.vue')
+
+var Login = () => import(/* webpackChunkName: "Login" */ '@/views/login/LoginPage.vue')
+
+var SysResource = () => import(/* webpackChunkName: "SysResource" */ '@/views/sys/sysresource/SysResourcePage.vue')
+var SysUser = () => import(/* webpackChunkName: "SysUser" */ '@/views/sys/sysuser/SysUserPage.vue')
+var SysOnlineUser = () => import(/* webpackChunkName: "SysOnlineUser" */ '@/views/sys/onlineuser/SysOnlineUserPage.vue')
+var SysRole = () => import(/* webpackChunkName: "SysRole" */ '@/views/sys/sysrole/SysRolePage.vue')
+var SysDict = () => import(/* webpackChunkName: "SysDict" */ '@/views/sys/sysdict/SysDictPage.vue')
+var SysArea = () => import(/* webpackChunkName: "SysArea" */ '@/views/sys/sysarea/SysAreaPage.vue')
+var SysLog = () => import(/* webpackChunkName: "SysLog" */ '@/views/sys/syslog/SysLogPage.vue')
+
+var GenealogyTree = () => import(/* webpackChunkName: "GenealogyTree" */ '@/views/genealogy/genealogyTree/GenealogyTreePage.vue')
+var GenealogyTreeGraph = () => import(/* webpackChunkName: "GenealogyTreeGraph" */ '@/views/genealogy/genealogyTree/GenealogyTree.vue')
+
+
+var IframePanel = () => import(/* webpackChunkName: "test" */ '@/views/IframePanel.vue')
+
+var test = () => import(/* webpackChunkName: "IframePanel" */ '@/views/test.vue')
+
 
 const routes = [
     {
@@ -70,6 +80,11 @@ const routes = [
                 name: '日志管理',
                 component: SysLog,
             },
+            {
+                path: 'genealogy/tree',
+                name: '族谱',
+                component: GenealogyTree,
+            },
 
         ]
     },
@@ -77,6 +92,11 @@ const routes = [
         path: '/login',
         name: 'login',
         component: Login,
+    },
+    {
+        path: '/genealogyTreeGraph',
+        name: 'GenealogyTreeGraph',
+        component: GenealogyTreeGraph,
     },
 ]
 

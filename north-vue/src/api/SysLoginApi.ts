@@ -16,7 +16,7 @@ const url = {
 
 export default class SysLoginApi {
 
-    public login(username: string, password: string): Promise<AxiosResponse> {
+    public static login(username: string, password: string): Promise<AxiosResponse> {
         return axios({
             method: "post",
             url: url.login,
@@ -27,7 +27,7 @@ export default class SysLoginApi {
         })
     }
 
-    public logout(): Promise<AxiosResponse> {
+    public static logout(): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.logout,

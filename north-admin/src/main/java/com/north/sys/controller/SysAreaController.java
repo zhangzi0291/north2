@@ -9,6 +9,7 @@ import com.north.base.BaseController;
 import com.north.base.api.R;
 import com.north.sys.entity.SysArea;
 import com.north.sys.service.ISysAreaService;
+import com.north.sys.service.ISysDictService;
 import com.north.util.ExcelUtil;
 import com.north.utils.LambdaUtil;
 import org.springframework.util.StringUtils;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +37,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/sysArea")
 public class SysAreaController extends BaseController<SysArea, ISysAreaService> {
+
+    @Resource
+    private ISysAreaService sysAreaService;
 
     @Override
     protected QueryWrapper<SysArea> setListWrapper(SysArea bean, Map<String, String> map) {
@@ -56,7 +61,7 @@ public class SysAreaController extends BaseController<SysArea, ISysAreaService> 
     @RequestMapping(path = "export", method = RequestMethod.GET)
     public R export(HttpServletResponse response, SysArea bean, @RequestParam Map<String, String> map) {
         QueryWrapper<SysArea> wrapper = setListWrapper(bean, map);
-        List<SysArea> list = this.service.list(wrapper);
+        List<SysArea> list = sysAreaService.list(wrapper);
 
         List<ExcelExportEntity> entity = new ArrayList<>();
         entity.add(new ExcelExportEntity("ID", "id"));

@@ -23,6 +23,7 @@ public class LocalDateTimeConverter implements Converter<String, LocalDateTime> 
         FORMARTS.add("yyyy-MM-dd");
         FORMARTS.add("yyyy-MM-dd HH:mm");
         FORMARTS.add("yyyy-MM-dd HH:mm:ss");
+        FORMARTS.add("yyyy-MM-dd'T'HH:mm:ss");
         FORMARTS.add("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     }
 
@@ -43,6 +44,8 @@ public class LocalDateTimeConverter implements Converter<String, LocalDateTime> 
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}T{1}\\d{1,2}:\\d{1,2}:\\d{1,2}\\.\\d{3}$")) {
             LocalDateTime time = LocalDateTime.parse(source);
             return time;
+        } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}T{1}\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
+            return LocalDateTime.parse(source, DateTimeFormatter.ofPattern(FORMARTS.get(4)));
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}T{1}\\d{1,2}:\\d{1,2}:\\d{1,2}\\.\\d{3}([Z]|[+].{4,5})$")) {
             LocalDateTime time = ZonedDateTime.parse(source).withZoneSameInstant(ZoneId.of("+08:00")).toLocalDateTime();
             return time;

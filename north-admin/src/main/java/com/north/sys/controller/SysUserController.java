@@ -7,8 +7,8 @@ import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.BaseController;
+import com.north.base.Constant;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
 import com.north.base.exception.curd.InsertFailedException;
@@ -23,6 +23,7 @@ import com.north.sys.service.ISysRoleService;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
 import com.north.util.ExcelUtil;
+import com.north.util.WebSocketUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.redisson.api.RedissonClient;
@@ -256,7 +257,7 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
      * @throws IOException
      */
     private UploadDto saveFile(HttpServletRequest request, MultipartFile file) throws IOException {
-        R<UploadDto> r = sysFileController.upload(request, file);
+        R<UploadDto> r = sysFileController.upload(request, file, Constant.SYS_MODULE_NAME, null);
         return r.getData();
     }
 
@@ -318,6 +319,7 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
 
     @RequestMapping("kickUser")
     public R kickUser(String id) {
+        WebSocketUtil.notifyUser(id, "下线", "您被管理员踢下线了");
         StpUtil.logoutByLoginId(id);
         return R.ok();
     }

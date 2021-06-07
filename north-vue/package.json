@@ -9,10 +9,13 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^5.1.8",
+    "@types/echarts": "^4.9.7",
     "ant-design-vue": "^2.0.0-rc.7",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "echarts": "^5.0.2",
     "google-protobuf": "^3.15.6",
+    "lodash": "^4.17.21",
     "vue": "^3.0.5",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0"

@@ -16,6 +16,7 @@ import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
 import org.redisson.api.RBucket;
 import org.redisson.api.RKeys;
+import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +64,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         qw.eq(SysUser::getUsername, usernaem);
         qw.eq(SysUser::getPassword, password);
         SysUser sysUser = this.getOne(qw, false);
+        RSet rset = redissonClient.getSet("");
         //用户不存在
         if (sysUser == null) {
             throw LoginFailedException.newInstance(LoginFailedException.LoginFailedEnum.USER_PWD_ERROR);

@@ -5,6 +5,7 @@
   right: 0;
   position: absolute;
   min-height: 100%;
+  min-width: 720px;
 }
 
 .logo {
@@ -52,8 +53,8 @@
 <template>
   <a-layout class="layout">
 
-    <a-layout-sider :collapsed="collapsed" :style="{ overflow: 'auto', height: '100%', position: 'fixed', left: 0 }"
-                    collapsible @collapse="collapse">
+    <a-layout-sider :collapsed="collapsed"
+                    @collapse="collapse">
       <div class="logo">
         {{ logoName }}
       </div>
@@ -75,7 +76,7 @@
       </a-menu>
     </a-layout-sider>
 
-    <a-layout :style="{ marginLeft: !collapsed?'200px':'80px' }">
+    <a-layout >
 
       <a-layout-header style="background: #fff; padding: 0">
         <div>
@@ -125,7 +126,7 @@
       </a-layout-header>
 
       <a-layout-content
-          :style="{ margin: '24px 16px', padding: '24px', background: '#fff' }"
+          :style="{  'overflow-x':'auto',margin: '24px 16px', padding: '24px', background: '#fff' }"
       >
 
         <router-view/>
@@ -133,6 +134,7 @@
       </a-layout-content>
 
     </a-layout>
+
     <change-password ref="cp"></change-password>
 
 
@@ -144,13 +146,13 @@ import {Options, Vue} from 'vue-class-component';
 import nMenu from '@/components/base/menu/n-menu.vue'
 
 import SysResourceApi from '@/api/SysResourceApi'
+import BaseApi from '@/api/BaseApi'
 import ChangePassword from "@/views/home/ChangePassword.vue";
 import SysLoginApi from "@/api/SysLoginApi";
 import {createVNode} from "vue";
 import messages from '@/protobuf/NotificationMessage_pb'
 
 const sysApi = new SysResourceApi()
-const loginApi = new SysLoginApi()
 
 @Options({
   name: 'Index',
@@ -164,18 +166,10 @@ const loginApi = new SysLoginApi()
       collapsed: false,
       menus: [],
       reconnectInterval: {},
-      openStyle:{ marginLeft: '200px' },
-      collapsedStyle:{ marginLeft: '200px' }
     }
   },
   computed: {
-    user() {
-      let user = window.localStorage.getItem("user")
-      if (user != null) {
-        return JSON.parse(user)
-      }
-      return {};
-    }
+
   },
 
   methods: {
@@ -205,7 +199,9 @@ const loginApi = new SysLoginApi()
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要退出吗？',
         onOk: () => {
-          return loginApi.logout().then(res => {
+          return SysLoginApi.logout().then(res => {
+            BaseApi.setWsIsClose(true);
+            window.websocket.close()
             this.$router.push({path: '/login',})
           })
         },
@@ -225,7 +221,9 @@ const loginApi = new SysLoginApi()
           console.log("连接成功")
         }
         this.reconnectInterval = window.websocket.onclose = () => {
-          this.createWs()
+          if(!BaseApi.getWsIsClose()){
+            this.createWs()
+          }
         }
       } else {
         alert('Not support websocket')
@@ -258,9 +256,10 @@ const loginApi = new SysLoginApi()
     sysApi.getMenu().then((res) => {
       this.menus = res.data.data
     });
+    BaseApi.setWsIsClose(false);
     this.createWs()
-    console.log(this.websocket)
-  }
+
+  },
 })
 
 export default class Index extends Vue {

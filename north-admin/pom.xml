@@ -17,12 +17,12 @@
         <dependency>
             <groupId>com.north</groupId>
             <artifactId>north-common</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>${north.common}</version>
         </dependency>
         <dependency>
             <groupId>com.north</groupId>
-            <artifactId>north-file-control</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <artifactId>north-file-storage</artifactId>
+            <version>${north.file.storage}</version>
         </dependency>
         <!-- spring -->
         <dependency>

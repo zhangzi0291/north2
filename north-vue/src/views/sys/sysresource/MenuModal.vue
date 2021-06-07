@@ -3,11 +3,10 @@
 </style>
 
 <template>
-  <a-modal :onCancel="cancel" :onOk="ok" :title="'父节点选择'" :visible="visible" :width="720">
+  <a-modal :onCancel="cancel" :onOk="ok" :title="title" :visible="visible" :width="720">
     <a-table :childrenColumnName="'child'" :columns="columns" :data-source="resourceList" :defaultExpandAllRows="true"
-             :loading="loading" :pagination="false" :rowKey="(record)=>record.id" :rowSelection="rowSelection"
-             :scroll="{ x: 900, y: 500 }"
-    >
+             :loading="loading" :pagination="false" :rowKey="(record)=>record.id"
+             :rowSelection="rowSelection" :scroll="{ x: 900, y: 500 }">
       <template #icon="{ text }">
           <span>
              <component :is="$icons[text]"/>
@@ -60,11 +59,30 @@ let dictApi = new SysDictApi();
       ],
     }
   },
-  props: {},
+  props: {
+    title:{
+      type:String,
+      required:true
+    },
+    type:{
+      type:String,
+      default: () => {
+        return 'checkbox'
+      }
+    },
+    okCallback: {
+      type: Function,
+      default: (data: any) => {
+        console.log(data)
+      }
+    },
+  },
   methods: {
     ok() {
       this.visible = false
       this.data.parentId = this.selectedRowKeys[0]
+      this.data.resources = this.selectedRowKeys
+      this.okCallback(this.data)
     },
     getAllResource() {
       sysApi.getAllResource().then(res => {
@@ -79,7 +97,9 @@ let dictApi = new SysDictApi();
       this.visible = true
       this.data = data
       this.id = data.id
-      this.selectedRowKeys = [this.id]
+      this.selectedRowKeys = data.resources
+      console.log(this.selectedRowKeys)
+
     },
 
   },
@@ -90,20 +110,31 @@ let dictApi = new SysDictApi();
 
 export default class ParentIdModal extends Vue {
   selectedRowKeys: any;
+  type: any;
 
   get rowSelection() {
-    return {
-      type: "radio",
+    let selection = {
+      type: this.type,
       selectedRowKeys: this.selectedRowKeys,
-      //表格默认选中
-      onSelect: (record: any, selected: any, selectedRows: any[], nativeEvent: any) => {
+    }
+
+    if(this.type =='radio'){
+      (selection as any).onSelect = (record: any, selected: any, selectedRows: any[], nativeEvent: any) => {
         if (selected) {
           this.selectedRowKeys = [record.id]
         } else {
           this.selectedRowKeys = []
         }
-      },
+        console.log(this.selectedRowKeys)
+      }
+    }else{
+      (selection as any).onChange = (selectedRowKeys: any, selectedRows: any) => {
+        this.selectedRowKeys = selectedRowKeys
+        console.log(this.selectedRowKeys)
+
+      }
     }
+    return selection
   }
 }
 

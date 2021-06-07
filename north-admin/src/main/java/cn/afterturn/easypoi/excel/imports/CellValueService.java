@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 用于覆盖EasyPoi同类，修改map导入方式读取不到日期类型的问题
+ *
  * @author Northzx
  * @version 1.0
  * @since 2021-03-29
@@ -101,6 +103,7 @@ public class CellValueService {
                     break;
                 case NUMERIC:
                     if (DateUtil.isCellDateFormatted(cell)) {
+                        //只修改了这里，用于map方式读取时加载日期类型
 //                        if ("class java.lang.String".equals(classFullName)) {
                         result = formateDate(entity, cell.getDateCellValue());
 //                        }

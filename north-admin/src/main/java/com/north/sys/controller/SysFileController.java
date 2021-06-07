@@ -10,6 +10,7 @@ import com.north.sys.entity.SysFile;
 import com.north.sys.service.ISysFileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,7 +47,6 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
     @Resource
     private FileControlHandler fileControlHandler;
 
-
     /**
      * 上传文件
      *
@@ -57,11 +57,27 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
      */
     @Operation(summary = "上传文件", description = "md5相同的文件直接返回记录")
     @RequestMapping(path = "upload", method = {RequestMethod.GET, RequestMethod.POST})
-    public R<UploadDto> upload(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+    public R<UploadDto> upload(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file, String moduleName, String relationId) throws IOException {
+        return uploadWithMd5Check(request,file,moduleName,relationId,true);
+    }
+
+
+    /**
+     * 上传文件
+     *
+     * @param request
+     * @param file
+     * @param checkmd5 是否校验MD5,是的话md5重复不再重新保存
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(path = "uploadWithMd5Check", method = {RequestMethod.GET, RequestMethod.POST})
+    public R<UploadDto> uploadWithMd5Check(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file, String moduleName, String relationId,Boolean checkmd5) throws IOException {
         //校验文件md5，如果md5相同是同一个文件不需要重复保存
         String md5 = MD5.create().digestHex(file.getInputStream());
         SysFile sysFile = sysFileService.getSysFileByMD5(md5);
-        if (sysFile == null) {
+        //文件不存在或者不校验MD5重复的话就保存，否则直接返回已知的文件ID
+        if (sysFile == null || Boolean.FALSE.equals(checkmd5)) {
             //保存文件
             String uuid = UUID.randomUUID().toString();
             String originalFilename = file.getOriginalFilename();
@@ -75,6 +91,12 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
             sysFile.setUploadTime(LocalDateTime.now());
             sysFile.setFilePath(fileName);
             sysFile.setMd5Value(md5);
+            if(StringUtils.hasLength(moduleName)) {
+                sysFile.setModuleName(moduleName);
+            }
+            if(StringUtils.hasLength(relationId)) {
+                sysFile.setRelationId(relationId);
+            }
             super.addJson(sysFile);
         }
         //返回访问的Url和ID
@@ -87,7 +109,7 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
     }
 
     /**
-     * 下载文件
+     * 下载文件 通过ID
      *
      * @param id       SysFile的ID
      * @param response
@@ -123,8 +145,5 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
         return null;
     }
 
-    public static void main(String[] args) {
-        Path saveDir = Paths.get("./upload");
-        System.out.println(saveDir.toUri().toString());
-    }
+
 }

@@ -5,6 +5,7 @@ import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.aop.validator.ValidateParam;
 import com.north.aop.validator.ValidateParams;
 import com.north.aop.validator.ValidatorEnum;
@@ -67,6 +68,7 @@ public class SysDictController extends BaseController<SysDict, ISysDictService> 
      * @param dictName
      * @return
      */
+    @NorthWithoutLogin
     @Operation(summary = "获取下拉框列表", description = "通过字典名称获取下拉框列表")
     @RequestMapping(path = "getSelectFieldList", method = RequestMethod.GET)
     public R getSelectFieldList(String dictName) {

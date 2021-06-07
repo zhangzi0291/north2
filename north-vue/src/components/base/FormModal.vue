@@ -305,9 +305,9 @@ export class Ext {
       if (!file) {
         return false
       }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$message.error("文件大小超出限制，最大2M");
+      const isLt = file.size / 1024 / 1024 < 5;
+      if (!isLt) {
+        this.$message.error("文件大小超出限制，最大5M");
         return false
       }
 

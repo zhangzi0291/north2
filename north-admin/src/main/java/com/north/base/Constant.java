@@ -24,4 +24,8 @@ public class Constant {
     public void setUploadPath(String uploadPath) {
         UPLOAD_PATH = uploadPath;
     }
+
+    public static String SYS_MODULE_NAME = "sys";
+
+    public static String GENEALOGY_MODULE_NAME = "genealogy";
 }

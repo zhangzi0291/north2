@@ -1,16 +1,15 @@
 import {App} from 'vue';
 import BasePage from '@/components/base/page/BasePage.vue'
 import HtmlPanel from '@/components/HtmlPanel.vue'
-import * as icons from "@ant-design/icons-vue";
 import {AxiosResponse} from "axios";
-
+import lodash from "lodash"
 
 var install = function install(app: App) {
 
     app.component("base-page", BasePage)
     app.component("html-panel", HtmlPanel)
 
-    app.config.globalProperties.$download = function(url:string,method:string,fileName:string,data: any){
+    app.config.globalProperties.$download = function (url: string, method: string, fileName: string, data: any) {
         app.config.globalProperties.$axios({
             method: method,
             url: url,
@@ -29,6 +28,25 @@ var install = function install(app: App) {
 
     }
 
+    app.config.globalProperties.$lodash = lodash
+
+    Date.prototype.Format = function (fmt: string) {
+        var o = {
+            "M+": this.getMonth() + 1,                 //月份
+            "d+": this.getDate(),                    //日
+            "h+": this.getHours(),                   //小时
+            "m+": this.getMinutes(),                 //分
+            "s+": this.getSeconds(),                 //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds()             //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
 }
 
 

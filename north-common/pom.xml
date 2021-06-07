@@ -50,18 +50,6 @@
         </dependency>
         <!-- 添加Swagger依赖 -->
 
-        <!--    mybatisplus 生成工具    -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-generator</artifactId>
-            <version>${mybatis.plus.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
-            <scope>provided </scope>
-        </dependency>
-        <!--    mybatisplus 生成工具    -->
+
     </dependencies>
 </project>

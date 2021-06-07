@@ -60,6 +60,18 @@ public class SysFile extends BaseModel implements Serializable {
      */
     private String md5Value;
 
+    /**
+     * 模块名
+     */
+    private String moduleName;
+
+    /**
+     * 关联ID
+     */
+    private String relationId;
+
+
+
     public String getId() {
         return id;
     }
@@ -125,6 +137,22 @@ public class SysFile extends BaseModel implements Serializable {
         this.md5Value = md5Value;
     }
 
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+    }
+
+    public String getRelationId() {
+        return relationId;
+    }
+
+    public void setRelationId(String relationId) {
+        this.relationId = relationId;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", SysFile.class.getSimpleName() + "[", "]")
@@ -136,6 +164,8 @@ public class SysFile extends BaseModel implements Serializable {
                 .add("uploadTime=" + uploadTime)
                 .add("deleteTime=" + deleteTime)
                 .add("md5Value='" + md5Value + "'")
+                .add("moduleName='" + moduleName + "'")
+                .add("relationId='" + relationId + "'")
                 .toString();
     }
 }
