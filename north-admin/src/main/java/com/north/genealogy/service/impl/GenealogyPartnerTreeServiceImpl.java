@@ -1,9 +1,9 @@
 package com.north.genealogy.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.north.genealogy.entity.GenealogyPartnerTree;
 import com.north.genealogy.mapper.GenealogyPartnerTreeMapper;
 import com.north.genealogy.service.IGenealogyPartnerTreeService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**

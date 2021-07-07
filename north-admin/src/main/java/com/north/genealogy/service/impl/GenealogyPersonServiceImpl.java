@@ -89,6 +89,7 @@ public class GenealogyPersonServiceImpl extends ServiceImpl<GenealogyPersonMappe
 
     /**
      * 保存照片/
+     *
      * @param images
      * @param personId
      */
@@ -159,7 +160,7 @@ public class GenealogyPersonServiceImpl extends ServiceImpl<GenealogyPersonMappe
      */
     private UploadDto saveFile(MultipartFile file, String personId) throws IOException {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        R<UploadDto> r = sysFileController.uploadWithMd5Check(request, file, "genealogy", personId,false);
+        R<UploadDto> r = sysFileController.uploadWithMd5Check(request, file, "genealogy", personId, false);
         return r.getData();
     }
 

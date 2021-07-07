@@ -38,6 +38,7 @@ public class GenealogyPartnerTree extends BaseModel {
     public void setGenealogyId(String genealogyId) {
         this.genealogyId = genealogyId;
     }
+
     public String getPersonId() {
         return personId;
     }
@@ -45,6 +46,7 @@ public class GenealogyPartnerTree extends BaseModel {
     public void setPersonId(String personId) {
         this.personId = personId;
     }
+
     public String getPartnerId() {
         return partnerId;
     }
@@ -56,9 +58,9 @@ public class GenealogyPartnerTree extends BaseModel {
     @Override
     public String toString() {
         return "GenealogyPartnerTree{" +
-            "genealogyId=" + genealogyId +
-            ", personId=" + personId +
-            ", partnerId=" + partnerId +
-        "}";
+                "genealogyId=" + genealogyId +
+                ", personId=" + personId +
+                ", partnerId=" + partnerId +
+                "}";
     }
 }

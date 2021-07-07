@@ -1,7 +1,7 @@
 package com.north.genealogy.service;
 
-import com.north.genealogy.entity.GenealogyParentTree;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.north.genealogy.entity.GenealogyParentTree;
 
 /**
  * <p>

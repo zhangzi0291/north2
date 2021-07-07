@@ -2,16 +2,19 @@ package com.north.sys.controller;
 
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.north.base.BaseController;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
+import com.north.sys.dto.SysResourceDto;
 import com.north.sys.dto.TreeDto;
 import com.north.sys.entity.SysResource;
 import com.north.sys.service.ISysResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -106,7 +109,22 @@ public class SysResourceController extends BaseController<SysResource, ISysResou
         return R.ok();
     }
 
-    public static void main(String[] args) {
-        System.out.println("563acb74-5cee-4d89-a9cd-e8e6c538a968".length());
+    @Operation(summary = "获取对象", description = "根据id获取对象,包含父元素ID")
+    @RequestMapping(path = "getByParentName", method = {RequestMethod.GET})
+    public R<SysResourceDto> getByParentName(String id) {
+        SysResource bean = service.getById(id);
+        if (bean == null) {
+            return R.failed("无数据");
+        }
+        SysResourceDto dto = new SysResourceDto();
+        BeanUtil.copyProperties(bean, dto);
+        if (StringUtils.hasLength(bean.getParentId()) && !"-1".equals(bean.getParentId())) {
+            SysResource parent = service.getById(bean.getParentId());
+            dto.setParentName(parent.getResourceName());
+        } else {
+            dto.setParentName("根");
+        }
+        return R.ok(dto);
     }
+
 }

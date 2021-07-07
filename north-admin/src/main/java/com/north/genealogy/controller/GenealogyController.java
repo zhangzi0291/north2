@@ -83,13 +83,13 @@ public class GenealogyController extends BaseController<Genealogy, IGenealogySer
         List<GenealogyPersonDto> nodes = new ArrayList<>();
         for (GenealogyPerson person : persons) {
             GenealogyPersonDto node = new GenealogyPersonDto();
-            BeanUtil.copyProperties(person,node);
-            List<Link> linkList = links.stream().filter( link -> person.getId().equals(link.getTarget())).collect(Collectors.toList());
+            BeanUtil.copyProperties(person, node);
+            List<Link> linkList = links.stream().filter(link -> person.getId().equals(link.getTarget())).collect(Collectors.toList());
             for (Link link : linkList) {
-                if("配偶".equals(link.getRelationship())){
+                if ("配偶".equals(link.getRelationship())) {
                     node.setPartnerId(link.getSource());
                 }
-                if("子女".equals(link.getRelationship())){
+                if ("子女".equals(link.getRelationship())) {
                     node.setParentId(link.getSource());
                 }
             }
@@ -106,7 +106,7 @@ public class GenealogyController extends BaseController<Genealogy, IGenealogySer
     @ValidateParams(
             @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "genealogyId")
     )
-    public R getGenealogyTreePersonSearch(String genealogyId,String personName) {
+    public R getGenealogyTreePersonSearch(String genealogyId, String personName) {
         QueryWrapper<GenealogyParentTree> qw1 = new QueryWrapper();
         qw1.lambda().eq(GenealogyParentTree::getGenealogyId, genealogyId);
         List<GenealogyParentTree> parentTreeList = parentTreeService.list(qw1);
@@ -116,7 +116,7 @@ public class GenealogyController extends BaseController<Genealogy, IGenealogySer
             personIdSet.add(treeNode.getPersonId());
         }
         List<GenealogyPerson> persons = personService.listByIds(personIdSet);
-        if(StringUtils.hasLength(personName)) {
+        if (StringUtils.hasLength(personName)) {
             persons = persons.stream().filter(person -> person.getPersonName().startsWith(personName)).collect(Collectors.toList());
         }
         return R.ok(persons);

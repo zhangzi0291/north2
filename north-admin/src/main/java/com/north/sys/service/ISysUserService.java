@@ -51,6 +51,14 @@ public interface ISysUserService extends IService<SysUser> {
     void login(SysUser user, String deviceType);
 
     /**
+     * 登陆，并设置超时时间
+     *
+     * @param user
+     * @param deviceType
+     */
+    void login(SysUser user, String deviceType, Long timeout);
+
+    /**
      * 注销
      *
      * @param deviceType
@@ -75,7 +83,7 @@ public interface ISysUserService extends IService<SysUser> {
     Boolean checkUsername(String username);
 
     /**
-     * 检查用户名是否重复，不重复返回true，重复返回false
+     * 检查昵称是否重复，不重复返回true，重复返回false
      *
      * @param nickname
      * @return
@@ -106,7 +114,7 @@ public interface ISysUserService extends IService<SysUser> {
     /**
      * 生成验证码，并保存到redis待验证
      *
-     * @param userId         reids保存的key，用户id
+     * @param userId      reids保存的key，用户id
      * @param invalidTime
      * @return
      */

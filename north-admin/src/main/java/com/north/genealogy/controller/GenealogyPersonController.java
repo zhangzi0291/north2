@@ -8,8 +8,8 @@ import com.north.base.Constant;
 import com.north.base.api.R;
 import com.north.base.exception.NorthBaseException;
 import com.north.genealogy.dto.RelationshipInfo;
-import com.north.genealogy.entity.GenealogyPersonTimeline;
 import com.north.genealogy.entity.GenealogyPerson;
+import com.north.genealogy.entity.GenealogyPersonTimeline;
 import com.north.genealogy.service.IGenealogPersonTimelineService;
 import com.north.genealogy.service.IGenealogyPersonService;
 import com.north.sys.entity.SysFile;
@@ -44,25 +44,25 @@ public class GenealogyPersonController extends BaseController<GenealogyPerson, I
     private IGenealogPersonTimelineService timelineService;
 
     @RequestMapping("addGenealogyPerson")
-    public R addGenealogyPerson(@RequestParam(value = "file", required = false) List<MultipartFile> files, RelationshipInfo relationshipInfo, GenealogyPerson person, @RequestParam(value = "personTimelines", required = false)String personTimelineJsonStr) {
+    public R addGenealogyPerson(@RequestParam(value = "file", required = false) List<MultipartFile> files, RelationshipInfo relationshipInfo, GenealogyPerson person, @RequestParam(value = "personTimelines", required = false) String personTimelineJsonStr) {
         List<GenealogyPersonTimeline> genealogyPersonTimelineList = null;
-        if(StringUtils.hasLength(personTimelineJsonStr)) {
+        if (StringUtils.hasLength(personTimelineJsonStr)) {
             try {
                 genealogyPersonTimelineList = JSONArray.parseArray(personTimelineJsonStr, GenealogyPersonTimeline.class);
             } catch (Exception e) {
                 throw new NorthBaseException("时间线参数错误");
             }
         }
-        personService.addGenealogyPerson(files,relationshipInfo,person, genealogyPersonTimelineList);
+        personService.addGenealogyPerson(files, relationshipInfo, person, genealogyPersonTimelineList);
         return R.ok();
     }
 
     @RequestMapping("getGenealogyPersonImages")
-    public R getGenealogyPersonImages(String id){
+    public R getGenealogyPersonImages(String id) {
         QueryWrapper<SysFile> qw = new QueryWrapper();
         qw.lambda()
                 .eq(SysFile::getModuleName, Constant.GENEALOGY_MODULE_NAME)
-                .eq(SysFile::getRelationId,id);
+                .eq(SysFile::getRelationId, id);
         List<SysFile> list = sysFileService.list(qw);
         List<String> imageIds = new ArrayList<>();
         for (SysFile sysFile : list) {
@@ -72,26 +72,26 @@ public class GenealogyPersonController extends BaseController<GenealogyPerson, I
     }
 
     @RequestMapping("getGenealogyPersonTimeLines")
-    public R getGenealogyPersonTimeLines(String id){
+    public R getGenealogyPersonTimeLines(String id) {
         QueryWrapper<GenealogyPersonTimeline> qw = new QueryWrapper();
         qw.lambda()
-                .eq(GenealogyPersonTimeline::getPersonId,id)
+                .eq(GenealogyPersonTimeline::getPersonId, id)
                 .orderByDesc(GenealogyPersonTimeline::getEventTime);
         List<GenealogyPersonTimeline> list = timelineService.list(qw);
         return R.ok(list);
     }
 
     @RequestMapping("editGenealogyPerson")
-    public R editGenealogyPerson(@RequestParam(value = "file", required = false) List<MultipartFile> files,@RequestParam(value = "fileId", required = false) List<String> fileIds, RelationshipInfo relationshipInfo, GenealogyPerson person, @RequestParam(value = "personTimelines", required = false)String personTimelineJsonStr) {
+    public R editGenealogyPerson(@RequestParam(value = "file", required = false) List<MultipartFile> files, @RequestParam(value = "fileId", required = false) List<String> fileIds, RelationshipInfo relationshipInfo, GenealogyPerson person, @RequestParam(value = "personTimelines", required = false) String personTimelineJsonStr) {
         List<GenealogyPersonTimeline> genealogyPersonTimelineList = null;
-        if(StringUtils.hasLength(personTimelineJsonStr)) {
+        if (StringUtils.hasLength(personTimelineJsonStr)) {
             try {
                 genealogyPersonTimelineList = JSONArray.parseArray(personTimelineJsonStr, GenealogyPersonTimeline.class);
             } catch (Exception e) {
                 throw new NorthBaseException("时间线参数错误");
             }
         }
-        personService.editGenealogyPerson(files,fileIds,relationshipInfo,person, genealogyPersonTimelineList);
+        personService.editGenealogyPerson(files, fileIds, relationshipInfo, person, genealogyPersonTimelineList);
         return R.ok();
     }
 

@@ -32,7 +32,7 @@ public class TestController {
     public R test() {
         boolean b = StpUtil.isLogin();
         System.out.println(b);
-        StpUtil.setLoginId("abc");
+        StpUtil.login("abc");
         b = StpUtil.isLogin();
         System.out.println(b);
         System.out.println(StpUtil.getTokenName());

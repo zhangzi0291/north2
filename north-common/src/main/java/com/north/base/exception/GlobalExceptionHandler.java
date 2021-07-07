@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
     public R businessExceptionHandler(HttpServletRequest request, HttpServletResponse response, MultipartException e) {
         logger.error("Exception:", e);
         response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        return R.failed(ApiErrorCode.MethodNotAllowed,e.getMessage());
+        return R.failed(ApiErrorCode.MethodNotAllowed, e.getMessage());
     }
 
 

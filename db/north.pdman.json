@@ -355,6 +355,12 @@
               "chnname": "头像URL"
             },
             {
+              "name": "app_name",
+              "type": "ShortString",
+              "remark": "属于哪个应用",
+              "chnname": "应用名称"
+            },
+            {
               "name": "describe",
               "type": "MiddleString",
               "remark": "",

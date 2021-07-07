@@ -42,4 +42,9 @@ public class WebSocketUtil {
         NotificationMessageOuterClass.NotificationMessage notificationMessage = builder.build();
         return new BinaryMessage(notificationMessage.toByteArray());
     }
+
+    public static void test() {
+        AbstractWebSocketMessage webSocketMessage = new BinaryMessage("test".getBytes());
+        SpringWebSocketHandler.sendMessageToUsers(webSocketMessage);
+    }
 }

@@ -1,9 +1,6 @@
 package com.north.file;
 
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Northzx
@@ -14,6 +11,7 @@ public interface FileControlHandler {
 
     /**
      * 文件是否存在
+     *
      * @param filePath
      * @return
      */
@@ -35,13 +33,13 @@ public interface FileControlHandler {
      * @param filePath
      * @param override 是否覆盖原文件，true覆盖，false 已存在抛出NorthFileFailedException运行时异常
      */
-    default void saveFile(InputStream input, String filePath, boolean override){
+    default void saveFile(InputStream input, String filePath, boolean override) {
         if (!override) {
             if (fileExit(filePath)) {
                 throw new NorthFileFailedException("源文件已存在");
             }
         }
-        saveFile(input,filePath);
+        saveFile(input, filePath);
     }
 
     /**

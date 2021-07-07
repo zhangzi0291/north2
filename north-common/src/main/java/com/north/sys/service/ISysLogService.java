@@ -1,11 +1,11 @@
 package com.north.sys.service;
 
-import com.north.sys.entity.SysLog;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.north.sys.entity.SysLog;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author NorthZX

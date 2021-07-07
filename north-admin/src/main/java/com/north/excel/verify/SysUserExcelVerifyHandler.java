@@ -72,9 +72,9 @@ public class SysUserExcelVerifyHandler extends BaseExcelVerifyHandler<SysUser> {
         }
         if (ExcelUtil.getMapStringValue(obj, "角色") == null) {
             return "角色不可为空";
-        }else {
+        } else {
             SysRoleController sysRoleController = SpringUtil.getBean(SysRoleController.class);
-            R r = sysRoleController.checkField("role_name",ExcelUtil.getMapStringValue(obj, "角色"), null);
+            R r = sysRoleController.checkField("role_name", ExcelUtil.getMapStringValue(obj, "角色"), null);
             if (r.getCode() == ApiErrorCode.SUCCESS.getCode()) {
                 return "角色不存在";
             }

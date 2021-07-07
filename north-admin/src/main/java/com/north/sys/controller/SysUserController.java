@@ -2,6 +2,8 @@ package com.north.sys.controller;
 
 
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.dev33.satoken.dao.SaTokenDaoRedisJackson;
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -23,6 +25,7 @@ import com.north.sys.service.ISysRoleService;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
 import com.north.util.ExcelUtil;
+import com.north.util.PasswordUtil;
 import com.north.util.WebSocketUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -69,6 +72,9 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
     @Resource
     private SysFileController sysFileController;
 
+    @Resource
+    private SaTokenDaoRedisJackson saTokenDaoRedisJackson;
+
     @Override
     protected QueryWrapper<SysUser> setListWrapper(SysUser bean, Map<String, String> map) {
         QueryWrapper<SysUser> qw = super.setListWrapper(bean, map);
@@ -95,6 +101,10 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
     @RequestMapping(path = "addWithRole", method = RequestMethod.POST)
     public R add(HttpServletRequest request, SysUser bean, @RequestParam(value = "roleIds", required = false) List<String> roleIds
             , @RequestParam(value = "files", required = false) List<MultipartFile> files) {
+        //校验用户名是否重复
+        if (!sysUserService.checkUsername(bean.getUsername())) {
+            return R.failed("用户名重复");
+        }
         //先保存头像
         if (!CollectionUtils.isEmpty(files)) {
             try {
@@ -107,8 +117,9 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         ;
         //两次MD5编码
         bean.setPassword(MD5.create().digestHex(bean.getPassword(), StandardCharsets.UTF_8));
-        bean.setPassword(MD5.create().digestHex(bean.getPassword(), StandardCharsets.UTF_8));
+        bean.setPassword(PasswordUtil.encodePassword(bean.getPassword()));
         //保存用户信息
+        bean.setAppName("web");
         R r = super.addJson(bean);
         if (ApiErrorCode.SUCCESS.getCode() != r.getCode()) {
             return r;
@@ -243,7 +254,7 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         user.setId(userId);
         String password = "888888";
         password = MD5.create().digestHex(password, StandardCharsets.UTF_8);
-        password = MD5.create().digestHex(password, StandardCharsets.UTF_8);
+        password = PasswordUtil.encodePassword(password);
         user.setPassword(password);
         return this.editJson(user);
     }
@@ -301,17 +312,18 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
 
     @RequestMapping("onlineUserList")
     public R getOnlineUserList(Page page) {
-        Page<SysUser> pageList = new Page<>(page.getCurrent(), page.getSize());
+        Page<Map> pageList = new Page<>(page.getCurrent(), page.getSize());
         Long total = sysUserService.getTotalOnlineNum();
         List<String> sessionIds = StpUtil.searchSessionId("", (int) ((page.getCurrent() - 1) * page.getSize()), (int) page.getSize());
+
         if (sessionIds.size() == 0) {
             return R.ok(page);
         }
-        List<String> ids = new ArrayList<>();
+        List<Map> list = new ArrayList<>();
         for (String sessionId : sessionIds) {
-            ids.add(sessionId.replace("satoken:login:session:", ""));
+            SaSession saSession = saTokenDaoRedisJackson.getSession(sessionId);
+            list.add(saSession.getDataMap());
         }
-        List<SysUser> list = sysUserService.listByIds(ids);
         pageList.setRecords(list);
         pageList.setTotal(total);
         return R.ok(pageList);
@@ -333,7 +345,7 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         for (Map<String, Object> map : list) {
             SysUser sysUser = new SysUser();
             sysUser.setUsername(ExcelUtil.getMapStringValue(map, "用户名"));
-            sysUser.setPassword(MD5.create().digestHex(MD5.create().digestHex("888888", StandardCharsets.UTF_8)));
+            sysUser.setPassword(PasswordUtil.encodePassword(MD5.create().digestHex("888888", StandardCharsets.UTF_8)));
             sysUser.setNickname(ExcelUtil.getMapStringValue(map, "昵称"));
             sysUser.setPhone(ExcelUtil.getMapStringValue(map, "手机号"));
             sysUser.setEmail(ExcelUtil.getMapStringValue(map, "EMail"));
@@ -360,4 +372,8 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         return R.ok();
     }
 
+    public static void main(String[] args) {
+        String s = "2106091419150004000000000000003800000000000000000000000000000004";
+        System.out.println(s.length());
+    }
 }

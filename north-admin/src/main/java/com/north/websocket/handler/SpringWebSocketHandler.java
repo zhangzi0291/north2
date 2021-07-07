@@ -134,7 +134,6 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
                     if (users.get(id).isOpen()) {
                         users.get(id).sendMessage(message);
                         return true;
-
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

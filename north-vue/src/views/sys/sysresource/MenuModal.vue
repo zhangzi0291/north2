@@ -13,6 +13,11 @@
           </span>
       </template>
     </a-table>
+    <template #footer>
+      <a-button type="primary" @click="ok">根目录</a-button>
+      <a-button>取消</a-button>
+      <a-button type="primary" @click="ok">确定</a-button>
+    </template>
   </a-modal>
 </template>
 
@@ -23,7 +28,6 @@ import {AxiosResponse} from "axios";
 import SysDictApi from "@/api/SysDictApi";
 
 let sysApi = new SysResourceApi()
-let dictApi = new SysDictApi();
 
 @Options({
   name: 'MenuModal',
@@ -40,49 +44,85 @@ let dictApi = new SysDictApi();
       resourceList: [],
       selectedRowKeys: [],
       columns: [
-        {title: '资源名称', key: 'data.resourceName', dataIndex: 'data.resourceName',width:"250px",fixed: 'left'},
-        {title: '资源ICON', key: 'data.resourceIcon', dataIndex: 'data.resourceIcon', slots: {customRender: "icon"},width:"80px",},
+        {title: '资源名称', key: 'data.resourceName', dataIndex: 'data.resourceName', width: "250px", fixed: 'left'},
         {
-          title: '资源类型', key: 'data.resourceType', dataIndex: 'data.resourceType',width:"100px",
+          title: '资源ICON',
+          key: 'data.resourceIcon',
+          dataIndex: 'data.resourceIcon',
+          slots: {customRender: "icon"},
+          width: "80px",
+        },
+        {
+          title: '资源类型', key: 'data.resourceType', dataIndex: 'data.resourceType', width: "100px",
           customRender: function (record: any) {
-            for (let resourceType  of resourceTypes) {
+            for (let resourceType of resourceTypes) {
               let type = (<any>resourceType)
-              if(type.value == record.record.data.resourceType){
+              if (type.value == record.record.data.resourceType) {
                 return type.lable
               }
             }
             return record.record.data.resourceType == 1 ? "菜单" : "资源"
           }
         },
-        {title: '资源路径', key: 'data.resourceUrl', dataIndex: 'data.resourceUrl',width:"200px",},
+        {title: '资源路径', key: 'data.resourceUrl', dataIndex: 'data.resourceUrl', width: "200px",},
         {title: '描述', key: 'data.describe', dataIndex: 'data.describe',},
       ],
     }
   },
   props: {
-    title:{
-      type:String,
-      required:true
+    title: {
+      type: String,
+      required: true
     },
-    type:{
-      type:String,
+    type: {
+      type: String,
       default: () => {
         return 'checkbox'
       }
     },
     okCallback: {
       type: Function,
-      default: (data: any) => {
-        console.log(data)
+      default: (data: any, selectData: any) => {
+        console.log(data, selectData)
       }
     },
   },
   methods: {
+    okroot(){
+      this.data.parentId = this.selectedRowKeys[0]
+      this.data.resources = this.selectedRowKeys
+      let selectData: any[] = []
+      this.okCallback(this.data, selectData)
+    },
     ok() {
       this.visible = false
       this.data.parentId = this.selectedRowKeys[0]
       this.data.resources = this.selectedRowKeys
-      this.okCallback(this.data)
+      let selectData: any[] = []
+      let resources = this.getResourceAndChild(this.resourceList)
+      this.selectedRowKeys.forEach((rowkey: any) => {
+        let result = resources.filter((resource: any) => {
+          if (resource.id == rowkey) {
+            return resource
+          }
+        })
+        if (result.length > 0) {
+          selectData.push(result[0])
+        }
+      })
+      this.okCallback(this.data, selectData)
+    },
+    getResourceAndChild(resourceList: any) {
+      let resources: any[] = []
+      resourceList.forEach((resource: any) => {
+        if (resource.child == undefined) {
+          resources.push(resource.data)
+        } else if (resource.child != undefined && resource.child.length > 0) {
+          resources = resources.concat(this.getResourceAndChild(resource.child))
+          resources.push(resource.data)
+        }
+      })
+      return resources
     },
     getAllResource() {
       sysApi.getAllResource().then(res => {
@@ -98,8 +138,6 @@ let dictApi = new SysDictApi();
       this.data = data
       this.id = data.id
       this.selectedRowKeys = data.resources
-      console.log(this.selectedRowKeys)
-
     },
 
   },
@@ -118,19 +156,17 @@ export default class ParentIdModal extends Vue {
       selectedRowKeys: this.selectedRowKeys,
     }
 
-    if(this.type =='radio'){
+    if (this.type == 'radio') {
       (selection as any).onSelect = (record: any, selected: any, selectedRows: any[], nativeEvent: any) => {
         if (selected) {
           this.selectedRowKeys = [record.id]
         } else {
           this.selectedRowKeys = []
         }
-        console.log(this.selectedRowKeys)
       }
-    }else{
+    } else {
       (selection as any).onChange = (selectedRowKeys: any, selectedRows: any) => {
         this.selectedRowKeys = selectedRowKeys
-        console.log(this.selectedRowKeys)
 
       }
     }

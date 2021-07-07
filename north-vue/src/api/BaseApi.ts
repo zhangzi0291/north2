@@ -45,19 +45,17 @@ export default class BaseApi {
         return []
     }
 
-    public static setWsIsClose(isClose:boolean) {
+    public static setWsIsClose(isClose: boolean) {
         window.localStorage.setItem("wsIsClose", JSON.stringify(isClose))
     }
 
     public static getWsIsClose() {
         let isClose = window.localStorage.getItem("wsIsClose")
-        if(isClose !=null){
+        if (isClose != null) {
             return !!JSON.parse(isClose)
         }
         return false;
     }
-
-
 
 
 }

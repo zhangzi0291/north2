@@ -6,6 +6,7 @@ const app = window.vm
 const axios = app.config.globalProperties.$axios
 
 const url = {
+    get: "/sysResource/get",
     getMenu: "/sysResource/getMenuTree?pid=-1",
     getAllResource: "/sysResource/getResourceTree?pid=-1",
     addResource: "/sysResource/add",
@@ -28,6 +29,16 @@ export default class SysResourceApi {
         return axios({
             method: 'get',
             url: url.getAllResource,
+        })
+    }
+
+    public getResource(id: string): Promise<AxiosResponse> {
+        return axios({
+            method: 'get',
+            url: url.get,
+            params: {
+                id: id
+            }
         })
     }
 

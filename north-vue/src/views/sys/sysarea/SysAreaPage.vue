@@ -77,7 +77,6 @@ import {AxiosResponse} from "axios";
 import SysDictApi from "@/api/SysDictApi";
 
 let api = new SysAreaApi();
-let dictApi = new SysDictApi();
 
 @Options({
   name: 'SysArea',

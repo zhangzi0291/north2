@@ -106,7 +106,7 @@ public class RandomUtil {
      * </ul>
      */
     public static String getRandom(String source, int length) {
-        return StringUtils.hasLength(source) ? getRandom(source.toCharArray(), length):null;
+        return StringUtils.hasLength(source) ? getRandom(source.toCharArray(), length) : null;
     }
 
     /**

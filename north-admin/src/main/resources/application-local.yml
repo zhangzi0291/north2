@@ -9,9 +9,24 @@ spring:
     database: 1
     host: 127.0.0.1
     port: 6379
-#    password: 123456
+    #password: 123456
     timeout: 5000
 
 north:
   updown:
     path: ./upload
+  file:
+    type: local
+    oss:
+      endpoint: "oss-cn-hangzhou.aliyuncs.com"
+      access-key-id: "LTAI5t8uAdenGPc289oJrWSV"
+      access-key-secret: "EXHWE2LQp56pUlB0obEDuqrdzBR28Q"
+      bucket-name: "north-oss"
+      prefix-key: "north2"
+  email:
+    host: "smtp.139.com"
+    port: 25
+    auth: true
+    from: "18752015153@139.com"
+    user: "18752015153@139.com"
+    pass: "Aa8897012"

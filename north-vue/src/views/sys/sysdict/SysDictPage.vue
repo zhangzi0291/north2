@@ -98,16 +98,16 @@ let api = new SysDictApi();
       //表格字段
       columns: [
         {title: '字典名称', key: 'dictName', dataIndex: 'dictName',sorter: true,},
-        {title: '字典KEY', key: 'dictKey', dataIndex: 'dictKey',sorter: true,},
-        {title: '字典值', key: 'dictValue', dataIndex: 'dictValue',},
+        {title: '字典Lable', key: 'dictKey', dataIndex: 'dictKey',sorter: true,},
+        {title: '字典Value', key: 'dictValue', dataIndex: 'dictValue',},
         {title: '描述', key: 'describe', dataIndex: 'describe',},
         {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "100px",},
       ],
       //form中的字段
       formColumns: [
         new ModalField().init('字典名称', 'dictName', 'String'),
-        new ModalField().init('字典KEY', 'dictKey', 'String'),
-        new ModalField().init('字典值', 'dictValue', 'String'),
+        new ModalField().init('字典Lable', 'dictKey', 'String'),
+        new ModalField().init('字典Value', 'dictValue', 'String'),
         new ModalField().initSelect('值类型', 'valueType', new Ext(), [], '字典值类型'),
         new ModalField().init('排序', 'dictOrder', 'Number'),
         new ModalField().init('扩展字段', 'dictExt', 'Textarea'),

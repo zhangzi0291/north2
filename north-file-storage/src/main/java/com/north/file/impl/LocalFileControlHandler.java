@@ -3,8 +3,6 @@ package com.north.file.impl;
 import com.north.file.FileControlHandler;
 import com.north.file.NorthFileFailedException;
 import com.north.file.dto.LocalConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,13 +27,13 @@ public class LocalFileControlHandler implements FileControlHandler {
 
     @Override
     public Boolean fileExit(String filePath) {
-        Path savePath = Paths.get(this.config.getUploadPath(),filePath);
+        Path savePath = Paths.get(this.config.getUploadPath(), filePath);
         return Boolean.valueOf(Files.exists(savePath));
     }
 
     @Override
     public void saveFile(InputStream input, String filePath) {
-        Path savePath = Paths.get(this.config.getUploadPath(),filePath);
+        Path savePath = Paths.get(this.config.getUploadPath(), filePath);
         try {
             if (Files.notExists(savePath.getParent())) {
                 Files.createDirectories(savePath.getParent());
@@ -57,7 +55,7 @@ public class LocalFileControlHandler implements FileControlHandler {
 
     @Override
     public InputStream loadFileInputStream(String filePath) {
-        Path file = Paths.get(this.config.getUploadPath(),filePath);
+        Path file = Paths.get(this.config.getUploadPath(), filePath);
         try {
             InputStream inputStream = new FileInputStream(file.toFile());
             return inputStream;
@@ -68,7 +66,7 @@ public class LocalFileControlHandler implements FileControlHandler {
 
     @Override
     public void deleteFile(String filePath) {
-        Path savePath = Paths.get(this.config.getUploadPath(),filePath);
+        Path savePath = Paths.get(this.config.getUploadPath(), filePath);
         try {
             Files.delete(savePath);
         } catch (IOException e) {

@@ -1,19 +1,24 @@
-package com.north.sys.controller;
+package com.north.pytool.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.Mode;
+import cn.hutool.crypto.Padding;
+import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.MD5;
+import cn.hutool.crypto.symmetric.AES;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.north.aop.encrypt.DecryptParam;
+import com.north.aop.encrypt.EncryptResponseBody;
 import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.aop.validator.ValidateParam;
 import com.north.aop.validator.ValidateParams;
 import com.north.aop.validator.ValidatorEnum;
+import com.north.base.Constant;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
 import com.north.constant.DeviceTypeEnum;
-import com.north.msg.service.IMsgService;
-import com.north.msg.service.impl.EmailMsgService;
+import com.north.sys.controller.SysUserController;
 import com.north.sys.entity.SysRole;
 import com.north.sys.entity.SysUser;
 import com.north.sys.service.ISysRoleService;
@@ -31,7 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,21 +43,19 @@ import java.util.Map;
 /**
  * @author Northzx
  * @version 1.0
- * @since 2020-12-30
+ * @since 2021-07-05
  */
-@Tag(name = "sys-login-controller 登陆相关")
+@Tag(name = "small-tool-login-controller 小工具登陆相关")
 @RestController
-@RequestMapping("sysLogin")
-public class SysLoginController {
+@RequestMapping("smallTool")
+public class SmallToolController {
 
-    @Resource
-    private SysUserController sysUserController;
     @Resource
     private ISysUserService sysUserService;
     @Resource
-    private ISysRoleService sysRoleService;
+    private SysUserController sysUserController;
     @Resource
-    private Map<String, IMsgService> msgService;
+    private ISysRoleService sysRoleService;
     @Resource
     private ISysUserRoleService sysUserRoleService;
 
@@ -67,7 +69,7 @@ public class SysLoginController {
     @NorthWithoutLogin
     @Transactional
     @Operation(summary = "注册", description = "注册")
-    @RequestMapping(path = "register", method = RequestMethod.POST)
+        @RequestMapping(path = "register", method = RequestMethod.POST)
     @ValidateParams({
             @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "sysUser.username"),
             @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "sysUser.password"),
@@ -83,9 +85,11 @@ public class SysLoginController {
         //两次MD5编码
         sysUser.setPassword(MD5.create().digestHex(sysUser.getPassword(), StandardCharsets.UTF_8));
         sysUser.setPassword(PasswordUtil.encodePassword(sysUser.getPassword()));
+        sysUser.setAppName("py小工具");
         //保存用户信息
-        sysUser.setAppName("web");
-
+        if (!sysUserService.checkUsername(sysUser.getUsername())) {
+            return R.failed("用户名重复");
+        }
         R r = sysUserController.addJson(sysUser);
         if (ApiErrorCode.SUCCESS.getCode() != r.getCode()) {
             return r;
@@ -103,7 +107,6 @@ public class SysLoginController {
         return R.ok();
     }
 
-
     /**
      * 登陆
      *
@@ -111,13 +114,21 @@ public class SysLoginController {
      * @param password 密码为明文密码md5编码之后的值
      * @return
      */
+
+    @EncryptResponseBody
     @NorthWithoutLogin
     @Operation(summary = "登陆", description = "登陆")
-    @RequestMapping(path = "login", method = RequestMethod.POST)
-    @ValidateParams(
-            @ValidateParam(value = ValidatorEnum.ENUM_CLASS, parameterName = "deviceType", express = "DeviceTypeEnum")
-    )
-    public R login(String username, String password, String deviceType) {
+    @RequestMapping(path = "sys/login", method = RequestMethod.POST)
+    @ValidateParams({
+            @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "username"),
+            @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "password"),
+            @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "softVersino"),
+    })
+    public R login(String username, @DecryptParam String password, String softVersino) {
+        //校验软件版本
+        if (!Constant.PY_SMALL_TOOL_SOFTVERSION.equals(softVersino)) {
+            return R.failed(ApiErrorCode.CheckSoftVersionFieldError, "不是最新版本，请更新");
+        }
         //检查密码是否可以登陆
         SysUser sysUser = sysUserService.checkCanUserLogin(username, password);
         //获取角色返回
@@ -125,84 +136,27 @@ public class SysLoginController {
         //获取权限返回
         List<String> permissions = sysUserService.getPermissionLis(sysUser.getId());
 
-        //登录
-        sysUserService.login(sysUser, DeviceTypeEnum.WEB.getValue(), 2592000L);
+        //登录,保持30天
+        sysUserService.login(sysUser, DeviceTypeEnum.PY_SMALL_TOOL.getValue(), 2592000L);
 
         Map<String, Object> result = new HashMap<>();
         sysUser.setPassword(null);
         result.put("user", sysUser);
-        result.put("token", StpUtil.getTokenValue());
+        result.put("tokenInfo", StpUtil.getTokenInfo());
         result.put("roles", roles);
         result.put("permissions", permissions);
         return R.ok(result);
     }
 
-    /**
-     * 通过Email获取验证码
-     *
-     * @param target
-     * @return
-     */
-    @NorthWithoutLogin
-    @RequestMapping(path = "getVerificationCodeWithEmail", method = RequestMethod.GET)
-    public R getVerificationCodeWithEmail(String target) {
-        QueryWrapper<SysUser> qw = new QueryWrapper<>();
-        qw.lambda().eq(SysUser::getEmail, target);
-        SysUser sysUser = sysUserService.getOne(qw, false);
-        if (sysUser == null) {
-            return R.failed("用户不存在");
-        }
-        String VerificationCode = sysUserService.createVerificationCode(sysUser.getId(), 15);
-        msgService.get(StrUtil.lowerFirst(EmailMsgService.class.getSimpleName())).sendMsg(Arrays.asList(new String[]{target}), "North验证码", VerificationCode);
-        return R.ok(VerificationCode);
-    }
+    public static void main(String[] args) {
+//        String text = "hP4V6pgH35NRqyNK0TSYUQ==";
+        String text = "2iGSkV2Rq9em8FCBP2+SI5Wy0Z9Kw9epj2Xx91+w7aowIidgDMVEtodQ/EXhxYwCNwlT1dphz5O7x4ig0xdNncAyoICSNnb89Uu5KnAHPMMxAADt15iS5wm2tbg0/ub91wP0/yArJlKo95nzJl/YKszcRjmDfB24CeywxnT/Mx+IzcbLAWWt4SAssUBidEAXDLG+8KRtU1WwvU1Wm/ngbRGT4jyOaSTyot3MQBy10y0TDo78c5JknkxL/TRg/4eWwWQmyxQZNrU362bVFv7tPzNjnIaFxTbs5PZ8sN0PGm0QHzYsG3gyeVglhsC0BLCSRp3s6B0qoAjRMZF4qo4ktO62/ytdwTOlpAyqm6ZjbjMoVLv1XJdyaEjeP5OXGoaE1es+XLQ1fw7Xnq0shhwCjuDlLqDbYIRoJZ9AAMSS9E+t/I7y0dNhVj6tgSSb2818y45Biir3spHpdLqELgrFgKZ6+5OoxsnjH/nqH00oEYfVfMe4wuGe58mP/sz3zRAc2BTqw71u2fEq9TfJcdhK91Euo9oO2WAyPMQRcAB9efwEalyJA6So5NyIpGNA1Sof+VII24gujsEzPKeGbv22MXL4lQKGcqx31YmMv73c/r1S5nKUzFt4Qu1xnGP6yxxmd6i/SV2jkQ2bYfn0hCa1+1TwSRf4AzWBgaa3nOocpxFOIaDaCSyyhfVZgGrZXhTvckdbEj7j9oPDMwO2cmLLnz1hDqn/JNS3Yd0XLhcvI3nPGmHV7LusAaKTFVGlDr/0T6B/VAgJfTW6ozYd/jCPRqiYpoO6mmppLCvEVi6bXbM=";
 
-    /**
-     * 校验email对应的验证码
-     *
-     * @param target
-     * @param verificationCode
-     * @return
-     */
-    @NorthWithoutLogin
-    @RequestMapping(path = "loginByVerificationCodeWithEmail", method = RequestMethod.POST)
-    public R loginByVerificationCodeWithEmail(String target, String verificationCode) {
-        QueryWrapper<SysUser> qw = new QueryWrapper<>();
-        qw.lambda().eq(SysUser::getEmail, target);
-        SysUser sysUser = sysUserService.getOne(qw, false);
-        if (sysUser == null) {
-            return R.failed("用户不存在");
-        }
-        boolean b = sysUserService.checkVerificationCode(sysUser.getId(), verificationCode);
-        if (b) {
-            if (sysUser != null) {
-                sysUserService.login(sysUser, DeviceTypeEnum.WEB.getValue());
-                //获取角色返回
-                List<String> roles = sysUserService.getRoleList(sysUser.getId());
-                //获取权限返回
-                List<String> permissions = sysUserService.getPermissionLis(sysUser.getId());
 
-                Map<String, Object> result = new HashMap<>();
-                sysUser.setPassword(null);
-                result.put("user", sysUser);
-                result.put("token", StpUtil.getTokenValue());
-                result.put("roles", roles);
-                result.put("permissions", permissions);
-                return R.ok(result);
-            }
-        }
-        return R.failed("验证码错误");
-    }
-
-    /**
-     * 注销
-     *
-     * @return
-     */
-    @Operation(summary = "注销", description = "退出登陆")
-    @RequestMapping(path = "logout", method = {RequestMethod.GET, RequestMethod.POST})
-    public R logout(String deviceType) {
-        sysUserService.logout(deviceType);
-        return R.ok();
+        String key = "howsoaestpyrcnef";
+        String iv = "8145933630441549";
+        AES aes = new AES(Mode.CBC, Padding.ZeroPadding,key.getBytes(StandardCharsets.UTF_8),iv.getBytes(StandardCharsets.UTF_8));
+        String r = aes.decryptStr(text);
+        System.out.println(r);
     }
 }

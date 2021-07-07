@@ -53,13 +53,18 @@
 
     <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
                 :okCallback="load" :rules="rules"
-                :title="'资源'">
+                :title="'资源'" >
       <template #parentId="{data}">
-        <a-input v-model:value="data['parentId']" @click="openMenuModal(data)"/>
+<!--        <a-input v-model:value="data['parentId']" @click="openMenuModal(data)"/>-->
+        <a-select v-model:value="data['parentId']" @click="openMenuModal(data)" >
+          <a-select-option :value="parent.id">
+            {{ parent.resourceName }}
+          </a-select-option>
+        </a-select>
       </template>
     </form-modal>
 
-    <menu-modal ref="menuModal" :title="'父节点选择'" :type="'radio'"></menu-modal>
+    <menu-modal ref="menuModal" :title="'父节点选择'" :type="'radio'" :okCallback="menuModalOkCallback" ></menu-modal>
   </div>
 </template>
 <script lang="ts">
@@ -74,7 +79,6 @@ import {AxiosResponse} from "axios";
 import SysDictApi from "@/api/SysDictApi";
 
 let api = new SysResourceApi()
-let dictApi = new SysDictApi();
 
 @Options({
   name: 'SysResource',
@@ -91,7 +95,7 @@ let dictApi = new SysDictApi();
       loading: false,
       //接口url
       url: {
-        get: "/sysResource/get",
+        get: "/sysResource/getByParentName",
         add: "/sysResource/add",
         edit: "/sysResource/edit",
       },
@@ -102,6 +106,7 @@ let dictApi = new SysDictApi();
       ],
       //表格数据
       data: [],
+      parent:{},
       //表格字段
       columns: [
         {title: '资源名称', key: 'data.resourceName', dataIndex: 'data.resourceName',},
@@ -175,14 +180,22 @@ let dictApi = new SysDictApi();
       this.$refs.form.open({parentId: parentId})
       this.check.resourceName = undefined;
     },
-    openEdit(id: string) {
-      this.$refs.form.open({id: id})
-      setTimeout(() => {
-        this.check.resourceName = this.$refs.form.getData().resourceName;
-      }, 1000)
+    async openEdit(id: string) {
+
+      await this.$refs.form.open({id: id})
+      let data = this.$refs.form.getData()
+      this.check.resourceName = data.resourceName;
+      this.parent = {
+        resourceName:data.parentName,
+        id:data.parentId,
+      }
+
     },
     openMenuModal(data: any) {
       this.$refs.menuModal.open(data)
+    },
+    menuModalOkCallback(data:any,selectData: any){
+      this.parent = selectData[0]
     },
     del(id: string) {
       this.$modal.confirm({

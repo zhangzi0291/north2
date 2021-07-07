@@ -5,7 +5,6 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectListing;
-import com.aliyun.oss.model.PutObjectRequest;
 import com.north.file.FileControlHandler;
 import com.north.file.NorthFileFailedException;
 import com.north.file.dto.AliyunOssConfig;
@@ -31,39 +30,39 @@ public class AliyunOssFileControlHandler implements FileControlHandler {
     }
 
     private void checkConfig() {
-        if (StringUtils.isNullOrEmpty(this.config.getEndpoint()) ){
+        if (StringUtils.isNullOrEmpty(this.config.getEndpoint())) {
             throw new NorthFileFailedException("初始化OSS参数endpoint缺失");
         }
-        if (StringUtils.isNullOrEmpty(this.config.getAccessKeyId()) ){
+        if (StringUtils.isNullOrEmpty(this.config.getAccessKeyId())) {
             throw new NorthFileFailedException("初始化OSS参数accessKeyId缺失");
         }
-        if (StringUtils.isNullOrEmpty(this.config.getAccessKeySecret()) ){
+        if (StringUtils.isNullOrEmpty(this.config.getAccessKeySecret())) {
             throw new NorthFileFailedException("初始化OSS参数accessKeySecret缺失");
         }
-        if (StringUtils.isNullOrEmpty(this.config.getBucketName()) ){
+        if (StringUtils.isNullOrEmpty(this.config.getBucketName())) {
             throw new NorthFileFailedException("初始化OSS参数bucketName缺失");
         }
-        if (StringUtils.isNullOrEmpty(this.config.getPrefixKey()) ){
+        if (StringUtils.isNullOrEmpty(this.config.getPrefixKey())) {
             throw new NorthFileFailedException("初始化OSS参数prefixKey缺失");
         }
     }
 
-    public String getKey(String filePath){
-        return this.config.getPrefixKey() +"/"+filePath;
+    public String getKey(String filePath) {
+        return this.config.getPrefixKey() + "/" + filePath;
     }
 
     @Override
     public Boolean fileExit(String filePath) {
         String saveKey = getKey(filePath);
-        ObjectListing objectListing = ossClient.listObjects(this.config.getBucketName(),saveKey);
-        return objectListing.getObjectSummaries().size()>0;
+        ObjectListing objectListing = ossClient.listObjects(this.config.getBucketName(), saveKey);
+        return objectListing.getObjectSummaries().size() > 0;
     }
 
     @Override
     public void saveFile(InputStream input, String filePath) {
         String saveKey = getKey(filePath);
 
-        ossClient.putObject(this.config.getBucketName(),saveKey,input);
+        ossClient.putObject(this.config.getBucketName(), saveKey, input);
     }
 
     @Override

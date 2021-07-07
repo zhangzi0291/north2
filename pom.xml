@@ -33,7 +33,7 @@
         <postgresql.version>42.2.18</postgresql.version>
         <poi.version>4.1.2</poi.version>
         <redisson.version>3.14.1</redisson.version>
-        <sa-token.version>1.19.0</sa-token.version>
+        <sa-token.version>1.21.0</sa-token.version>
         <hutool.version>5.5.7</hutool.version>
 
     </properties>

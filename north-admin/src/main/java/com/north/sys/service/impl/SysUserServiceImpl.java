@@ -1,7 +1,6 @@
 package com.north.sys.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -14,14 +13,15 @@ import com.north.sys.mapper.SysUserMapper;
 import com.north.sys.service.ISysLogService;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
+import com.north.util.PasswordUtil;
 import org.redisson.api.RBucket;
 import org.redisson.api.RKeys;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public SysUser checkCanUserLogin(String usernaem, String password) {
-        password = MD5.create().digestHex(password, StandardCharsets.UTF_8);
+        password = PasswordUtil.encodePassword(password);
         LambdaQueryWrapper<SysUser> qw = Wrappers.lambdaQuery();
         qw.eq(SysUser::getUsername, usernaem);
         qw.eq(SysUser::getPassword, password);
@@ -82,9 +82,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public void login(SysUser user, String deviceType) {
-        StpUtil.setLoginId(user.getId());
-        StpUtil.getSession().setAttribute("nickname", user.getNickname());
-        StpUtil.getSession().setAttribute("userId", user.getId());
+        login(user, deviceType, null);
+    }
+
+    @Override
+    public void login(SysUser user, String deviceType, Long timeout) {
+        //登陆
+        StpUtil.login(user.getId(), deviceType);
+        if (timeout != null) {
+            StpUtil.getTokenInfo().setTokenActivityTimeout(timeout);
+        }
+        //设置session里的参数
+        StpUtil.getSession().set("username", user.getUsername());
+        StpUtil.getSession().set("nickname", user.getNickname());
+        StpUtil.getSession().set("userId", user.getId());
+        if (StringUtils.hasLength(user.getIconUrl())) {
+            StpUtil.getSession().set("iconUrl", user.getIconUrl());
+        }
+        StpUtil.getSession().set("loginDevice", StpUtil.getLoginDevice());
         //记录登陆日志
         sysLogService.addLoginLog();
     }
@@ -97,7 +112,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public boolean checkPassword(String userId, String password) {
-        password = MD5.create().digestHex(password, StandardCharsets.UTF_8);
+        password = PasswordUtil.encodePassword(password);
         SysUser user = this.getById(userId);
         return user.getPassword().equals(password);
     }

@@ -7,7 +7,7 @@
       <template #content>
         <a-page-header sub-title="用户管理" title="用户">
           <template #extra>
-            <template v-if="hasPermissionOr('用户列表')">
+            <template v-if="hasPermissionOr('用户列表导入')">
               <a-button type="primary" @click="openImport()">导入</a-button>
               <a-button type="primary" @click="openAdd()">新增</a-button>
             </template>
@@ -142,7 +142,7 @@ let dictApi = new SysDictApi();
       data: [],
       //表格字段
       columns: [
-        {title: '登陆名', key: 'username', dataIndex: 'username'},
+        {title: '登录名', key: 'username', dataIndex: 'username'},
         {title: '用户名', key: 'nickname', dataIndex: 'nickname', ellipsis: "true"},
         {title: '状态', key: 'status', dataIndex: 'status'},
         {title: '过期时间', key: 'expiredTime', dataIndex: 'expiredTime'},
@@ -151,7 +151,7 @@ let dictApi = new SysDictApi();
       ],
       //form中的字段
       formColumns: [
-        new ModalField().init('登陆名', 'username', 'String'),
+        new ModalField().init('登录名', 'username', 'String'),
         new ModalField().init('用户名', 'nickname', 'String'),
         new ModalField().init('密码', 'password', 'Password', false),
         new ModalField().init('手机号', 'phone', 'String'),
@@ -165,7 +165,7 @@ let dictApi = new SysDictApi();
       //fomr校验规则
       rules: {
         username: [
-          {required: true, type: 'string', trigger: 'blur', message: "登陆名不可为空"},
+          {required: true, type: 'string', trigger: 'blur', message: "登录名不可为空"},
           {
             validator: (rule: any, value: any, callback: any) => {
               if (!value) {

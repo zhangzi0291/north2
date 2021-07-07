@@ -15,6 +15,10 @@ public enum DeviceTypeEnum {
      * 手机
      */
     MOBILE("mobile"),
+    /**
+     * py小工具
+     */
+    PY_SMALL_TOOL("pySmallTool"),
     ;
 
     public String value;

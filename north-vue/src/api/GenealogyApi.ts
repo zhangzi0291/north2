@@ -19,38 +19,38 @@ const url = {
 
 export default class GenealogyApi {
 
-    public static getGenealogyTree(genealogyId:string): Promise<AxiosResponse> {
+    public static getGenealogyTree(genealogyId: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.getGenealogyTree,
-            params:{
+            params: {
                 genealogyId: genealogyId
             }
         })
     }
 
-    public static getGenealogyTreePersonSearch(genealogyId:string,value:string): Promise<AxiosResponse> {
+    public static getGenealogyTreePersonSearch(genealogyId: string, value: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.getGenealogyTreePersonSearch,
-            params:{
+            params: {
                 genealogyId: genealogyId,
-                personName:value
+                personName: value
             }
         })
     }
 
-    public static getGenealogyPerson(id:string): Promise<AxiosResponse> {
+    public static getGenealogyPerson(id: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.getGenealogyPerson,
-            params:{
+            params: {
                 id: id
             }
         })
     }
 
-    public static addGenealogyPerson(data:FormData): Promise<AxiosResponse> {
+    public static addGenealogyPerson(data: FormData): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.addGenealogyPerson,
@@ -58,7 +58,7 @@ export default class GenealogyApi {
         })
     }
 
-    public static editGenealogyPerson(data:FormData): Promise<AxiosResponse> {
+    public static editGenealogyPerson(data: FormData): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.editGenealogyPerson,
@@ -66,17 +66,17 @@ export default class GenealogyApi {
         })
     }
 
-    public static removeGenealogyPerson(id:string): Promise<AxiosResponse> {
+    public static removeGenealogyPerson(id: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.removeGenealogyPerson,
-            params:{
+            params: {
                 id: id
             }
         })
     }
 
-    public static getGenealogyPersonImages(id:string): Promise<AxiosResponse> {
+    public static getGenealogyPersonImages(id: string): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.getGenealogyPersonImages,
@@ -86,7 +86,7 @@ export default class GenealogyApi {
         })
     }
 
-    public static getGenealogyPersonTimeLines(id:string): Promise<AxiosResponse> {
+    public static getGenealogyPersonTimeLines(id: string): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.getGenealogyPersonTimeLines,

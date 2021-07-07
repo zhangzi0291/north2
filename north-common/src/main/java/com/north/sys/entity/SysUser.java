@@ -75,6 +75,12 @@ public class SysUser extends BaseModel implements Serializable {
      */
     private String describe;
 
+
+    /**
+     * 应用名称
+     */
+    private String appName;
+
     public String getId() {
         return id;
     }
@@ -163,6 +169,14 @@ public class SysUser extends BaseModel implements Serializable {
         this.describe = describe;
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", SysUser.class.getSimpleName() + "[", "]")
@@ -177,6 +191,7 @@ public class SysUser extends BaseModel implements Serializable {
                 .add("expiredTime=" + expiredTime)
                 .add("iconUrl='" + iconUrl + "'")
                 .add("describe='" + describe + "'")
+                .add("appName='" + appName + "'")
                 .toString();
     }
 }

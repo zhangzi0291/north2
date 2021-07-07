@@ -33,6 +33,7 @@ public class Genealogy extends BaseModel {
     public void setId(String id) {
         this.id = id;
     }
+
     public String getGenealogyName() {
         return genealogyName;
     }
@@ -44,8 +45,8 @@ public class Genealogy extends BaseModel {
     @Override
     public String toString() {
         return "Genealogy{" +
-            "id=" + id +
-            ", genealogyName=" + genealogyName +
-        "}";
+                "id=" + id +
+                ", genealogyName=" + genealogyName +
+                "}";
     }
 }

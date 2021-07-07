@@ -1,10 +1,12 @@
 package com.north.statistic.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.api.R;
 import com.north.sys.service.ISysLogService;
 import com.north.sys.service.ISysUserService;
 import com.north.util.WebSocketUtil;
+import com.north.utils.SpringUtil;
 import com.north.utils.SystemUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -58,11 +60,12 @@ public class HomePageController {
         return R.ok(sysLogService.getTodayUser());
     }
 
+    @NorthWithoutLogin
     @RequestMapping("notificationTest")
     public R notificationTest() {
         WebSocketUtil.notifyAllUser("通知接口测试", "通知接口内容");
         WebSocketUtil.notifyUser(StpUtil.getLoginIdAsString(), "通知接口测试", "通知接口内容");
-        WebSocketUtil.notifyUser("2", "通知接口测试", "通知接口内容");
+        WebSocketUtil.test();
         return R.ok();
     }
 

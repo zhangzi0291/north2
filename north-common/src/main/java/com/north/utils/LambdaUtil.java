@@ -2,7 +2,6 @@ package com.north.utils;
 
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.north.sys.entity.SysDict;
 import org.apache.ibatis.reflection.property.PropertyNamer;
 
 /**
@@ -12,7 +11,7 @@ import org.apache.ibatis.reflection.property.PropertyNamer;
  */
 public class LambdaUtil {
 
-    public static <T> String getFieldName(SFunction<T,?>  function){
+    public static <T> String getFieldName(SFunction<T, ?> function) {
         return PropertyNamer.methodToProperty(LambdaUtils.resolve(function).getImplMethodName());
     }
 

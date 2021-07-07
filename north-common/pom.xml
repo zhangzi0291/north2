@@ -50,6 +50,13 @@
         </dependency>
         <!-- 添加Swagger依赖 -->
 
+        <!--json处理-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+        <!--json处理-->
 
     </dependencies>
 </project>

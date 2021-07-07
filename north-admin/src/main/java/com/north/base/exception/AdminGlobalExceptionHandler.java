@@ -56,15 +56,15 @@ public class AdminGlobalExceptionHandler {
         response.setStatus((int) ApiErrorCode.UNAUTHORIZED.getCode());
         String message = "当前会话未登录";
         if (e.getType().equals(NotLoginException.NOT_TOKEN)) {
-            message = "未提供token";
+            message = NotLoginException.NOT_TOKEN_MESSAGE;
         } else if (e.getType().equals(NotLoginException.INVALID_TOKEN)) {
-            message = "token无效";
+            message = NotLoginException.INVALID_TOKEN_MESSAGE;
         } else if (e.getType().equals(NotLoginException.TOKEN_TIMEOUT)) {
-            message = "token已过期";
+            message = NotLoginException.TOKEN_TIMEOUT_MESSAGE;
         } else if (e.getType().equals(NotLoginException.BE_REPLACED)) {
-            message = "token已被顶下线";
+            message = NotLoginException.BE_REPLACED_MESSAGE;
         } else if (e.getType().equals(NotLoginException.KICK_OUT)) {
-            message = "token已被踢下线";
+            message = NotLoginException.KICK_OUT_MESSAGE;
         }
         return R.failed(ApiErrorCode.UNAUTHORIZED, message);
     }
@@ -86,7 +86,7 @@ public class AdminGlobalExceptionHandler {
         if (result == null) {
             return R.failed(e.getMessage());
         }
-        response.setStatus((int)ApiErrorCode.ImportFieldError.getCode());
+        response.setStatus((int) ApiErrorCode.ImportFieldError.getCode());
         result.getFailWorkbook().write(response.getOutputStream());
         return null;
     }

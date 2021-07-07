@@ -29,7 +29,7 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
         SysLog log = new SysLog();
         log.setLogType(1);
         log.setUserId(StpUtil.getLoginIdAsString());
-        Object nickname = StpUtil.getSession().getAttribute("nickname");
+        Object nickname = StpUtil.getSession().get("nickname");
         if (nickname != null) {
             log.setNickname(nickname.toString());
         }
@@ -45,7 +45,7 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
         SysLog log = new SysLog();
         log.setLogType(2);
         log.setUserId(StpUtil.getLoginIdAsString());
-        Object nickname = StpUtil.getSession().getAttribute("nickname");
+        Object nickname = StpUtil.getSession().get("nickname");
         if (nickname != null) {
             log.setNickname(nickname.toString());
         }

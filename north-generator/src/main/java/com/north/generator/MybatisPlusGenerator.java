@@ -56,16 +56,16 @@ public class MybatisPlusGenerator {
         dataMap.put("requestMapping", "/sys/dict");
         dataMap.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         dataMap.put("tableInfoList", tableInfoList.get(0).getFields());
-        createVue(TEMPLATE_PATH, CLASS_PATH,tableInfoList.get(0).getControllerName()+".java","controller.ftl", dataMap);
-        createVue(TEMPLATE_PATH, CLASS_PATH,tableInfoList.get(0).getEntityName()+"ExcelService.java","excelService.ftl", dataMap);
+        createVue(TEMPLATE_PATH, CLASS_PATH, tableInfoList.get(0).getControllerName() + ".java", "controller.ftl", dataMap);
+        createVue(TEMPLATE_PATH, CLASS_PATH, tableInfoList.get(0).getEntityName() + "ExcelService.java", "excelService.ftl", dataMap);
 
-        createVue(TEMPLATE_PATH, CLASS_PATH,"sysdict.vue","page.ftl", dataMap);
+        createVue(TEMPLATE_PATH, CLASS_PATH, "sysdict.vue", "page.ftl", dataMap);
 
-        List<TableField> fieldList= tableInfoList.get(0).getFields();
-        fieldList = fieldList.subList(1,fieldList.size());
+        List<TableField> fieldList = tableInfoList.get(0).getFields();
+        fieldList = fieldList.subList(1, fieldList.size());
         dataMap.put("tableInfoList", fieldList);
 
-        createVue(TEMPLATE_PATH, CLASS_PATH,"formModal.vue","formModal.ftl", dataMap);
+        createVue(TEMPLATE_PATH, CLASS_PATH, "formModal.vue", "formModal.ftl", dataMap);
     }
 
     private static List<TableInfo> createMybatisPlus(String CLASS_PATH, String packageName, String tableName) {
@@ -111,9 +111,9 @@ public class MybatisPlusGenerator {
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
-        strategy.setTablePrefix(new String[] { "" });// 此处可以修改为您的表前缀
+        strategy.setTablePrefix(new String[]{""});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[] { tableName }); // 需要生成的表
+        strategy.setInclude(new String[]{tableName}); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
 //        //自定义实体父类
 //         strategy.setSuperEntityClass("com.north.base.BaseModel");
@@ -198,7 +198,7 @@ public class MybatisPlusGenerator {
 
     private static void createVue(String TEMPLATE_PATH, String CLASS_PATH, String tableName, String ftlName, Map<String, Object> dataMap) {
         // step1 创建freeMarker配置实例
-        Configuration configuration = new Configuration(Configuration. getVersion());
+        Configuration configuration = new Configuration(Configuration.getVersion());
         Writer out = null;
         try {
             // step2 获取模版路径
@@ -228,7 +228,7 @@ public class MybatisPlusGenerator {
         }
     }
 
-    private static List<TableInfo> createMybatisPlus(String CLASS_PATH, String packageName,String[] tableName) {
+    private static List<TableInfo> createMybatisPlus(String CLASS_PATH, String packageName, String[] tableName) {
         AutoGenerator mpg = new AutoGenerator();
         // 选择 freemarker 引擎，默认 Veloctiy
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
@@ -281,7 +281,7 @@ public class MybatisPlusGenerator {
         //自定义实体父类
         strategy.setSuperEntityClass("com.north.base.BaseModel");
         // 自定义实体，公共字段
-        strategy.setSuperEntityColumns(new String[] { "is_deleted", "revision", "created_by", "created_time", "updated_by", "update_time" });
+        strategy.setSuperEntityColumns(new String[]{"is_deleted", "revision", "created_by", "created_time", "updated_by", "update_time"});
 
         // 【实体】是否生成字段常量（默认 false）
         // public static final String ID = "test_id";

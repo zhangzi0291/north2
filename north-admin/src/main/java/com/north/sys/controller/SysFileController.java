@@ -58,7 +58,7 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
     @Operation(summary = "上传文件", description = "md5相同的文件直接返回记录")
     @RequestMapping(path = "upload", method = {RequestMethod.GET, RequestMethod.POST})
     public R<UploadDto> upload(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file, String moduleName, String relationId) throws IOException {
-        return uploadWithMd5Check(request,file,moduleName,relationId,true);
+        return uploadWithMd5Check(request, file, moduleName, relationId, true);
     }
 
 
@@ -72,7 +72,7 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
      * @throws IOException
      */
     @RequestMapping(path = "uploadWithMd5Check", method = {RequestMethod.GET, RequestMethod.POST})
-    public R<UploadDto> uploadWithMd5Check(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file, String moduleName, String relationId,Boolean checkmd5) throws IOException {
+    public R<UploadDto> uploadWithMd5Check(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file, String moduleName, String relationId, Boolean checkmd5) throws IOException {
         //校验文件md5，如果md5相同是同一个文件不需要重复保存
         String md5 = MD5.create().digestHex(file.getInputStream());
         SysFile sysFile = sysFileService.getSysFileByMD5(md5);
@@ -91,10 +91,10 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
             sysFile.setUploadTime(LocalDateTime.now());
             sysFile.setFilePath(fileName);
             sysFile.setMd5Value(md5);
-            if(StringUtils.hasLength(moduleName)) {
+            if (StringUtils.hasLength(moduleName)) {
                 sysFile.setModuleName(moduleName);
             }
-            if(StringUtils.hasLength(relationId)) {
+            if (StringUtils.hasLength(relationId)) {
                 sysFile.setRelationId(relationId);
             }
             super.addJson(sysFile);

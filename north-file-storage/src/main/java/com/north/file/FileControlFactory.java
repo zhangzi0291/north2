@@ -16,19 +16,20 @@ public class FileControlFactory {
 
     /**
      * 获取FileControlHandler
+     *
      * @param type
      * @param config FileControlHandler的配置文件，取第一个匹配的
      * @return
      */
-    public static FileControlHandler getFileControlHandler(FileControlType type,Object ... config){
+    public static FileControlHandler getFileControlHandler(FileControlType type, Object... config) {
         FileControlHandler fileControlHandler;
 
-        switch (type){
+        switch (type) {
             case LOCAL:
                 LocalConfig localConfig = null;
                 for (Object o : config) {
-                    if(o instanceof LocalConfig){
-                        localConfig = (LocalConfig)o;
+                    if (o instanceof LocalConfig) {
+                        localConfig = (LocalConfig) o;
                         break;
                     }
                 }
@@ -37,8 +38,8 @@ public class FileControlFactory {
             case OSS:
                 AliyunOssConfig ossConfig = null;
                 for (Object o : config) {
-                    if(o instanceof AliyunOssConfig){
-                        ossConfig = (AliyunOssConfig)o;
+                    if (o instanceof AliyunOssConfig) {
+                        ossConfig = (AliyunOssConfig) o;
                         break;
                     }
                 }

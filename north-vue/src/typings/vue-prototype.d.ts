@@ -15,7 +15,8 @@ declare global {
         BASE_WS_URL: string;
         websocket: WebSocket;
     }
-    interface Date{
-        Format:Function
+
+    interface Date {
+        Format: Function
     }
 }

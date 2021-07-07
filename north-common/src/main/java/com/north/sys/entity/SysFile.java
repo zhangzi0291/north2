@@ -71,7 +71,6 @@ public class SysFile extends BaseModel implements Serializable {
     private String relationId;
 
 
-
     public String getId() {
         return id;
     }

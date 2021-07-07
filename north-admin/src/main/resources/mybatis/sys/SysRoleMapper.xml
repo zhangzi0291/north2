@@ -4,7 +4,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, role_name, role_desc, describe, is_deleted, revision, created_by, created_time, updated_by, update_time
+        id
+        , role_name, role_desc, describe, is_deleted, revision, created_by, created_time, updated_by, update_time
     </sql>
 
     <select id="getSysRoleByUrl" resultType="com.north.sys.entity.SysRole">

@@ -1,7 +1,7 @@
 package com.north.genealogy.mapper;
 
-import com.north.genealogy.entity.Genealogy;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.north.genealogy.entity.Genealogy;
 
 /**
  * <p>

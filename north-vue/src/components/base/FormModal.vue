@@ -207,6 +207,9 @@ export class Ext {
     }
   },
   methods: {
+    reload() {
+      this.$forceUpdate()
+    },
     ok() {
       let data = {}
       const formData = new FormData();
@@ -243,18 +246,18 @@ export class Ext {
       this.cancelCallback()
       this.visible = false
     },
-    open(data: any) {
+    async open(data: any) {
       this.visible = true
       if (!!data.id) {
-        this.list(data.id)
+        await this.list(data.id)
         this.url = this.editUrl
       } else {
         this.url = this.addUrl
         this.data = data
       }
     },
-    list(id: String) {
-      this.$axios({
+    async list(id: String) {
+      await this.$axios({
         method: "get",
         url: this.getUrl,
         params: {

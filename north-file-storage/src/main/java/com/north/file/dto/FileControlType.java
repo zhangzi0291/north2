@@ -3,17 +3,17 @@ package com.north.file.dto;
 public enum FileControlType {
 
     //本地存储
-    LOCAL(1,"local"),
+    LOCAL(1, "local"),
 
     //OSS存储
-    OSS(2,"oss"),
+    OSS(2, "oss"),
     ;
 
     public Integer value;
 
     public String name;
 
-    FileControlType(Integer value,String name){
+    FileControlType(Integer value, String name) {
         this.value = value;
         this.name = name;
     }

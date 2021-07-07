@@ -26,7 +26,10 @@ public enum ApiErrorCode implements IErrorCode {
      * 字段校验失败
      */
     CheckFieldError(40001, "字段校验失败"),
-
+    /**
+     * 软件版本校验失败
+     */
+    CheckSoftVersionFieldError(50010, "软件版本校验失败"),
     /**
      * 导入失败，输出错误Excel
      */

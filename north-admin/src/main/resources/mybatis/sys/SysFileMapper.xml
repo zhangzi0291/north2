@@ -4,7 +4,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, file_name, original_name, file_size, file_path, upload_time, delete_time, is_deleted, revision, created_by, created_time, updated_by, update_time
+        id
+        , file_name, original_name, file_size, file_path, upload_time, delete_time, is_deleted, revision, created_by, created_time, updated_by, update_time
     </sql>
 
 </mapper>

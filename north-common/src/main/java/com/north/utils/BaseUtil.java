@@ -1,7 +1,6 @@
 package com.north.utils;
 
 import com.north.sys.dto.TreeDto;
-import com.north.sys.entity.SysResource;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,21 +18,22 @@ public class BaseUtil {
 
     /**
      * 获取树形结构<Br>
-     *     需要先构造TreeDto，并通过TreeDto的pid和id来区分层级，并指定顶级pid
+     * 需要先构造TreeDto，并通过TreeDto的pid和id来区分层级，并指定顶级pid
+     *
      * @param list
-     * @param pid 顶级pid
+     * @param pid  顶级pid
      * @param <T>
      * @return
      */
     public static <T> List<TreeDto<T>> getTreeDtoList(List<TreeDto<T>> list, String pid) {
         List<TreeDto<T>> resultList = new CopyOnWriteArrayList<>();
 
-        Map<String, List<TreeDto<T>>> map = list.stream().collect(Collectors.groupingBy(res ->res.getPid()));
+        Map<String, List<TreeDto<T>>> map = list.stream().collect(Collectors.groupingBy(res -> res.getPid()));
 
         for (TreeDto<T> p : list) {
-            map.forEach((String key , List<TreeDto<T>> value) -> {
-                if(p.getId().equals(key)){
-                    if(p.getChild()==null){
+            map.forEach((String key, List<TreeDto<T>> value) -> {
+                if (p.getId().equals(key)) {
+                    if (p.getChild() == null) {
                         p.setChild(new ArrayList<>());
                     }
                     p.getChild().addAll((Collection<? extends T>) value);

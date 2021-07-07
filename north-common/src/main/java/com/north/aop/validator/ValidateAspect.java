@@ -1,5 +1,6 @@
 package com.north.aop.validator;
 
+import com.alibaba.fastjson.JSONObject;
 import com.north.base.exception.ValidatorException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -11,8 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Northzx
@@ -78,13 +77,13 @@ public class ValidateAspect {
      * @return
      */
     private String doCheck(ValidateParam validateParam, String[] parameterNames, Object[] arguments) {
-        List<String> parameterNameList = Arrays.asList(parameterNames);
-        if (parameterNameList.contains(validateParam.parameterName())) {
-            Integer num = parameterNameList.indexOf(validateParam.parameterName());
-            Object value = arguments[num];
+        if (checkParamExite(parameterNames, validateParam.parameterName())) {
+            Object value = getParamValue(arguments, parameterNames, validateParam.parameterName());
+
             Boolean flag = validateParam.value().fun.apply(value, validateParam.express());
             if (!flag) {
-                String validateMessage = validateParam.parameterName() + validateParam.value().msg;
+                String paramName = validateParam.parameterName().contains(".") ? validateParam.parameterName().split("\\.")[1] : validateParam.parameterName();
+                String validateMessage = paramName + validateParam.value().msg;
                 if (StringUtils.hasLength(validateParam.message())) {
                     validateMessage = validateParam.message();
                 }
@@ -92,5 +91,63 @@ public class ValidateAspect {
             }
         }
         return null;
+    }
+
+    /**
+     * 检查是否存在待校验参数
+     *
+     * @param paramName
+     * @param argName
+     * @return
+     */
+    private Boolean checkParamExite(String[] paramName, String argName) {
+        Object value = null;
+        String name = argName;
+        if (argName.contains(".")) {
+            name = argName.split("\\.")[0];
+        }
+        int index = 0;
+        for (String string : paramName) {
+            if (string.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取参数的值
+     *
+     * @param arguments
+     * @param paramName
+     * @param argName
+     * @return
+     */
+    private Object getParamValue(Object[] arguments, String[] paramName, String argName) {
+        String name = argName;
+        if (argName.contains(".")) {
+            name = argName.split("\\.")[0];
+        }
+        int index = 0;
+        for (String string : paramName) {
+            if (string.equals(name)) {
+                Object value = arguments[index];
+                Boolean hasChild = argName.contains(".");
+                argName = hasChild ? argName.split("\\.")[1] : argName;
+                if (hasChild) {
+                    JSONObject jo = (JSONObject) JSONObject.toJSON(value);
+                    return jo.get(argName);
+                } else {
+                    return value;
+                }
+
+            }
+            index++;
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("sysuser".contains("."));
     }
 }

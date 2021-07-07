@@ -5,7 +5,7 @@
   <div>
     <base-page :breadcrumbs="breadcrumbs">
       <template #content>
-        <a-page-header sub-title="用户管理" title="用户">
+        <a-page-header sub-title="在线用户管理" title="用户">
           <template #extra>
             <a-button type="primary" @click="load()">刷新</a-button>
           </template>
@@ -42,6 +42,8 @@
 import {Options, Vue} from 'vue-class-component';
 import SysUserOnlineApi from "@/api/SysUserOnlineApi";
 import {createVNode} from "vue";
+import SysDictApi from "@/api/SysDictApi";
+import {AxiosResponse} from "axios";
 
 let api = new SysUserOnlineApi();
 
@@ -50,13 +52,17 @@ let api = new SysUserOnlineApi();
   components: {
   },
   data() {
+    let loginDevices: never[] = [];
+    SysDictApi.getSelect('登录设备').then((res: AxiosResponse) => {
+      loginDevices = res.data.data
+    });
     return {
       //表格加载状态
       loading: false,
       //面包屑
       breadcrumbs: [
         {name: "", icon: "HomeOutlined", href: "/home"},
-        {name: "用户管理", icon: "UserOutlined", href: "/sysuser/list"}
+        {name: "在线用户管理", icon: "UserOutlined", href: "/sysonlineuser/list"}
       ],
       //查询数据
       search: {},
@@ -64,8 +70,19 @@ let api = new SysUserOnlineApi();
       data: [],
       //表格字段
       columns: [
-        {title: '登陆名', key: 'username', dataIndex: 'username'},
+        {title: '登录名', key: 'username', dataIndex: 'username'},
         {title: '用户名', key: 'nickname', dataIndex: 'nickname', ellipsis: "true"},
+        {title: '登录设备', key: 'loginDevice', dataIndex: 'loginDevice', ellipsis: "true",
+          customRender: function (record: any) {
+            for (let dict  of loginDevices) {
+              let type = (<any>dict)
+              if(type.value == record.record.loginDevice){
+                return type.lable
+              }
+            }
+            return record.record.loginDevice
+          }
+        },
         {title: '头像', key: 'iconUrl', dataIndex: 'iconUrl', slots: {customRender: 'iconUrl'}},
         {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "180px"},
       ],

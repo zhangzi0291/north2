@@ -2,6 +2,7 @@ package com.north.genealogy.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.north.base.BaseModel;
+
 import java.time.LocalDateTime;
 
 /**
@@ -44,6 +45,7 @@ public class GenealogyPersonTimeline extends BaseModel {
     public void setId(String id) {
         this.id = id;
     }
+
     public String getPersonId() {
         return personId;
     }
@@ -51,6 +53,7 @@ public class GenealogyPersonTimeline extends BaseModel {
     public void setPersonId(String personId) {
         this.personId = personId;
     }
+
     public LocalDateTime getEventTime() {
         return eventTime;
     }
@@ -58,6 +61,7 @@ public class GenealogyPersonTimeline extends BaseModel {
     public void setEventTime(LocalDateTime eventTime) {
         this.eventTime = eventTime;
     }
+
     public String getStory() {
         return story;
     }
@@ -69,10 +73,10 @@ public class GenealogyPersonTimeline extends BaseModel {
     @Override
     public String toString() {
         return "GenealogPersonTimeline{" +
-            "id=" + id +
-            ", personId=" + personId +
-            ", eventTime=" + eventTime +
-            ", story=" + story +
-        "}";
+                "id=" + id +
+                ", personId=" + personId +
+                ", eventTime=" + eventTime +
+                ", story=" + story +
+                "}";
     }
 }
