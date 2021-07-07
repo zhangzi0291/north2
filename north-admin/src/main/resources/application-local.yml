@@ -19,8 +19,8 @@ north:
     type: local
     oss:
       endpoint: "oss-cn-hangzhou.aliyuncs.com"
-      access-key-id: "LTAI5t8uAdenGPc289oJrWSV"
-      access-key-secret: "EXHWE2LQp56pUlB0obEDuqrdzBR28Q"
+      access-key-id:
+      access-key-secret: 
       bucket-name: "north-oss"
       prefix-key: "north2"
   email:
