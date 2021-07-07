@@ -20,7 +20,7 @@ north:
     oss:
       endpoint: "oss-cn-hangzhou.aliyuncs.com"
       access-key-id:
-      access-key-secret: 
+      access-key-secret:
       bucket-name: "north-oss"
       prefix-key: "north2"
   email:
@@ -29,4 +29,4 @@ north:
     auth: true
     from: "18752015153@139.com"
     user: "18752015153@139.com"
-    pass: "Aa8897012"
+    pass: 
