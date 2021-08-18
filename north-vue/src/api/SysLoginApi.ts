@@ -9,8 +9,12 @@ const axios = app.config.globalProperties.$axios
 
 const url = {
     register: "/sysLogin/register",
+    pyToolRegister: "/smallTool/sys/register",
+    pyChangePassword: "/smallTool/sys/changePassword",
     login: "/sysLogin/login",
+    ssoLogin:"/sso-server/doLogin",
     logout: "/sysLogin/logout",
+
 
 }
 
@@ -26,6 +30,7 @@ export interface RegisterData{
 export interface LoginData{
     username: string | undefined;
     password: string | undefined;
+    redirect: string | undefined;
 }
 
 export default class SysLoginApi {
@@ -34,6 +39,20 @@ export default class SysLoginApi {
         return axios({
             method: "post",
             url: url.register,
+            data: Qs.stringify(({
+                username: registerData.username,
+                password: registerData.password,
+                nickname: registerData.nickname,
+                phone: registerData.phone,
+                email: registerData.email,
+            }))
+        })
+    }
+
+    public static pyToolRegister(registerData:RegisterData): Promise<AxiosResponse> {
+        return axios({
+            method: "post",
+            url: url.pyToolRegister,
             data: Qs.stringify(({
                 username: registerData.username,
                 password: registerData.password,
@@ -55,6 +74,18 @@ export default class SysLoginApi {
         })
     }
 
+    public static ssoLogin(loginData:LoginData): Promise<AxiosResponse> {
+        return axios({
+            method: "post",
+            url: url.ssoLogin,
+            data: Qs.stringify(({
+                username: loginData.username,
+                password: loginData.password,
+                redirect: loginData.redirect,
+            }))
+        })
+    }
+
     public static logout(): Promise<AxiosResponse> {
         return axios({
             method: 'post',
@@ -62,4 +93,21 @@ export default class SysLoginApi {
         })
     }
 
+
+    public static pyChangePassword(key:string,username: string, password: string,oldPassword: string): Promise<AxiosResponse> {
+        console.log(password)
+        password = new MD5().update(password).digest('hex')
+        oldPassword = new MD5().update(oldPassword).digest('hex')
+        console.log(password)
+        return axios({
+            method: 'post',
+            url: url.pyChangePassword,
+            data: Qs.stringify(({
+                key: key,
+                username: username,
+                password: password,
+                oldPassword: oldPassword,
+            }))
+        })
+    }
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.north.pytool.mapper.PytoolAppMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        is_deleted
+        ,
+        revision,
+        created_by,
+        created_time,
+        updated_by,
+        update_time,
+        id, soft_name, soft_version, file_id, version_update_time
+    </sql>
+
+    <select id="list" resultType="com.north.pytool.entity.PytoolApp">
+        select * from (
+        select *,rank() over (partition by soft_name order by created_time desc) as rank from pytool_app t
+        <where>
+
+            <if test="bean.softName != null and bean.softName != ''">
+                and t.soft_name like '%'||#{bean.softName}||'%'
+            </if>
+        </where>
+        ) t where t.rank = 1 and t.is_deleted = 0
+    </select>
+
+    <select id="historyList" resultType="com.north.pytool.entity.PytoolApp">
+        select *from pytool_app t
+        <where>
+            t.is_deleted = 0
+            <if test="softName != null and softName !=''">
+                and t.soft_name = #{softName}
+            </if>
+        </where>
+        order by t.created_time desc
+    </select>
+
+    <select id="getNewVersionBySoftName" resultType="com.north.pytool.entity.PytoolApp">
+        select * from (
+        select *,rank() over (partition by soft_name order by created_time desc) as rank from pytool_app t
+        where
+            t.soft_name = #{bean.softName}
+        ) t where t.rank = 1 and t.is_deleted = 0
+    </select>
+
+</mapper>

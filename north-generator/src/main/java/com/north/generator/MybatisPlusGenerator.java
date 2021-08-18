@@ -35,8 +35,8 @@ public class MybatisPlusGenerator {
     public static void main(String[] args) {
         String TEMPLATE_PATH = "src\\main\\resources\\ftl\\";
         String CLASS_PATH = "D:\\mybatis";
-        String packageName = "com.north.genealogy";
-        String[] tableName = new String[]{"genealog_person_timeline"};
+        String packageName = "com.north.pytool";
+        String[] tableName = new String[]{"pytool_app"};
 //
 //
 //

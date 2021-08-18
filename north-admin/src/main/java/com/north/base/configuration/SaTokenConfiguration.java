@@ -20,7 +20,11 @@ public class SaTokenConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new NorthCheckPermissionsInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new NorthCheckPermissionsInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/error")
+
+        ;
     }
 
 }

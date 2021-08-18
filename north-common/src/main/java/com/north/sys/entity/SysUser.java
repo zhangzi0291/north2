@@ -81,6 +81,11 @@ public class SysUser extends BaseModel implements Serializable {
      */
     private String appName;
 
+    /**
+     * 过期时间
+     */
+    private LocalDateTime lastLoginTime;
+
     public String getId() {
         return id;
     }
@@ -177,6 +182,14 @@ public class SysUser extends BaseModel implements Serializable {
         this.appName = appName;
     }
 
+    public LocalDateTime getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(LocalDateTime lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", SysUser.class.getSimpleName() + "[", "]")
@@ -192,6 +205,7 @@ public class SysUser extends BaseModel implements Serializable {
                 .add("iconUrl='" + iconUrl + "'")
                 .add("describe='" + describe + "'")
                 .add("appName='" + appName + "'")
+                .add("lastLoginTime=" + lastLoginTime)
                 .toString();
     }
 }

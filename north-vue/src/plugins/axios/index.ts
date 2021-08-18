@@ -40,17 +40,23 @@ var install = function install(app: App) {
     //错误统一处理
     axios.interceptors.response.use(response => {
         if (response.data.code == 500 || response.data.code == 403) {
-            app.config.globalProperties.$message.error(response.config.url + " " + response.data.msg)
+            if(window.isDev){
+                app.config.globalProperties.$message.error(response.config.url + " " + response.data.msg)
+            }else {
+                app.config.globalProperties.$message.error(response.data.msg)
+            }
             throw new Error(response.config.url + " " + response.data.msg)
         }
         return response;
     }, error => {
+        console.log(error)
         if (error.response == undefined) {
             app.config.globalProperties.$message.error("服务器无响应")
         }
         if (!error.response) {
             return Promise.reject(error);
         }
+        console.log(error.response.status)
         if (error.response.status === 401) {
             return router.push({path: '/login',})
         } else if (error.response.status === 403) {

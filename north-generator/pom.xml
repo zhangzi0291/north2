@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
-            <version>${mybatis.plus.version}</version>
+            <version>${mybatis.plus.generator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

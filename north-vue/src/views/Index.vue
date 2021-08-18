@@ -98,6 +98,14 @@
                       用户名：{{ user.nickname }}
                       </a-menu-item>
                       <a-menu-divider/>
+                      <a-menu-item @click="openChangeUserInfo()">
+                        <a-button shape="circle" type="link">
+                          个人信息
+                          <template #icon>
+                            <LockOutlined/>
+                          </template>
+                        </a-button>
+                      </a-menu-item>
                       <a-menu-item @click="openChangePassword()">
                         <a-button shape="circle" type="link">
                           修改密码
@@ -136,6 +144,7 @@
     </a-layout>
 
     <change-password ref="cp"></change-password>
+    <change-user-info ref="cui"></change-user-info>
 
 
   </a-layout>
@@ -148,6 +157,7 @@ import nMenu from '@/components/base/menu/n-menu.vue'
 import SysResourceApi from '@/api/SysResourceApi'
 import BaseApi from '@/api/BaseApi'
 import ChangePassword from "@/views/home/ChangePassword.vue";
+import ChangeUserInfo from "@/views/home/ChangeUserInfo.vue";
 import SysLoginApi from "@/api/SysLoginApi";
 import {createVNode} from "vue";
 import messages from '@/protobuf/NotificationMessage_pb'
@@ -157,7 +167,7 @@ const sysApi = new SysResourceApi()
 @Options({
   name: 'Index',
   components: {
-    nMenu, ChangePassword
+    nMenu, ChangePassword, ChangeUserInfo
   },
   data() {
     return {
@@ -192,6 +202,9 @@ const sysApi = new SysResourceApi()
     },
     openChangePassword() {
       this.$refs.cp.open()
+    },
+    openChangeUserInfo(){
+      this.$refs.cui.open(this.user.userId)
     },
     logout() {
       this.$modal.confirm({

@@ -12,7 +12,7 @@ import org.apache.ibatis.reflection.property.PropertyNamer;
 public class LambdaUtil {
 
     public static <T> String getFieldName(SFunction<T, ?> function) {
-        return PropertyNamer.methodToProperty(LambdaUtils.resolve(function).getImplMethodName());
+        return PropertyNamer.methodToProperty(LambdaUtils.extract(function).getImplMethodName());
     }
 
 }

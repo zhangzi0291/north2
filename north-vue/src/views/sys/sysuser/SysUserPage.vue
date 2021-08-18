@@ -26,7 +26,7 @@
           </a-form>
         </a-row>
         <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 500 }"
+                 :scroll="{ x: 900, y: 500 }"  :pagination="page" @change="tableChange"
                  bordered style="width: 100%">
           <template #expandedRowRender="{ record }">
             <a-row>
@@ -38,7 +38,10 @@
               </a-col>
             </a-row>
             <a-row>
-              <a-col :span="24">
+              <a-col :span="12">
+                过期时间：{{ record.expiredTime }}
+              </a-col>
+              <a-col :span="12">
                 描述：{{ record.describe }}
               </a-col>
             </a-row>
@@ -125,6 +128,7 @@ let dictApi = new SysDictApi();
       //表格加载状态
       loading: false,
       //接口url
+      // page:{current: 1},
       url: {
         get: "/sysUser/get",
         add: "/sysUser/addWithRole",
@@ -145,7 +149,8 @@ let dictApi = new SysDictApi();
         {title: '登录名', key: 'username', dataIndex: 'username'},
         {title: '用户名', key: 'nickname', dataIndex: 'nickname', ellipsis: "true"},
         {title: '状态', key: 'status', dataIndex: 'status'},
-        {title: '过期时间', key: 'expiredTime', dataIndex: 'expiredTime'},
+        // {title: '过期时间', key: 'expiredTime', dataIndex: 'expiredTime', width: "180px"},
+        {title: '最后登录', key: 'lastLoginTime', dataIndex: 'lastLoginTime', width: "180px"},
         {title: '头像', key: 'iconUrl', dataIndex: 'iconUrl', slots: {customRender: 'iconUrl'}},
         {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "180px"},
       ],
@@ -230,8 +235,17 @@ let dictApi = new SysDictApi();
           current: res.data.data.current,
           total: res.data.data.total
         }
+        console.log(this.page)
         this.loading = false
       })
+    },
+    tableChange(page:any, filters:any, sorter:any){
+      this.page = page
+      this.sort = {
+        field:sorter.field,
+        order:sorter.order
+      }
+      this.load()
     },
     openAdd(parentId: string) {
       this.$refs.form.open({parentId: parentId})

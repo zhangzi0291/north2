@@ -14,8 +14,8 @@
       </template>
     </a-table>
     <template #footer>
-      <a-button type="primary" @click="ok">根目录</a-button>
-      <a-button>取消</a-button>
+      <a-button type="primary" @click="okroot">根目录</a-button>
+      <a-button @click="cancel">取消</a-button>
       <a-button type="primary" @click="ok">确定</a-button>
     </template>
   </a-modal>
@@ -89,9 +89,16 @@ let sysApi = new SysResourceApi()
   },
   methods: {
     okroot(){
-      this.data.parentId = this.selectedRowKeys[0]
-      this.data.resources = this.selectedRowKeys
+      this.visible = false
+      this.data.parentId = '-1'
+      this.data.resources = ['-1']
       let selectData: any[] = []
+      selectData.push(
+          {
+            id : '-1',
+            resourceName : '根'
+          }
+      )
       this.okCallback(this.data, selectData)
     },
     ok() {
@@ -110,6 +117,7 @@ let sysApi = new SysResourceApi()
           selectData.push(result[0])
         }
       })
+      console.log(selectData)
       this.okCallback(this.data, selectData)
     },
     getResourceAndChild(resourceList: any) {
@@ -138,6 +146,7 @@ let sysApi = new SysResourceApi()
       this.data = data
       this.id = data.id
       this.selectedRowKeys = data.resources
+
     },
 
   },

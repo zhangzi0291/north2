@@ -100,6 +100,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             StpUtil.getSession().set("iconUrl", user.getIconUrl());
         }
         StpUtil.getSession().set("loginDevice", StpUtil.getLoginDevice());
+        //更新最后登陆时间
+        {
+            SysUser u = new SysUser();
+            u.setId(user.getId());
+            u.setLastLoginTime(LocalDateTime.now());
+            this.updateById(u);
+        }
         //记录登陆日志
         sysLogService.addLoginLog();
     }

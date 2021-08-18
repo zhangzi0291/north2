@@ -10,6 +10,7 @@ const axios = app.config.globalProperties.$axios
 const url = {
     list: "/sysUser/list",
     all: "/sysUser/all",
+    get: "/sysUser/get",
     add: "/sysUser/add",
     del: "/sysUser/del",
     checkRoleName: "/sysUser/checkRoleName",
@@ -23,13 +24,24 @@ const url = {
 }
 
 
-export default class SysRoleApi {
+export default class SysUserApi {
 
     public list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.list,
             params: Object.assign(data, page, sort)
+        })
+    }
+
+    public get(id:string): Promise<AxiosResponse> {
+        console.log(id)
+        return axios({
+            method: 'get',
+            url: url.get,
+            params: {
+                id: id
+            }
         })
     }
 
@@ -68,14 +80,16 @@ export default class SysRoleApi {
         })
     }
 
-    public changePassword(userId: string, password: string): Promise<AxiosResponse> {
+    public changePassword(userId: string, password: string,oldPassword: string): Promise<AxiosResponse> {
         password = new MD5().update(password).digest('hex')
+        oldPassword = new MD5().update(oldPassword).digest('hex')
         return axios({
             method: 'post',
             url: url.changePassword,
             data: Qs.stringify(({
                 userId: userId,
-                password: password
+                password: password,
+                oldPassword: oldPassword,
             }))
         })
     }
@@ -102,11 +116,13 @@ export default class SysRoleApi {
         })
     }
 
-    public checkPassword(userId: string, password?: string): Promise<AxiosResponse> {
+    public checkPassword(userId: string, password: string,username?:string): Promise<AxiosResponse> {
+        password = new MD5().update(password).digest('hex')
         return axios({
             method: 'get',
             url: url.checkPassword,
             params: {
+                username: username,
                 userId: userId,
                 password: password
             }

@@ -48,7 +48,7 @@
         <!--  上传文件  -->
         <a-form-item v-else-if="canEdit(item.key) && item.type == 'File'" :label="item.title" :name="item.key">
           <a-upload :before-upload="beforeUpload" :file-list="fileList[item.key]" @change="handleChange($event, item)" :customRequest="customRequest">
-            <a-button v-if="fileList.length < item.ext.fileNum">
+            <a-button v-if="fileList[item.key].length  < item.ext.fileNum">
               <upload-outlined></upload-outlined>
               上传
             </a-button>
@@ -193,6 +193,12 @@ export class Ext {
         return []
       }
     },
+    init: {
+      type: Function,
+      default: () => {
+        // console.log("init")
+      }
+    },
     okCallback: {
       type: Function,
       default: (res: AxiosResponse) => {
@@ -255,6 +261,7 @@ export class Ext {
         this.url = this.addUrl
         this.data = data
       }
+      this.init()
     },
     async list(id: String) {
       await this.$axios({
@@ -294,7 +301,7 @@ export class Ext {
 
     },
     onDateTimeOk(date: Moment, item: ModalField) {
-      this.data[item.key] = date.toDate()
+      this.data[item.key] = date.toDate().Format('yyyy-MM-dd hh:mm:ss')
     },
     loadImage(file: any) {
       return new Promise((resolve, reject) => {

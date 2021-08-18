@@ -27,6 +27,6 @@ north:
     host: "smtp.139.com"
     port: 25
     auth: true
-    from: "18752015153@139.com"
-    user: "18752015153@139.com"
+    from: 
+    user: 
     pass: 

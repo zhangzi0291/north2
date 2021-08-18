@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class EncryptResponseBodyAspect {
 
-    @Pointcut(value = "@annotation(com.north.aop.encrypt.EncryptResponseBody)")
+    @Pointcut(value = "@annotation(com.north.aop.encrypt.EncryptResponseBody) & com.north.base.api.R com.north..*.*(..)")
     public void access() {
 
     }
@@ -40,12 +40,11 @@ public class EncryptResponseBodyAspect {
         } catch (Throwable throwable) {
             throw throwable;
         }
-        AES aes = new AES(Mode.CBC, Padding.ZeroPadding, Constant.AES_KEY.getBytes(StandardCharsets.UTF_8), Constant.AES_IV.getBytes(StandardCharsets.UTF_8));
-//        System.out.println(aes.encryptBase64(JSON.toJSONString(result)));
-//        System.out.println(aes.encryptHex(JSON.toJSONString(result)));
-
-        String resultBase64 = aes.encryptBase64(JSON.toJSONString(result.getData()));
-        result.setData(resultBase64);
+        if(result.getData()!=null) {
+            AES aes = new AES(Mode.CBC, Padding.ZeroPadding, Constant.AES_KEY.getBytes(StandardCharsets.UTF_8), Constant.AES_IV.getBytes(StandardCharsets.UTF_8));
+            String resultBase64 = aes.encryptBase64(JSON.toJSONString(result.getData()));
+            result.setData(resultBase64);
+        }
         return result;
     }
 }

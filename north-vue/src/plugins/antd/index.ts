@@ -5,11 +5,7 @@ import 'ant-design-vue/dist/antd.css';
 
 
 var install = function install(app: App) {
-    // var icons = {
-    //   'user-outlined':UserOutlined,
-    //   'menu-unfold-outlined':MenuUnfoldOutlined,
-    //   'menu-fold-outlined':MenuFoldOutlined,
-    // }
+    let iconName: string[] = []
     Object.keys(icons).forEach((key) => {
         app.component(key, icons[key])
     })

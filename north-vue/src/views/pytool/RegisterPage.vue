@@ -20,28 +20,14 @@
 <template>
 
   <a-layout style="height:100%" @keyup.enter="keydown">
-    <a-layout-header class="title">{{ title }}</a-layout-header>
+<!--    <a-layout-header class="title">{{ title }}</a-layout-header>-->
     <a-layout-content class="content">
-      <a-card :title="'登录'" style="width: 450px">
-<!--        <template #extra>-->
-<!--          <a-button type="link" @click="changeBox">{{ changeTitle }}</a-button>-->
-<!--        </template>-->
+      <a-card :title="'注册'" style="width: 450px">
+        <template #extra>
+          <a-button type="link" @click="open">客户端下载</a-button>
+        </template>
 
-        <a-form v-if="isLogin" ref="loginForm" v-bind="layout" :model="loginData" :rules="loginRules" hideRequiredMark>
-          <a-form-item label="用户名" name="username">
-            <a-input v-model:value="loginData.username"/>
-          </a-form-item>
-          <a-form-item label="密码" name="password">
-            <a-input-password v-model:value="loginData.password" autocomplete="off" type="password"/>
-          </a-form-item>
-          <a-form-item :wrapper-col="{ span: 24 }">
-            <div class="button-group">
-              <a-button type="primary" @click="login">登录</a-button>
-            </div>
-          </a-form-item>
-        </a-form>
-
-        <a-form v-else ref="registerForm" v-bind="layout" :model="registerData" :rules="registerRules" hideRequiredMark>
+        <a-form ref="registerForm" v-bind="layout" :model="registerData" :rules="registerRules" hideRequiredMark>
           <a-form-item label="用户名" name="username">
             <a-input v-model:value="registerData.username"/>
           </a-form-item>
@@ -68,7 +54,9 @@
 
     </a-layout-content>
     <a-layout-footer class="footer">
-
+      <a-modal :onCancel="cancel" :onOk="ok" :title="'说明'" :visible="visible" :width="720">
+        <div v-html='appText'></div>
+      </a-modal>
     </a-layout-footer>
   </a-layout>
 
@@ -83,13 +71,15 @@ import BaseApi from "@/api/BaseApi";
 const MD5 = require('md5.js')
 
 @Options({
-  name: 'Login',
+  name: 'register',
   data() {
     return {
       url: {
         login: "/sysLogin/login"
       },
-      isLogin: true,
+      visible : false,
+      appText: window.appText,
+      isLogin: false,
       loginData: {},
       registerData: {},
       tmpPwd: "",
@@ -133,48 +123,28 @@ const MD5 = require('md5.js')
   methods: {
     keydown(){
       if(this.isLogin){
-        this.login()
       }else {
         this.register()
       }
     },
-    login() {
-      this.$refs.loginForm.validate().then((nameList: NamePath[]) => {
-        this.tmpPwd = this.loginData.password;
-        this.loginData.password = new MD5().update(this.loginData.password).digest('hex');
-        let data: LoginData = this.loginData
-        SysLoginApi.login(data).then((res: AxiosResponse) => {
-          this.$message.success("登录成功")
-          this.loginData.password = this.tmpPwd;
-          let user = {
-            userId: res.data.data.user.id,
-            username: res.data.data.user.username,
-            nickname: res.data.data.user.nickname,
-            iconUrl: res.data.data.user.iconUrl,
-          }
-          BaseApi.setUserByStorage(user)
-          BaseApi.setTokenByStorage(res.data.data.token)
-          BaseApi.setPermissionsByStorage(res.data.data.permissions)
-          BaseApi.setRolesByStorage(res.data.data.roles)
-
-          // document.cookie="satoken="+res.data.data.token
-          this.$router.push({path: '/',})
-        }).catch(() => {
-          this.loginData.password = this.tmpPwd;
-        });
-      })
-    },
     register() {
       this.$refs.registerForm.validate().then((nameList: NamePath[]) => {
         let data: RegisterData = this.registerData
-        SysLoginApi.register(data).then((res: AxiosResponse) => {
+        SysLoginApi.pyToolRegister(data).then((res: AxiosResponse) => {
           this.isLogin = true
           this.$message.success("注册成功")
+          this.registerData={}
         })
       })
     },
-    changeBox() {
-      this.isLogin = !this.isLogin
+    open(){
+      this.visible = true
+    },
+    cancel() {
+      this.visible = false
+    },
+    ok() {
+      this.visible = false
     },
   },
   created() {

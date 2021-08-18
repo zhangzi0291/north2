@@ -44,8 +44,7 @@ let api = new SysUserApi();
           {required: true, type: 'string', trigger: 'blur', message: "旧密码不可为空"},
           {
             validator: (rule: any, value: any, callback: any) => {
-              const password = new MD5().update(value).digest('hex')
-              api.checkPassword(this.userId, password).then(res => {
+              api.checkPassword(this.userId, value).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -78,8 +77,7 @@ let api = new SysUserApi();
   },
   methods: {
     ok() {
-      const password = new MD5().update(this.data.newPassword).digest('hex')
-      api.changePassword(this.userId, password).then((res: AxiosResponse) => {
+      api.changePassword(this.userId, this.data.newPassword,this.data.oldPassword).then((res: AxiosResponse) => {
         this.$message.success("操作成功")
         this.visible = false
       });

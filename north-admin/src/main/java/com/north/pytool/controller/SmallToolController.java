@@ -1,11 +1,7 @@
 package com.north.pytool.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.crypto.Mode;
-import cn.hutool.crypto.Padding;
-import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.MD5;
-import cn.hutool.crypto.symmetric.AES;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.north.aop.encrypt.DecryptParam;
@@ -18,6 +14,8 @@ import com.north.base.Constant;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
 import com.north.constant.DeviceTypeEnum;
+import com.north.msg.service.impl.EmailMsgService;
+import com.north.pytool.service.IPytoolAppService;
 import com.north.sys.controller.SysUserController;
 import com.north.sys.entity.SysRole;
 import com.north.sys.entity.SysUser;
@@ -27,8 +25,11 @@ import com.north.sys.service.ISysUserService;
 import com.north.util.PasswordUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,9 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Northzx
@@ -46,6 +46,7 @@ import java.util.Map;
  * @since 2021-07-05
  */
 @Tag(name = "small-tool-login-controller 小工具登陆相关")
+@NorthWithoutLogin
 @RestController
 @RequestMapping("smallTool")
 public class SmallToolController {
@@ -58,6 +59,12 @@ public class SmallToolController {
     private ISysRoleService sysRoleService;
     @Resource
     private ISysUserRoleService sysUserRoleService;
+    @Resource
+    private RedissonClient redissonClient;
+    @Resource
+    private EmailMsgService emailMsgService;
+    @Resource
+    private IPytoolAppService pytoolAppService;
 
     /**
      * 注册
@@ -66,10 +73,9 @@ public class SmallToolController {
      * @param roleIds
      * @return
      */
-    @NorthWithoutLogin
     @Transactional
     @Operation(summary = "注册", description = "注册")
-        @RequestMapping(path = "register", method = RequestMethod.POST)
+    @RequestMapping(path = "sys/register", method = RequestMethod.POST)
     @ValidateParams({
             @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "sysUser.username"),
             @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "sysUser.password"),
@@ -116,7 +122,6 @@ public class SmallToolController {
      */
 
     @EncryptResponseBody
-    @NorthWithoutLogin
     @Operation(summary = "登陆", description = "登陆")
     @RequestMapping(path = "sys/login", method = RequestMethod.POST)
     @ValidateParams({
@@ -124,9 +129,47 @@ public class SmallToolController {
             @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "password"),
             @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "softVersino"),
     })
-    public R login(String username, @DecryptParam String password, String softVersino) {
+    public R login(String username, @DecryptParam String password, String softVersino,String softName) {
+
         //校验软件版本
         if (!Constant.PY_SMALL_TOOL_SOFTVERSION.equals(softVersino)) {
+            return R.failed(ApiErrorCode.CheckSoftVersionFieldError, "不是最新版本，请更新");
+        }
+        //校验软件名称
+        if (!Constant.PY_SMALL_TOOL_SOFTNAME.equals(softName)) {
+            return R.failed(ApiErrorCode.CheckSoftVersionFieldError, "不存在的软件，请更新");
+        }
+        //检查密码是否可以登陆
+        SysUser sysUser = sysUserService.checkCanUserLogin(username, password);
+        //获取角色返回
+        List<String> roles = sysUserService.getRoleList(sysUser.getId());
+        //获取权限返回
+        List<String> permissions = sysUserService.getPermissionLis(sysUser.getId());
+
+        //登录,保持30天
+        sysUserService.login(sysUser, DeviceTypeEnum.PY_SMALL_TOOL.getValue(), 2592000L);
+
+        Map<String, Object> result = new HashMap<>();
+        sysUser.setPassword(null);
+        result.put("user", sysUser);
+        result.put("tokenInfo", StpUtil.getTokenInfo());
+        result.put("roles", roles);
+        result.put("permissions", permissions);
+        return R.ok(result);
+    }
+
+    @EncryptResponseBody
+    @Operation(summary = "登陆", description = "登陆")
+    @RequestMapping(path = "sys/loginv2", method = RequestMethod.POST)
+    @ValidateParams({
+            @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "username"),
+            @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "password"),
+            @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "softVersion"),
+            @ValidateParam(value = ValidatorEnum.NOT_EMPTY, parameterName = "softName"),
+    })
+    public R loginv2(String username, @DecryptParam String password, String softVersion,String softName) {
+        //校验软件版本
+        if (!pytoolAppService.checkSoft(softName,softVersion)) {
             return R.failed(ApiErrorCode.CheckSoftVersionFieldError, "不是最新版本，请更新");
         }
         //检查密码是否可以登陆
@@ -148,15 +191,47 @@ public class SmallToolController {
         return R.ok(result);
     }
 
-    public static void main(String[] args) {
-//        String text = "hP4V6pgH35NRqyNK0TSYUQ==";
-        String text = "2iGSkV2Rq9em8FCBP2+SI5Wy0Z9Kw9epj2Xx91+w7aowIidgDMVEtodQ/EXhxYwCNwlT1dphz5O7x4ig0xdNncAyoICSNnb89Uu5KnAHPMMxAADt15iS5wm2tbg0/ub91wP0/yArJlKo95nzJl/YKszcRjmDfB24CeywxnT/Mx+IzcbLAWWt4SAssUBidEAXDLG+8KRtU1WwvU1Wm/ngbRGT4jyOaSTyot3MQBy10y0TDo78c5JknkxL/TRg/4eWwWQmyxQZNrU362bVFv7tPzNjnIaFxTbs5PZ8sN0PGm0QHzYsG3gyeVglhsC0BLCSRp3s6B0qoAjRMZF4qo4ktO62/ytdwTOlpAyqm6ZjbjMoVLv1XJdyaEjeP5OXGoaE1es+XLQ1fw7Xnq0shhwCjuDlLqDbYIRoJZ9AAMSS9E+t/I7y0dNhVj6tgSSb2818y45Biir3spHpdLqELgrFgKZ6+5OoxsnjH/nqH00oEYfVfMe4wuGe58mP/sz3zRAc2BTqw71u2fEq9TfJcdhK91Euo9oO2WAyPMQRcAB9efwEalyJA6So5NyIpGNA1Sof+VII24gujsEzPKeGbv22MXL4lQKGcqx31YmMv73c/r1S5nKUzFt4Qu1xnGP6yxxmd6i/SV2jkQ2bYfn0hCa1+1TwSRf4AzWBgaa3nOocpxFOIaDaCSyyhfVZgGrZXhTvckdbEj7j9oPDMwO2cmLLnz1hDqn/JNS3Yd0XLhcvI3nPGmHV7LusAaKTFVGlDr/0T6B/VAgJfTW6ozYd/jCPRqiYpoO6mmppLCvEVi6bXbM=";
+    @Operation(summary = "修改密码", description = "不需要登录")
+    @RequestMapping(path = "sys/changePassword", method = RequestMethod.POST)
+    public R changePasswordWithoutLogin(String key, String username, String password, String oldPassword) {
+        if(!StringUtils.hasLength(key)){
+            return R.failed("不可修改");
+        }
+        RBucket<String> bucket = redissonClient.getBucket(key);
+        if (!StringUtils.hasLength(bucket.get())) {
+            return R.failed("不可修改");
+        }
+        if(!bucket.get().equals(username)){
+            return R.failed("用户名不匹配");
+        }
+        QueryWrapper<SysUser> qw = Wrappers.query();
+        qw.lambda().eq(SysUser::getUsername, username);
+        SysUser user = sysUserService.getOne(qw);
+        R r = sysUserController.changePassword(user.getId(), password, oldPassword);
+        if (ApiErrorCode.SUCCESS.getCode() == r.getCode()) {
+            bucket.delete();
+        }
+        return r;
+    }
 
+    @Operation(summary = "发送修改密码的邮件", description = "")
+    @RequestMapping(path = "sys/sendChangePassword", method = RequestMethod.POST)
+    public R sendChangePassword(String username) {
+        QueryWrapper<SysUser> qw = Wrappers.query();
+        qw.lambda().eq(SysUser::getUsername, username);
+        SysUser user = sysUserService.getOne(qw);
+        if (user == null) {
+            R.failed("用户不存在");
+        }
+        String key = UUID.randomUUID().toString();
+        //15分钟内可以修改密码
+        RBucket<String> bucket = redissonClient.getBucket(key);
+        bucket.set(username);
+        bucket.expire(15, TimeUnit.MINUTES);
 
-        String key = "howsoaestpyrcnef";
-        String iv = "8145933630441549";
-        AES aes = new AES(Mode.CBC, Padding.ZeroPadding,key.getBytes(StandardCharsets.UTF_8),iv.getBytes(StandardCharsets.UTF_8));
-        String r = aes.decryptStr(text);
-        System.out.println(r);
+        String url = Constant.PY_SMALL_TOOL_WEB_URL + "/pytool/changepwd?key=" + key;
+        String[] sendList = new String[]{user.getEmail()};
+        emailMsgService.sendMsg(Arrays.asList(sendList.clone()), "修改密码", "修改密码地址：" + url +" \r\n 地址15分钟内有效");
+        return R.ok("发送成功，15分钟内可以修改密码");
     }
 }

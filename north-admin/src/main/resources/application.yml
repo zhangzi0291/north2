@@ -31,6 +31,24 @@ sa-token:
   is-share: true
   # token风格
   token-style: uuid
+  sso:
+    authUrl: http://127.0.0.1/sso-server/auth
+  oauth2:
+    is-code: true
+    is-implicit: true
+    is-password: true
+    is-client: true
+  alone-redis:
+    # Redis数据库索引（默认为0）
+    database: 2
+    # Redis服务器地址
+    host: 127.0.0.1
+    # Redis服务器连接端口
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    password:
+    # 连接超时时间（毫秒）
+    timeout: 5000
 
 #swaggerui配置
 springdoc:
@@ -46,5 +64,5 @@ mybatis-plus:
   type-handlers-package: com.north.base.typehandler
   global-config:
     db-config:
-      id-type: id_worker_str
+      id-type: ASSIGN_ID
       logic-delete-field: isDeleted

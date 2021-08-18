@@ -22,7 +22,7 @@
           </a-form>
         </a-row>
         <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 500 }"
+                 :scroll="{ x: 900, y: 500 }" :pagination="page" @change="tableChange"
                  bordered>
           <template #operation="{ record }">
             <a-space>
@@ -157,6 +157,14 @@ let api = new SysRoleApi();
         }
         this.loading = false
       })
+    },
+    tableChange(page:any, filters:any, sorter:any){
+      this.page = page
+      this.sort = {
+        field:sorter.field,
+        order:sorter.order
+      }
+      this.load()
     },
     openAdd(parentId: string) {
       this.$refs.form.open({parentId: parentId})

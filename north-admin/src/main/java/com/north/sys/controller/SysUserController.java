@@ -8,7 +8,9 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.BaseController;
 import com.north.base.Constant;
 import com.north.base.api.ApiErrorCode;
@@ -108,7 +110,7 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         //先保存头像
         if (!CollectionUtils.isEmpty(files)) {
             try {
-                UploadDto dto = saveFile(request, files.get(0));
+                UploadDto dto = sysFileController.saveFile(request, files.get(0));
                 bean.setIconUrl(dto.getDownloadUrl());
             } catch (IOException e) {
                 throw new InsertFailedException("保存图片失败");
@@ -146,7 +148,7 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         //先保存头像
         if (!CollectionUtils.isEmpty(files)) {
             try {
-                UploadDto dto = saveFile(request, files.get(0));
+                UploadDto dto = sysFileController.saveFile(request, files.get(0));
                 bean.setIconUrl(dto.getDownloadUrl());
             } catch (IOException e) {
                 throw new UpdateFailedException("保存图片失败");
@@ -210,9 +212,19 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
      * @param password 密码为明文密码md5编码之后的值
      * @return
      */
+    @NorthWithoutLogin
     @Operation(summary = "检查密码", description = "检查用户ID对应的密码是否正确")
     @RequestMapping(path = "checkPassword", method = RequestMethod.GET)
-    public R checkPassword(String userId, String password) {
+    public R checkPassword(String userId, String password, String username) {
+        if(StringUtils.hasLength(username)){
+            QueryWrapper<SysUser> qw = Wrappers.query();
+            qw.lambda().eq(SysUser::getUsername, username);
+            SysUser user = sysUserService.getOne(qw);
+            if(user == null){
+                return R.failed("用户不存在");
+            }
+            userId = user.getId();
+        }
         if (!StringUtils.hasLength(userId)) {
             userId = StpUtil.getLoginIdAsString();
         }
@@ -231,12 +243,17 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
      */
     @Operation(summary = "修改密码", description = "修改用户对应的密码")
     @RequestMapping(path = "changePassword", method = RequestMethod.POST)
-    public R changePassword(String userId, String password) {
+    public R changePassword(String userId, String password,String oldPassword) {
+        R r = checkPassword(userId,oldPassword,null);
+        if (r.getCode() != ApiErrorCode.SUCCESS.getCode()) {
+            return R.failed("旧密码错误");
+        }
         if (!StringUtils.hasLength(userId)) {
             userId = StpUtil.getLoginIdAsString();
         }
         SysUser user = new SysUser();
         user.setId(userId);
+        password = PasswordUtil.encodePassword(password);
         user.setPassword(password);
         return this.editJson(user);
     }
@@ -257,19 +274,6 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         password = PasswordUtil.encodePassword(password);
         user.setPassword(password);
         return this.editJson(user);
-    }
-
-    /**
-     * 调用saveFile接口保存上传的文件
-     *
-     * @param request
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    private UploadDto saveFile(HttpServletRequest request, MultipartFile file) throws IOException {
-        R<UploadDto> r = sysFileController.upload(request, file, Constant.SYS_MODULE_NAME, null);
-        return r.getData();
     }
 
     /**
@@ -331,7 +335,11 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
 
     @RequestMapping("kickUser")
     public R kickUser(String id) {
-        WebSocketUtil.notifyUser(id, "下线", "您被管理员踢下线了");
+        try {
+            WebSocketUtil.notifyUser(id, "下线", "您被管理员踢下线了");
+        } catch (Exception e){
+            logger.warn("WS下线消息推送失败",e);
+        }
         StpUtil.logoutByLoginId(id);
         return R.ok();
     }

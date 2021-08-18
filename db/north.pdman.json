@@ -361,6 +361,12 @@
               "chnname": "应用名称"
             },
             {
+              "name": "last_login_time",
+              "type": "DateTime",
+              "remark": "",
+              "chnname": "最后登陆时间"
+            },
+            {
               "name": "describe",
               "type": "MiddleString",
               "remark": "",
@@ -1716,6 +1722,149 @@
         "edges": []
       },
       "associations": []
+    },
+    {
+      "name": "pytool",
+      "chnname": "py小工具",
+      "entities": [
+        {
+          "title": "pytool_app",
+          "fields": [
+            {
+              "name": "id",
+              "type": "IdOrKey",
+              "remark": "",
+              "chnname": "ID",
+              "pk": true,
+              "notNull": true
+            },
+            {
+              "name": "soft_name",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "软件名称"
+            },
+            {
+              "name": "soft_version",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "软件版本"
+            },
+            {
+              "name": "file_id",
+              "type": "IdOrKey",
+              "remark": "",
+              "chnname": "文件ID"
+            },
+            {
+              "name": "version_update_time",
+              "type": "DateTime",
+              "remark": "",
+              "chnname": "版本更新时间",
+              "defaultValue": "now()"
+            },
+            {
+              "name": "is_deleted",
+              "type": "Integer",
+              "remark": "是否删除,0：未删除;1：已删除",
+              "chnname": "是否删除",
+              "relationNoShow": true,
+              "defaultValue": "0"
+            },
+            {
+              "name": "revision",
+              "type": "Integer",
+              "remark": "",
+              "chnname": "乐观锁",
+              "relationNoShow": true,
+              "defaultValue": "1"
+            },
+            {
+              "name": "created_by",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "创建人",
+              "relationNoShow": true
+            },
+            {
+              "name": "created_time",
+              "type": "DateTime",
+              "remark": "",
+              "chnname": "创建时间",
+              "relationNoShow": true,
+              "defaultValue": "now()"
+            },
+            {
+              "name": "updated_by",
+              "type": "ShortString",
+              "remark": "",
+              "chnname": "更新人",
+              "relationNoShow": true
+            },
+            {
+              "name": "update_time",
+              "type": "DateTime",
+              "remark": "",
+              "chnname": "更新时间",
+              "relationNoShow": true,
+              "defaultValue": "now()"
+            }
+          ],
+          "indexs": [],
+          "headers": [
+            {
+              "fieldName": "chnname",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "name",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "type",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "dataType",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "remark",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "pk",
+              "relationNoShow": false
+            },
+            {
+              "fieldName": "notNull",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "autoIncrement",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "defaultValue",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "relationNoShow",
+              "relationNoShow": true
+            },
+            {
+              "fieldName": "uiHint",
+              "relationNoShow": true
+            }
+          ],
+          "chnname": "软件及版本"
+        }
+      ],
+      "graphCanvas": {
+        "nodes": [],
+        "edges": []
+      },
+      "associations": []
     }
   ],
   "dataTypeDomains": {
@@ -2094,7 +2243,7 @@
             "type": "DATE"
           },
           "PostgreSQL": {
-            "type": "DATE"
+            "type": "timestamp"
           }
         }
       },

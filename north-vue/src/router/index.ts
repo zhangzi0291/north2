@@ -1,26 +1,38 @@
-import {createRouter, createWebHashHistory} from 'vue-router'
+import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 
-var About = () => import(/* webpackChunkName: "About" */ '@/views/About.vue')
-var Index = () => import(/* webpackChunkName: "Index" */ '@/views/Index.vue')
-var Home = () => import(/* webpackChunkName: "Home" */ '@/views/home/HomePage.vue')
+const About = () => import(/* webpackChunkName: "About" */ '@/views/About.vue')
+const Index = () => import(/* webpackChunkName: "Index" */ '@/views/Index.vue')
+const Home = () => import(/* webpackChunkName: "Home" */ '@/views/home/HomePage.vue')
 
-var Login = () => import(/* webpackChunkName: "Login" */ '@/views/login/LoginPage.vue')
+const Login = () => import(/* webpackChunkName: "Login" */ '@/views/login/LoginPage.vue')
+const SsoLogin = () => import(/* webpackChunkName: "SsoLogin" */ '@/views/login/SsoLoginPage.vue')
+const IframePanel = () => import(/* webpackChunkName: "test" */ '@/views/IframePanel.vue')
+/**
+ * 后台管理
+ */
+const SysResource = () => import(/* webpackChunkName: "SysResource" */ '@/views/sys/sysresource/SysResourcePage.vue')
+const SysUser = () => import(/* webpackChunkName: "SysUser" */ '@/views/sys/sysuser/SysUserPage.vue')
+const SysOnlineUser = () => import(/* webpackChunkName: "SysOnlineUser" */ '@/views/sys/onlineuser/SysOnlineUserPage.vue')
+const SysRole = () => import(/* webpackChunkName: "SysRole" */ '@/views/sys/sysrole/SysRolePage.vue')
+const SysDict = () => import(/* webpackChunkName: "SysDict" */ '@/views/sys/sysdict/SysDictPage.vue')
+const SysArea = () => import(/* webpackChunkName: "SysArea" */ '@/views/sys/sysarea/SysAreaPage.vue')
+const SysLog = () => import(/* webpackChunkName: "SysLog" */ '@/views/sys/syslog/SysLogPage.vue')
 
-var SysResource = () => import(/* webpackChunkName: "SysResource" */ '@/views/sys/sysresource/SysResourcePage.vue')
-var SysUser = () => import(/* webpackChunkName: "SysUser" */ '@/views/sys/sysuser/SysUserPage.vue')
-var SysOnlineUser = () => import(/* webpackChunkName: "SysOnlineUser" */ '@/views/sys/onlineuser/SysOnlineUserPage.vue')
-var SysRole = () => import(/* webpackChunkName: "SysRole" */ '@/views/sys/sysrole/SysRolePage.vue')
-var SysDict = () => import(/* webpackChunkName: "SysDict" */ '@/views/sys/sysdict/SysDictPage.vue')
-var SysArea = () => import(/* webpackChunkName: "SysArea" */ '@/views/sys/sysarea/SysAreaPage.vue')
-var SysLog = () => import(/* webpackChunkName: "SysLog" */ '@/views/sys/syslog/SysLogPage.vue')
+/**
+ * 家族
+ */
+const GenealogyTree = () => import(/* webpackChunkName: "GenealogyTree" */ '@/views/genealogy/genealogyTree/GenealogyTreePage.vue')
+const GenealogyTreeGraph = () => import(/* webpackChunkName: "GenealogyTreeGraph" */ '@/views/genealogy/genealogyTree/GenealogyTree.vue')
 
-var GenealogyTree = () => import(/* webpackChunkName: "GenealogyTree" */ '@/views/genealogy/genealogyTree/GenealogyTreePage.vue')
-var GenealogyTreeGraph = () => import(/* webpackChunkName: "GenealogyTreeGraph" */ '@/views/genealogy/genealogyTree/GenealogyTree.vue')
+/**
+ * py小工具
+ */
+const pyRegister = () => import(/* webpackChunkName: "pyRegister" */ '@/views/pytool/RegisterPage.vue')
+const pyChangePwd = () => import(/* webpackChunkName: "pyChangePwd" */ '@/views/pytool/ChangePwdPage.vue')
+const pyApp = () => import(/* webpackChunkName: "pyChangePwd" */ '@/views/pytool/app/AppPage.vue')
 
 
-var IframePanel = () => import(/* webpackChunkName: "test" */ '@/views/IframePanel.vue')
-
-var test = () => import(/* webpackChunkName: "IframePanel" */ '@/views/test.vue')
+const test = () => import(/* webpackChunkName: "IframePanel" */ '@/views/test.vue')
 
 
 const routes = [
@@ -85,7 +97,11 @@ const routes = [
                 name: '族谱',
                 component: GenealogyTree,
             },
-
+            {
+                path: "/pytool/app",
+                name: "py工具应用列表",
+                component: pyApp
+            }
         ]
     },
     {
@@ -94,15 +110,30 @@ const routes = [
         component: Login,
     },
     {
+        path: '/ssoLogin',
+        name: 'ssoLogin',
+        component: SsoLogin,
+    },
+    {
         path: '/genealogyTreeGraph',
         name: 'GenealogyTreeGraph',
         component: GenealogyTreeGraph,
     },
+    {
+        path: '/pytool/register',
+        name: 'pytool-register',
+        component: pyRegister,
+    },
+    {
+        path: '/pytool/changepwd',
+        name: 'pytool-changepwd',
+        component: pyChangePwd,
+    }
 ]
 
 const router = createRouter({
     history: createWebHashHistory(),
-    routes
+    routes: routes
 })
 
 export default router

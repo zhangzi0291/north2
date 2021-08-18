@@ -12,7 +12,7 @@
         </a-page-header>
 
         <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 500 }"
+                 :scroll="{ x: 900, y: 500 }" :pagination="page" @change="tableChange"
                  bordered style="width: 100%">
           <template #iconUrl="{ record }">
             <a-avatar :src="record.iconUrl" size="large" style="background-color: #66ccff">
@@ -22,7 +22,7 @@
           <template #operation="{ record }">
             <a-space>
               <a-tooltip title="用户下线">
-                <a-button shape="circle" type="dashed" @click="kickUser(record.id)">
+                <a-button shape="circle" type="dashed" @click="kickUser(record.userId)">
                   <template #icon>
                     <LogoutOutlined/>
                   </template>
@@ -102,6 +102,14 @@ let api = new SysUserOnlineApi();
         }
         this.loading = false
       })
+    },
+    tableChange(page:any, filters:any, sorter:any){
+      this.page = page
+      this.sort = {
+        field:sorter.field,
+        order:sorter.order
+      }
+      this.load()
     },
     kickUser(id: string) {
       this.$modal.confirm({

@@ -23,7 +23,7 @@
           <template #operation="{ record }">
             <a-space>
               <a-tooltip title="添加子节点">
-                <a-button shape="circle" type="dashed" @click="openAdd(record.id)">
+                <a-button shape="circle" type="dashed" @click="openAdd(record.id,record)">
                   <template #icon>
                     <PlusOutlined/>
                   </template>
@@ -52,11 +52,10 @@
     </base-page>
 
     <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
-                :okCallback="load" :rules="rules"
-                :title="'资源'" >
+                :okCallback="load" :init="formInit" :rules="rules"
+                :title="'资源'">
       <template #parentId="{data}">
-<!--        <a-input v-model:value="data['parentId']" @click="openMenuModal(data)"/>-->
-        <a-select v-model:value="data['parentId']" @click="openMenuModal(data)" >
+        <a-select v-model:value="data['parentId']" @click="openMenuModal(data)">
           <a-select-option :value="parent.id">
             {{ parent.resourceName }}
           </a-select-option>
@@ -64,7 +63,7 @@
       </template>
     </form-modal>
 
-    <menu-modal ref="menuModal" :title="'父节点选择'" :type="'radio'" :okCallback="menuModalOkCallback" ></menu-modal>
+    <menu-modal ref="menuModal" :okCallback="menuModalOkCallback" :title="'父节点选择'" :type="'radio'"></menu-modal>
   </div>
 </template>
 <script lang="ts">
@@ -106,7 +105,7 @@ let api = new SysResourceApi()
       ],
       //表格数据
       data: [],
-      parent:{},
+      parent: {},
       //表格字段
       columns: [
         {title: '资源名称', key: 'data.resourceName', dataIndex: 'data.resourceName',},
@@ -114,9 +113,9 @@ let api = new SysResourceApi()
         {
           title: '资源类型', key: 'data.resourceType', dataIndex: 'data.resourceType',
           customRender: function (record: any) {
-            for (let resourceType  of resourceTypes) {
+            for (let resourceType of resourceTypes) {
               let type = (<any>resourceType)
-              if(type.value == record.record.data.resourceType){
+              if (type.value == record.record.data.resourceType) {
                 return type.lable
               }
             }
@@ -131,7 +130,7 @@ let api = new SysResourceApi()
       formColumns: [
         new ModalField().init('资源名称', 'resourceName', 'String'),
         new ModalField().init('资源ICON', 'resourceIcon', 'String'),
-        new ModalField().initSelect('资源类型', 'resourceType', new Ext(), [new SelectField("菜单", "1"), new SelectField("资源", "2")],"资源类型"),
+        new ModalField().initSelect('资源类型', 'resourceType', new Ext(), [new SelectField("菜单", "1"), new SelectField("资源", "2")], "资源类型"),
         new ModalField().init('资源路径', 'resourceUrl', 'String'),
         new ModalField().init('父资源ID', 'parentId', "Slot"),
         new ModalField().init('排序', 'resourceOrder', 'Number'),
@@ -162,10 +161,10 @@ let api = new SysResourceApi()
         resourceType: [{required: true, type: 'number', trigger: 'blur', message: "资源类型不可为空"}],
         parentId: [{required: true, type: 'string', trigger: 'blur', message: "父资源ID不可为空"}],
       },
-      check:{
-        resourceName:""
+      check: {
+        resourceName: ""
       },
-      resourceTypes:[]
+      resourceTypes: []
     }
   },
   methods: {
@@ -176,25 +175,37 @@ let api = new SysResourceApi()
         this.loading = false
       })
     },
-    openAdd(parentId: string) {
-      this.$refs.form.open({parentId: parentId})
-      this.check.resourceName = undefined;
+    async openAdd(parentId: string, data: any) {
+      await this.$refs.form.open({parentId: parentId})
     },
     async openEdit(id: string) {
-
       await this.$refs.form.open({id: id})
       let data = this.$refs.form.getData()
       this.check.resourceName = data.resourceName;
       this.parent = {
-        resourceName:data.parentName,
-        id:data.parentId,
+        resourceName: data.parentName,
+        id: data.parentId,
       }
-
+    },
+    formInit(){
+      let data = this.$refs.form.getData()
+      if(!!data.parentId && data.parentId != -1){
+        api.getResource(data.parentId).then((res: AxiosResponse)=>{
+          let d = res.data.data;
+          console.log(d)
+          this.check.resourceName = d.resourceName;
+          this.parent = {
+            resourceName: d.resourceName,
+            id: d.id,
+          }
+          console.log(this.parent)
+        })
+      }
     },
     openMenuModal(data: any) {
       this.$refs.menuModal.open(data)
     },
-    menuModalOkCallback(data:any,selectData: any){
+    menuModalOkCallback(data: any, selectData: any) {
       this.parent = selectData[0]
     },
     del(id: string) {

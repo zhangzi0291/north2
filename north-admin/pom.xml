@@ -24,6 +24,11 @@
             <artifactId>north-file-storage</artifactId>
             <version>${north.file.storage}</version>
         </dependency>
+        <dependency>
+            <groupId>com.north</groupId>
+            <artifactId>north-oauth2</artifactId>
+            <version>${north.oauth2}</version>
+        </dependency>
         <!-- spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -114,7 +119,7 @@
         <dependency>
             <groupId>cn.afterturn</groupId>
             <artifactId>easypoi-spring-boot-starter</artifactId>
-            <version>4.3.0</version>
+            <version>${easypoi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>

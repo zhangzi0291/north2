@@ -3,6 +3,7 @@ package com.north.sys.controller;
 
 import cn.hutool.crypto.digest.MD5;
 import com.north.base.BaseController;
+import com.north.base.Constant;
 import com.north.base.api.R;
 import com.north.file.FileControlHandler;
 import com.north.sys.dto.UploadDto;
@@ -145,5 +146,18 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
         return null;
     }
 
+
+    /**
+     * 调用saveFile接口保存上传的文件
+     *
+     * @param request
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public UploadDto saveFile(HttpServletRequest request, MultipartFile file) throws IOException {
+        R<UploadDto> r = this.upload(request, file, Constant.SYS_MODULE_NAME, null);
+        return r.getData();
+    }
 
 }

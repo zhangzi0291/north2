@@ -18,8 +18,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <groupId>com.north</groupId>
+            <artifactId>north-common</artifactId>
+            <version>${north.common}</version>
         </dependency>
         <!--    阿里云OSSAPI    -->
         <dependency>

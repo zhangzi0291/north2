@@ -5,8 +5,8 @@ module.exports = {
             patterns: []
         }
     },
-
     lintOnSave: false,
     productionSourceMap: false,
-    publicPath: './'
+    publicPath: './',
+
 }
