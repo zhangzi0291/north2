@@ -28,9 +28,9 @@ export interface RegisterData{
 
 
 export interface LoginData{
-    username: string | undefined;
-    password: string | undefined;
-    redirect: string | undefined;
+    username: string ;
+    password: string ;
+    redirect: string ;
 }
 
 export default class SysLoginApi {

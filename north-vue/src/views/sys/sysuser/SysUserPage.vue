@@ -104,31 +104,25 @@
   </div>
 </template>
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
 import FormModal, {Ext, ModalField, SelectField} from "@/components/base/FormModal.vue";
 import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
 import SysUserApi from "@/api/SysUserApi";
-import {createVNode} from "vue";
+import {createVNode, defineComponent, reactive, ref,toRefs} from "vue";
 import Qs from "qs";
 import {AxiosResponse} from "axios";
-import SysDictApi from "@/api/SysDictApi";
 
 let api = new SysUserApi();
-let dictApi = new SysDictApi();
 
-@Options({
+export default defineComponent({
   name: 'SysUser',
   components: {
     FormModal, MenuModal, ChangePassword, ImportModal
   },
   data() {
     return {
-      //表格加载状态
-      loading: false,
       //接口url
-      // page:{current: 1},
       url: {
         get: "/sysUser/get",
         add: "/sysUser/addWithRole",
@@ -150,7 +144,7 @@ let dictApi = new SysDictApi();
         {title: '用户名', key: 'nickname', dataIndex: 'nickname', ellipsis: "true"},
         {title: '状态', key: 'status', dataIndex: 'status'},
         // {title: '过期时间', key: 'expiredTime', dataIndex: 'expiredTime', width: "180px"},
-        {title: '最后登录', key: 'lastLoginTime', dataIndex: 'lastLoginTime', width: "180px"},
+        {title: '最后登录', key: 'lastLoginTime', dataIndex: 'lastLoginTime', width: "180px",sorter: true},
         {title: '头像', key: 'iconUrl', dataIndex: 'iconUrl', slots: {customRender: 'iconUrl'}},
         {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "180px"},
       ],
@@ -177,7 +171,7 @@ let dictApi = new SysDictApi();
                 return callback()
               }
               let originalValue = (<any>this.check).username;
-              api.checkUseruame(value,originalValue).then(res => {
+              SysUserApi.checkUseruame(value,originalValue).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -197,7 +191,7 @@ let dictApi = new SysDictApi();
                 return callback()
               }
               let originalValue = (<any>this.check).nickname;
-              api.checkNickname(value,originalValue).then(res => {
+              SysUserApi.checkNickname(value,originalValue).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -224,57 +218,42 @@ let dictApi = new SysDictApi();
     }
   },
   methods: {
-    load(data:any) {
-      this.loading = true
-      if(!!data && !!data.current ){
-        this.page.current = data.current
-      }
-      api.list(this.search,this.page,this.sort).then(res => {
-        this.data = res.data.data.records
-        this.page = {
-          current: res.data.data.current,
-          total: res.data.data.total
-        }
-        console.log(this.page)
-        this.loading = false
-      })
-    },
-    tableChange(page:any, filters:any, sorter:any){
-      this.page = page
-      this.sort = {
-        field:sorter.field,
-        order:sorter.order
-      }
-      this.load()
-    },
+
     openAdd(parentId: string) {
-      this.$refs.form.open({parentId: parentId})
-      this.check.nickname = undefined;
-      this.check.username = undefined;
+      console.log(this.data)
+      console.log(this.loading)
+      const form:any = this.$refs.form
+      form.open({parentId: parentId})
+      const check:any = this.check
+      check.nickname = undefined;
+      check.username = undefined;
     },
     openEdit(id: string) {
-      this.$refs.form.open({id: id})
+      const form:any = this.$refs.form
+      form.open({id: id})
       setTimeout(() => {
-        this.check.nickname = this.$refs.form.getData().nickname;
-        this.check.username = this.$refs.form.getData().username;
+        this.check.nickname = form.getData().nickname;
+        this.check.username = form.getData().username;
       }, 1000)
     },
     openMenuModal(data: any) {
-      api.getRoleByUserId(data.id).then((res) => {
+      SysUserApi.getRoleByUserId(data.id).then((res) => {
         data.resources = []
         res.data.data.forEach((d: any) => {
           data.resources.push(d.roleId)
         })
-        this.$refs.menuModal.open(data)
+        const menuModal:any = this.$refs.menuModal
+        menuModal.open(data)
       })
     },
     openMenuModal2(data: any) {
-      api.getRoleByUserId(data.id).then((res) => {
+      SysUserApi.getRoleByUserId(data.id).then((res) => {
         data.roleIds = []
         res.data.data.forEach((d: any) => {
           data.roleIds.push(d.roleId)
         })
-        this.$refs.menuModal2.open(data)
+        const menuModal2:any = this.$refs.menuModal2
+        menuModal2.open(data)
       })
     },
     menuModalOkCallback(data: any) {
@@ -288,7 +267,8 @@ let dictApi = new SysDictApi();
       });
     },
     openChangePassword(id: string) {
-      this.$refs.cp.open(id)
+      const cp:any = this.$refs.cp
+      cp.open(id)
     },
     resetPassword(id: string) {
       this.$modal.confirm({
@@ -296,7 +276,7 @@ let dictApi = new SysDictApi();
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定重置密码吗？',
         onOk: () => {
-          return api.resetPassword(id).then(res => {
+          return SysUserApi.resetPassword(id).then(res => {
             this.$message.success("操作成功")
           })
         },
@@ -308,7 +288,7 @@ let dictApi = new SysDictApi();
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要删除吗？',
         onOk: () => {
-          return api.del([id]).then(res => {
+          return SysUserApi.del([id]).then(res => {
             console.log(res);
             this.load()
           })
@@ -316,16 +296,52 @@ let dictApi = new SysDictApi();
       });
     },
     openImport(){
-      this.$refs.importModal.open()
+      const importModal:any = this.$refs.importModal
+      importModal.open()
     },
 
   },
   created() {
     this.load()
   },
-})
+  setup(){
+    //表格加载状态
+    let loading = ref(false)
+    //分页
+    let page = reactive({ current:1,total:0 })
+    //排序
+    let sort = reactive({ field:null,order:null})
+    //查询数据
+    let search = reactive({ })
+    //表格数据
+    let data = ref([])
 
-export default class SysUser extends Vue {
-}
+    const load = function (param?:any) {
+      loading.value = true
+      if(!!param && !!param.current ){
+        page.current = param.current
+      }
+      SysUserApi.list(search,page,sort).then(res => {
+        data.value.length=0
+        data.value = data.value.concat(res.data.data.records)
+        page.current = res.data.data.current
+        page.total = res.data.data.total
+        loading.value = false
+      })
+    }
+    const tableChange = function (pageParam:any, filters:any, sorter:any){
+      page.current = pageParam.current
+      page.total = pageParam.total
+      sort.field = sorter.field
+      sort.order = sorter.order
+      load()
+    }
+    const tablePageOption = {loading,data,page,search,load,tableChange}
+
+    return {
+      ...tablePageOption
+    }
+  }
+})
 
 </script>

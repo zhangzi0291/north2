@@ -47,7 +47,7 @@ public class SysLog extends BaseModel {
     private String operationName;
 
     /**
-     * 日志类型,1登录，2退出
+     * 日志类型,1登录，2退出,3其他接口,4终端操作
      */
     private Integer logType;
 

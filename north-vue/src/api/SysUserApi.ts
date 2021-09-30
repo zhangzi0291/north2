@@ -26,7 +26,7 @@ const url = {
 
 export default class SysUserApi {
 
-    public list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
+    public static list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.list,
@@ -34,7 +34,7 @@ export default class SysUserApi {
         })
     }
 
-    public get(id:string): Promise<AxiosResponse> {
+    public static get(id:string): Promise<AxiosResponse> {
         console.log(id)
         return axios({
             method: 'get',
@@ -45,14 +45,14 @@ export default class SysUserApi {
         })
     }
 
-    public getAll(): Promise<AxiosResponse> {
+    public static getAll(): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.all,
         })
     }
 
-    public getRoleByUserId(userId: string): Promise<AxiosResponse> {
+    public static getRoleByUserId(userId: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             params: {
@@ -62,7 +62,7 @@ export default class SysUserApi {
         })
     }
 
-    public del(ids: Array<string>): Promise<AxiosResponse> {
+    public static del(ids: Array<string>): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.del,
@@ -72,7 +72,7 @@ export default class SysUserApi {
         })
     }
 
-    public add(data: any): Promise<AxiosResponse> {
+    public static add(data: any): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.add,
@@ -80,7 +80,7 @@ export default class SysUserApi {
         })
     }
 
-    public changePassword(userId: string, password: string,oldPassword: string): Promise<AxiosResponse> {
+    public static changePassword(userId: string, password: string,oldPassword: string): Promise<AxiosResponse> {
         password = new MD5().update(password).digest('hex')
         oldPassword = new MD5().update(oldPassword).digest('hex')
         return axios({
@@ -94,7 +94,7 @@ export default class SysUserApi {
         })
     }
 
-    public checkUseruame(username: string, originalValue?: string): Promise<AxiosResponse> {
+    public static checkUseruame(username: string, originalValue?: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.checkUsername,
@@ -105,7 +105,7 @@ export default class SysUserApi {
         })
     }
 
-    public checkNickname(username: string, originalValue?: string): Promise<AxiosResponse> {
+    public static checkNickname(username: string, originalValue?: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.checkNickname,
@@ -116,7 +116,7 @@ export default class SysUserApi {
         })
     }
 
-    public checkPassword(userId: string, password: string,username?:string): Promise<AxiosResponse> {
+    public static checkPassword(userId: string, password: string,username?:string): Promise<AxiosResponse> {
         password = new MD5().update(password).digest('hex')
         return axios({
             method: 'get',
@@ -129,7 +129,7 @@ export default class SysUserApi {
         })
     }
 
-    public resetPassword(userId: string): Promise<AxiosResponse> {
+    public static resetPassword(userId: string): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.resetPassword,

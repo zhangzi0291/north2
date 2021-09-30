@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <parent>
         <groupId>com.north</groupId>
         <artifactId>north</artifactId>
@@ -26,8 +25,8 @@
         </dependency>
         <dependency>
             <groupId>com.north</groupId>
-            <artifactId>north-oauth2</artifactId>
-            <version>${north.oauth2}</version>
+            <artifactId>north-sso-server</artifactId>
+            <version>${north.sso.server}</version>
         </dependency>
         <!-- spring -->
         <dependency>
@@ -153,4 +152,5 @@
             </resource>
         </resources>
     </build>
+
 </project>

@@ -60,13 +60,13 @@
 </template>
 <script lang="ts">
 import SysLogApi from '@/api/SysLogApi'
-import {Options, Vue} from 'vue-class-component';
 import {AxiosResponse} from "axios";
 import SysDictApi from "@/api/SysDictApi";
+import {defineComponent, reactive, ref} from "vue";
+import SysRoleApi from "@/api/SysRoleApi";
 
-let api = new SysLogApi();
 
-@Options({
+export default defineComponent({
   name: 'SysLog',
   data() {
     let logTypes: never[] = [];
@@ -74,21 +74,11 @@ let api = new SysLogApi();
       logTypes = res.data.data
     });
     return {
-      //表格加载状态
-      loading: false,
       //面包屑
       breadcrumbs: [
         {name: "", icon: "HomeOutlined", href: "/home"},
         {name: "角色管理", icon: "KeyOutlined", href: "/sysrole/list"}
       ],
-      //查询数据
-      search: {},
-      //表格数据
-      data: [],
-      //分页
-      page: {},
-      //排序
-      sort: {},
       logTypes:[],
       //表格字段
       columns: [
@@ -115,41 +105,55 @@ let api = new SysLogApi();
     }
   },
   methods: {
-    load(data:any) {
-      this.loading = true
-      if(!!data && !!data.current ){
-        this.page.current = data.current
-      }
-      api.list(this.search,this.page,this.sort).then(res => {
-        this.data = res.data.data.records
-        this.page = {
-          current: res.data.data.current,
-          total: res.data.data.total
-        }
-        this.loading = false
-      })
-    },
     loadLogType(){
       SysDictApi.getSelect('日志类型').then((res: AxiosResponse) => {
         this.logTypes = res.data.data
       });
     },
-    tableChange(page:any, filters:any, sorter:any){
-      this.page = page
-      this.sort = {
-        field:sorter.field,
-        order:sorter.order
-      }
-      this.load()
-    },
+
   },
   created() {
     this.load()
     this.loadLogType()
   },
-})
+  setup(){
+    //表格加载状态
+    let loading = ref(false)
+    //分页
+    let page = reactive({ current:1,total:0 })
+    //排序
+    let sort = reactive({ field:null,order:null})
+    //查询数据
+    let search = reactive({ })
+    //表格数据
+    let data = ref([])
 
-export default class SysLog extends Vue {
-}
+    const load = function (param?:any) {
+      loading.value = true
+      if(!!param && !!param.current ){
+        page.current = param.current
+      }
+      SysLogApi.list(search,page,sort).then(res => {
+        data.value.length=0
+        data.value = data.value.concat(res.data.data.records)
+        page.current = res.data.data.current
+        page.total = res.data.data.total
+        loading.value = false
+      })
+    }
+    const tableChange = function (pageParam:any, filters:any, sorter:any){
+      page.current = pageParam.current
+      page.total = pageParam.total
+      sort.field = sorter.field
+      sort.order = sorter.order
+      load()
+    }
+    const tablePageOption = {loading,data,page,search,load,tableChange}
+
+    return {
+      ...tablePageOption
+    }
+  }
+})
 
 </script>

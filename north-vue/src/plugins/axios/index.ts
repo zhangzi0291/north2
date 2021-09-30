@@ -1,5 +1,5 @@
-import {App} from 'vue';
 import axios from "axios";
+import {App} from "vue";
 
 declare let BASE_URL: any;
 

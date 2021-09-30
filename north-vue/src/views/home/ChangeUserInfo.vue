@@ -19,16 +19,11 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from "vue-class-component";
-import {toRef} from 'vue'
+import {defineComponent} from 'vue'
 import SysUserApi from "@/api/SysUserApi";
 import {AxiosResponse} from "axios";
 
-const MD5 = require('md5.js')
-
-let api = new SysUserApi();
-
-@Options({
+export default defineComponent({
   name: 'ChangePassword',
   data() {
     return {
@@ -65,20 +60,16 @@ let api = new SysUserApi();
     open(id: string) {
       this.visible = true
       this.userId = id
-      api.get(id).then((res: AxiosResponse)=>{
+      SysUserApi.get(id).then((res: AxiosResponse) => {
         this.data = {
-          nickname:res.data.data.nickname,
-          phone:res.data.data.phone,
-          email:res.data.data.email,
+          nickname: res.data.data.nickname,
+          phone: res.data.data.phone,
+          email: res.data.data.email,
         }
       })
     },
   }
-
 })
-
-export default class ChangePassword extends Vue {
-}
 
 </script>
 

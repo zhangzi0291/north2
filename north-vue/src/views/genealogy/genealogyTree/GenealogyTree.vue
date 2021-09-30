@@ -13,18 +13,19 @@
 import {Options, Vue} from 'vue-class-component';
 import showPerson from './ShowPerson.vue';
 import GenealogyApi from '@/api/GenealogyApi';
+import {defineComponent} from "vue";
 
 const echarts = require('echarts');
 
-@Options({
+export default defineComponent({
   name: "GenealogyTree",
   components: {
     showPerson
   },
   data() {
     return {
-      genealogyTree: {},
-      chart: {},
+      genealogyTree: <any>{},
+      chart: <any>{},
     }
   },
   computed: {},
@@ -37,7 +38,7 @@ const echarts = require('echarts');
     },
     getGenealogyPersonData(id: string) {
       GenealogyApi.getGenealogyPerson(id).then(res => {
-        this.personData = res.data.data
+        // this.personData = res.data.data
       });
     },
     okCallback(){
@@ -124,7 +125,8 @@ const echarts = require('echarts');
       this.chart.on('click', function (params: any) {
         let dataType = params.dataType
         if (dataType == 'node') {
-          $this.$refs.showPerson.open(params.data);
+          const showPerson:any = $this.$refs.showPerson
+          showPerson.open(params.data);
         }
       })
 
@@ -143,8 +145,6 @@ const echarts = require('echarts');
   mounted() {
 
   }
-
 })
-export default class GenealogyTree extends Vue {
-}
+
 </script>

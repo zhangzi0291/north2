@@ -74,7 +74,7 @@ let dictApi = new SysDictApi();
       this.okCallback(this.data)
     },
     getAllResource() {
-      sysApi.getAllResource().then(res => {
+      SysResourceApi.getAllResource().then(res => {
         this.resourceList = res.data.data
         this.loading = false
       })

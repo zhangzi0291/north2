@@ -23,10 +23,10 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
+import {defineComponent} from "vue";
 
-@Options({
-  name: "InfoBlock",
+export default defineComponent({
+  name: "ProgressBlock",
   data() {
     return {
       dashboardColor: {
@@ -57,8 +57,5 @@ import {Options, Vue} from 'vue-class-component';
     }
   }
 })
-
-export default class ProgressBlock extends Vue {
-}
 </script>
 

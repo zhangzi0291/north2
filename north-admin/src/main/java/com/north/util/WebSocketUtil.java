@@ -1,7 +1,7 @@
 package com.north.util;
 
-import com.north.websocket.handler.SpringWebSocketHandler;
-import com.north.websocket.protobuf.NotificationMessageOuterClass;
+import com.north.websocket.handler.NotificationWebSocketHandler;
+import com.north.websocket.protobuf.Protobuf;
 import org.springframework.web.socket.AbstractWebSocketMessage;
 import org.springframework.web.socket.BinaryMessage;
 
@@ -21,7 +21,7 @@ public class WebSocketUtil {
      */
     public static Boolean notifyUser(String userId, String title, String message) {
         AbstractWebSocketMessage webSocketMessage = buildNotificationMessage(title, message);
-        return SpringWebSocketHandler.sendMessageToUser(userId, webSocketMessage);
+        return NotificationWebSocketHandler.sendMessageToUser(userId, webSocketMessage);
     }
 
     /**
@@ -32,19 +32,19 @@ public class WebSocketUtil {
      */
     public static void notifyAllUser(String title, String message) {
         AbstractWebSocketMessage webSocketMessage = buildNotificationMessage(title, message);
-        SpringWebSocketHandler.sendMessageToUsers(webSocketMessage);
+        NotificationWebSocketHandler.sendMessageToUsers(webSocketMessage);
     }
 
     private static AbstractWebSocketMessage buildNotificationMessage(String title, String message) {
-        NotificationMessageOuterClass.NotificationMessage.Builder builder = NotificationMessageOuterClass.NotificationMessage.newBuilder();
+        Protobuf.NotificationMessage.Builder builder = Protobuf.NotificationMessage.newBuilder();
         builder.setTitle(title);
         builder.setMessage(message);
-        NotificationMessageOuterClass.NotificationMessage notificationMessage = builder.build();
+        Protobuf.NotificationMessage notificationMessage = builder.build();
         return new BinaryMessage(notificationMessage.toByteArray());
     }
 
     public static void test() {
         AbstractWebSocketMessage webSocketMessage = new BinaryMessage("test".getBytes());
-        SpringWebSocketHandler.sendMessageToUsers(webSocketMessage);
+        NotificationWebSocketHandler.sendMessageToUsers(webSocketMessage);
     }
 }

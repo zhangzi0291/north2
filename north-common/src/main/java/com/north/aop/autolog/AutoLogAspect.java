@@ -44,7 +44,7 @@ public class AutoLogAspect {
         String methodName = fullName.substring(fullName.lastIndexOf(".") + 1);
 
         SysLog log = new SysLog();
-        log.setLogType(1);
+        log.setLogType(3);
         log.setUserId(StpUtil.getLoginIdAsString());
         String nickname = StpUtil.getSession().getDataMap().getOrDefault("nickname", "").toString();
         log.setNickname(nickname);

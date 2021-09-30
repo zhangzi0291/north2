@@ -16,6 +16,6 @@ if (!BASE_WS_URL) {
 
 window.isDev = false
 
-window.BASE_URL = BASE_URL89ky
+window.BASE_URL = BASE_URL
 window.BASE_WS_URL = BASE_WS_URL
 window.appText = "客户端下载地址 <br> 链接：<a href='https://pan.baidu.com/s/1TckrxxV-lWm78shQRnRvPQ'>下载</a> <br>提取码：89ky "

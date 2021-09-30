@@ -56,9 +56,6 @@ import {NamePath} from "ant-design-vue/es/form/interface";
 import {toRef} from "vue";
 import SysUserApi from "@/api/SysUserApi";
 
-const MD5 = require('md5.js')
-let api = new SysUserApi();
-
 @Options({
   name: 'register',
   data() {
@@ -81,7 +78,7 @@ let api = new SysUserApi();
               if(!data.username){
                 return callback("用户名未填写")
               }
-              api.checkPassword(this.userId, value,data.username).then(res => {
+              SysUserApi.checkPassword(this.userId, value,data.username).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {

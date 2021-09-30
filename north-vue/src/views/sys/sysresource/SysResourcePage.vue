@@ -77,8 +77,6 @@ import MenuModal from "@/views/sys/sysresource/MenuModal.vue";
 import {AxiosResponse} from "axios";
 import SysDictApi from "@/api/SysDictApi";
 
-let api = new SysResourceApi()
-
 @Options({
   name: 'SysResource',
   components: {
@@ -146,7 +144,7 @@ let api = new SysResourceApi()
                 return callback()
               }
               let originalValue = (<any>this.check).resourceName;
-              api.checkResourceName(value, originalValue).then(res => {
+              SysResourceApi.checkResourceName(value, originalValue).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -170,7 +168,7 @@ let api = new SysResourceApi()
   methods: {
     load() {
       this.loading = true
-      api.getAllResource().then(res => {
+      SysResourceApi.getAllResource().then(res => {
         this.data = res.data.data
         this.loading = false
       })
@@ -190,7 +188,7 @@ let api = new SysResourceApi()
     formInit(){
       let data = this.$refs.form.getData()
       if(!!data.parentId && data.parentId != -1){
-        api.getResource(data.parentId).then((res: AxiosResponse)=>{
+        SysResourceApi.getResource(data.parentId).then((res: AxiosResponse)=>{
           let d = res.data.data;
           console.log(d)
           this.check.resourceName = d.resourceName;
@@ -214,7 +212,7 @@ let api = new SysResourceApi()
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要删除吗？',
         onOk: () => {
-          return api.del([id]).then(res => {
+          return SysResourceApi.del([id]).then(res => {
             this.load()
           })
         },

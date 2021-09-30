@@ -70,21 +70,20 @@ import SysRoleApi from '@/api/SysRoleApi'
 import {Options, Vue} from 'vue-class-component';
 import FormModal, {ModalField} from "@/components/base/FormModal.vue";
 import MenuModal from "@/views/sys/sysresource/MenuModal.vue";
-import {createVNode} from "vue";
+import {createVNode, defineComponent, reactive, ref} from "vue";
 import Qs from "qs";
 import {AxiosResponse} from "axios";
+import SysUserApi from "@/api/SysUserApi";
 
 let api = new SysRoleApi();
 
-@Options({
+export default defineComponent({
   name: 'SysRole',
   components: {
     FormModal, MenuModal
   },
   data() {
     return {
-      //表格加载状态
-      loading: false,
       //接口url
       url: {
         get: "/sysRole/get",
@@ -96,10 +95,6 @@ let api = new SysRoleApi();
         {name: "", icon: "HomeOutlined", href: "/home"},
         {name: "角色管理", icon: "KeyOutlined", href: "/sysrole/list"}
       ],
-      //查询数据
-      search: {},
-      //表格数据
-      data: [],
       //表格字段
       columns: [
         {title: '角色名称', key: 'roleName', dataIndex: 'roleName',},
@@ -122,7 +117,7 @@ let api = new SysRoleApi();
                 return callback()
               }
               let originalValue = (<any>this.check).roleName;
-              api.checkRoleName(value, originalValue).then(res => {
+              SysRoleApi.checkRoleName(value, originalValue).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -144,54 +139,39 @@ let api = new SysRoleApi();
     }
   },
   methods: {
-    load(data:any) {
-      this.loading = true
-      if(!!data && !!data.current ){
-        this.page.current = data.current
-      }
-      api.list(this.search,this.page,this.sort).then(res => {
-        this.data = res.data.data.records
-        this.page = {
-          current: res.data.data.current,
-          total: res.data.data.total
-        }
-        this.loading = false
-      })
-    },
-    tableChange(page:any, filters:any, sorter:any){
-      this.page = page
-      this.sort = {
-        field:sorter.field,
-        order:sorter.order
-      }
-      this.load()
-    },
+
     openAdd(parentId: string) {
-      this.$refs.form.open({parentId: parentId})
-      this.check.roleName = undefined;
+      const form:any = this.$refs.form
+      const check:any = this.check
+      form.open({parentId: parentId})
+      check.roleName = undefined;
     },
     openEdit(id: string) {
-      this.$refs.form.open({id: id})
+      const form:any = this.$refs.form
+      const check:any = this.check
+      form.open({id: id})
       setTimeout(() => {
-        this.check.roleName = this.$refs.form.getData().roleName;
+        check.roleName = form.getData().roleName;
       }, 1000)
     },
     openMenuModal(data: any) {
-      api.getResourceByRoleId(data.id).then((res) => {
+      SysRoleApi.getResourceByRoleId(data.id).then((res) => {
         data.resources = []
         res.data.data.forEach((d: any) => {
           data.resources.push(d.resourceId)
         })
-        this.$refs.menuModal.open(data)
+        const menuModal:any = this.$refs.menuModal
+        menuModal.open(data)
       })
     },
     openMenuModal2(data: any) {
-      api.getResourceByRoleId(data.id).then((res) => {
+      SysRoleApi.getResourceByRoleId(data.id).then((res) => {
         data.resources = []
         res.data.data.forEach((d: any) => {
           data.resources.push(d.resourceId)
         })
-        this.$refs.menuModal2.open(data)
+        const menuModal2:any = this.$refs.menuModal2
+        menuModal2.open(data)
       })
     },
     menuModalOkCallback(data: any) {
@@ -210,7 +190,7 @@ let api = new SysRoleApi();
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要删除吗？',
         onOk: () => {
-          return api.del([id]).then(res => {
+          return SysRoleApi.del([id]).then(res => {
             console.log(res);
             this.load()
           })
@@ -221,9 +201,44 @@ let api = new SysRoleApi();
   created() {
     this.load()
   },
-})
+  setup(){
+    //表格加载状态
+    let loading = ref(false)
+    //分页
+    let page = reactive({ current:1,total:0 })
+    //排序
+    let sort = reactive({ field:null,order:null})
+    //查询数据
+    let search = reactive({ })
+    //表格数据
+    let data = ref([])
 
-export default class SysRole extends Vue {
-}
+    const load = function (param?:any) {
+      loading.value = true
+      if(!!param && !!param.current ){
+        page.current = param.current
+      }
+      SysRoleApi.list(search,page,sort).then(res => {
+        data.value.length=0
+        data.value = data.value.concat(res.data.data.records)
+        page.current = res.data.data.current
+        page.total = res.data.data.total
+        loading.value = false
+      })
+    }
+    const tableChange = function (pageParam:any, filters:any, sorter:any){
+      page.current = pageParam.current
+      page.total = pageParam.total
+      sort.field = sorter.field
+      sort.order = sorter.order
+      load()
+    }
+    const tablePageOption = {loading,data,page,search,load,tableChange}
+
+    return {
+      ...tablePageOption
+    }
+  }
+})
 
 </script>

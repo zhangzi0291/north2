@@ -74,7 +74,7 @@
 
 </template>
 <script lang="ts">
-import {Options, Vue} from "vue-class-component";
+import { defineComponent} from 'vue'
 import {AxiosResponse} from "axios";
 import {NamePath} from "ant-design-vue/es/form/interface";
 import SysLoginApi, {LoginData, RegisterData} from "@/api/SysLoginApi";
@@ -82,7 +82,7 @@ import BaseApi from "@/api/BaseApi";
 
 const MD5 = require('md5.js')
 
-@Options({
+export default defineComponent({
   name: 'Login',
   data() {
     return {
@@ -139,13 +139,15 @@ const MD5 = require('md5.js')
       }
     },
     login() {
-      this.$refs.loginForm.validate().then((nameList: NamePath[]) => {
-        this.tmpPwd = this.loginData.password;
-        this.loginData.password = new MD5().update(this.loginData.password).digest('hex');
-        let data: LoginData = this.loginData
+        const loginForm:any = this.$refs.loginForm
+        loginForm.validate().then((nameList: NamePath[]) => {
+        let data: LoginData = <LoginData>this.loginData
+        this.tmpPwd = data.password;
+        data.password = new MD5().update(data.password).digest('hex');
+
         SysLoginApi.login(data).then((res: AxiosResponse) => {
           this.$message.success("登录成功")
-          this.loginData.password = this.tmpPwd;
+          data.password = this.tmpPwd;
           let user = {
             userId: res.data.data.user.id,
             username: res.data.data.user.username,
@@ -160,13 +162,14 @@ const MD5 = require('md5.js')
           // document.cookie="satoken="+res.data.data.token
           this.$router.push({path: '/',})
         }).catch(() => {
-          this.loginData.password = this.tmpPwd;
+          data.password = this.tmpPwd;
         });
       })
     },
     register() {
-      this.$refs.registerForm.validate().then((nameList: NamePath[]) => {
-        let data: RegisterData = this.registerData
+      const registerForm:any = this.$refs.registerForm
+      registerForm.validate().then((nameList: NamePath[]) => {
+        let data: RegisterData = <RegisterData>this.registerData
         SysLoginApi.register(data).then((res: AxiosResponse) => {
           this.isLogin = true
           this.$message.success("注册成功")
@@ -184,8 +187,5 @@ const MD5 = require('md5.js')
   setup() {
   }
 })
-
-export default class Login extends Vue {
-}
 
 </script>

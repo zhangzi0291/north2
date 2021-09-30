@@ -66,7 +66,7 @@
             <n-menu :key="menu.id" :menu="menu"></n-menu>
           </template>
           <template v-else>
-            <a-menu-item :key="menu.data.resourceUrl" :title="menu.data.resourceType">
+            <a-menu-item :key="menu.data.resourceUrl" :title="menu.data.resourceType+''">
               <component :is="$icons[menu.data.resourceIcon]"/>
               <span>{{ menu.data.resourceName }}{{ menu.data.pid }}</span>
             </a-menu-item>
@@ -76,7 +76,7 @@
       </a-menu>
     </a-layout-sider>
 
-    <a-layout >
+    <a-layout>
 
       <a-layout-header style="background: #fff; padding: 0">
         <div>
@@ -151,7 +151,6 @@
 
 </template>
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
 import nMenu from '@/components/base/menu/n-menu.vue'
 
 import SysResourceApi from '@/api/SysResourceApi'
@@ -159,12 +158,11 @@ import BaseApi from '@/api/BaseApi'
 import ChangePassword from "@/views/home/ChangePassword.vue";
 import ChangeUserInfo from "@/views/home/ChangeUserInfo.vue";
 import SysLoginApi from "@/api/SysLoginApi";
-import {createVNode} from "vue";
-import messages from '@/protobuf/NotificationMessage_pb'
+import {createVNode, defineComponent} from "vue";
+import {NotificationMessage} from "@/proto/Protobuf";
 
-const sysApi = new SysResourceApi()
 
-@Options({
+export default defineComponent({
   name: 'Index',
   components: {
     nMenu, ChangePassword, ChangeUserInfo
@@ -178,17 +176,15 @@ const sysApi = new SysResourceApi()
       reconnectInterval: {},
     }
   },
-  computed: {
-
-  },
+  computed: {},
 
   methods: {
     clickMenu(item: any) {
       if (item.item.title == 4) {
         this.$router.push({
-          path:"/iframePanel",
-          query:{
-            url:item.key
+          path: "/iframePanel",
+          query: {
+            url: item.key
           }
         });
       } else if (item.item.title == 5) {
@@ -201,10 +197,14 @@ const sysApi = new SysResourceApi()
       this.collapsed = collapsed
     },
     openChangePassword() {
-      this.$refs.cp.open()
+      const cp:any = this.$refs.cp
+      cp.open()
     },
-    openChangeUserInfo(){
-      this.$refs.cui.open(this.user.userId)
+    openChangeUserInfo() {
+      const cui:any = this.$refs.cui
+      //@ts-ignore
+      const user:any = this.user
+      cui.open(user.userId)
     },
     logout() {
       this.$modal.confirm({
@@ -222,7 +222,7 @@ const sysApi = new SysResourceApi()
     },
     createWs() {
       if ('WebSocket' in window) {
-        window.websocket = new WebSocket(window.BASE_WS_URL + "/ws");
+        window.websocket = new WebSocket(window.BASE_WS_URL + "/notificationMessage");
         window.websocket.onmessage = (msg: any) => {
           if (msg.data instanceof Blob) {
             this.wsBinaryHandler(msg)
@@ -234,7 +234,7 @@ const sysApi = new SysResourceApi()
           console.log("连接成功")
         }
         this.reconnectInterval = window.websocket.onclose = () => {
-          if(!BaseApi.getWsIsClose()){
+          if (!BaseApi.getWsIsClose()) {
             this.createWs()
           }
         }
@@ -247,8 +247,8 @@ const sysApi = new SysResourceApi()
       reader.readAsArrayBuffer(msg.data);
       reader.onload = (e) => {
         var buf = new Uint8Array(<ArrayBuffer>reader.result);
-        var notificationMessage = messages.NotificationMessage.deserializeBinary(buf)
-        this.openNotification(notificationMessage.getTitle(), notificationMessage.getMessage());
+        var notificationMessage = NotificationMessage.decode(buf)
+        this.openNotification(notificationMessage.title, notificationMessage.message);
       }
     },
     wsMessageHandler(msg: any) {
@@ -266,7 +266,7 @@ const sysApi = new SysResourceApi()
   },
   created() {
     this.selectedKeys = [this.$route.path]
-    sysApi.getMenu().then((res) => {
+    SysResourceApi.getMenu().then((res) => {
       this.menus = res.data.data
     });
     BaseApi.setWsIsClose(false);
@@ -274,8 +274,4 @@ const sysApi = new SysResourceApi()
 
   },
 })
-
-export default class Index extends Vue {
-}
-
 </script>

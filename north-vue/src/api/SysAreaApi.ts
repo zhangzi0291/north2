@@ -16,7 +16,7 @@ const url = {
 
 export default class SysAreaApi {
 
-    public list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
+    public static list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.list,
@@ -24,7 +24,7 @@ export default class SysAreaApi {
         })
     }
 
-    public getAll(): Promise<AxiosResponse> {
+    public static getAll(): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.all,
@@ -32,7 +32,7 @@ export default class SysAreaApi {
     }
 
 
-    public del(ids: Array<string>): Promise<AxiosResponse> {
+    public static del(ids: Array<string>): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.del,
@@ -42,7 +42,7 @@ export default class SysAreaApi {
         })
     }
 
-    public add(data: any): Promise<AxiosResponse> {
+    public static add(data: any): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.add,

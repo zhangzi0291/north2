@@ -27,8 +27,6 @@ import SysResourceApi from "@/api/SysResourceApi";
 import {AxiosResponse} from "axios";
 import SysDictApi from "@/api/SysDictApi";
 
-let sysApi = new SysResourceApi()
-
 @Options({
   name: 'MenuModal',
   data() {
@@ -133,7 +131,7 @@ let sysApi = new SysResourceApi()
       return resources
     },
     getAllResource() {
-      sysApi.getAllResource().then(res => {
+      SysResourceApi.getAllResource().then(res => {
         this.resourceList = res.data.data
         this.loading = false
       })

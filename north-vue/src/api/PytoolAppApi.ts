@@ -17,7 +17,7 @@ const url = {
 
 export default class PytoolAppApi {
 
-    public list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
+    public static list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.list,
@@ -25,7 +25,7 @@ export default class PytoolAppApi {
         })
     }
 
-    public gethistoryList(softName:string,page?: any): Promise<AxiosResponse> {
+    public static gethistoryList(softName:string,page?: any): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.historyList,
@@ -35,7 +35,7 @@ export default class PytoolAppApi {
         })
     }
 
-    public del(ids: Array<string>): Promise<AxiosResponse> {
+    public static del(ids: Array<string>): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.del,
@@ -45,7 +45,7 @@ export default class PytoolAppApi {
         })
     }
 
-    public add(data: any): Promise<AxiosResponse> {
+    public static add(data: any): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.add,
@@ -53,7 +53,7 @@ export default class PytoolAppApi {
         })
     }
 
-    public checkSoftName(checkValue: string, originalValue?: string): Promise<AxiosResponse> {
+    public static checkSoftName(checkValue: string, originalValue?: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.checkSoftName,

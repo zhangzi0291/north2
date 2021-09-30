@@ -194,10 +194,9 @@ import SysDictApi from "@/api/SysDictApi";
 import {AxiosResponse} from "axios";
 import {Moment} from "moment";
 import GenealogyApi from '@/api/GenealogyApi';
-import {createVNode} from "vue";
+import {createVNode, defineComponent} from "vue";
 
-
-@Options({
+export default defineComponent({
   name: "showPerson",
   data() {
     return {
@@ -211,18 +210,19 @@ import {createVNode} from "vue";
       initData:{
         sex: 1
       },
-      data: {},
+      data: <any>{},
       layout: {
         labelCol: {span: 8},
         wrapperCol: {span: 14},
       },
       sexSelect: [],
-      fileList: [],
-      timelines:[],
+      fileList: <any>[],
+      timelines:<any>[],
       parentName:"",
-      parentNameOption:[],
+      parentNameOption:<any>[],
       partnerName:"",
-      partnerNameOption:[],
+      partnerNameOption:<any>[],
+      debounceSearch:<any>{}
     }
   },
   props: {
@@ -237,7 +237,7 @@ import {createVNode} from "vue";
     toEdit(){
       this.edit = !this.edit
     },
-    open(data:any,isEdit:Boolean) {
+    open(data:any,isEdit:boolean) {
       this.data = this.initData
       this.loading = false
       this.fileList = []
@@ -387,7 +387,7 @@ import {createVNode} from "vue";
       if (!!file.url) {
         this.previewImage = file.url
       } else {
-        this.previewImage = await this.loadImage(file.originFileObj)
+        // this.previewImage = await this.loadImage(file.originFileObj)
       }
       this.previewVisible = true
     },
@@ -432,9 +432,9 @@ import {createVNode} from "vue";
     async search(value:string){
       let option: { value: any; lable: any; }[] = []
       await GenealogyApi.getGenealogyTreePersonSearch("1",value).then(res=>{
-          for (let index in res.data.data) {
-            option.push({value:res.data.data[index].id,lable:res.data.data[index].personName})
-          }
+        for (let index in res.data.data) {
+          option.push({value:res.data.data[index].id,lable:res.data.data[index].personName})
+        }
       })
       return option
     },
@@ -470,18 +470,18 @@ import {createVNode} from "vue";
       }
       return sexStr
     },
-    birthdayStr(){
-      if(!!this.data.birthday){
-        return new Date(this.data.birthday).Format("yyyy-MM-dd")
-      }
-      return ""
-    },
-    deathdayStr(){
-      if(!!this.data.deathday){
-        return new Date(this.data.deathday).Format("yyyy-MM-dd")
-      }
-      return ""
-    },
+    // birthdayStr(){
+    //   if(!!this.data.birthday){
+    //     return new Date(this.data.birthday).Format("yyyy-MM-dd")
+    //   }
+    //   return ""
+    // },
+    // deathdayStr(){
+    //   if(!!this.data.deathday){
+    //     return new Date(this.data.deathday).Format("yyyy-MM-dd")
+    //   }
+    //   return ""
+    // },
   },
   created() {
     this.debounceSearch = this.$lodash.debounce((value:string,option:string)=>{
@@ -494,8 +494,5 @@ import {createVNode} from "vue";
     });
   }
 })
-
-export default class ShowPerson extends Vue {
-}
 </script>
 

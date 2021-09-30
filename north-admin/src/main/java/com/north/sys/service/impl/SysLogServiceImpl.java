@@ -1,5 +1,6 @@
 package com.north.sys.service.impl;
 
+import cn.dev33.satoken.context.model.SaRequest;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.north.sys.entity.SysLog;

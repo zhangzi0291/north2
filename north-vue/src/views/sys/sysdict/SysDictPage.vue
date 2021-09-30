@@ -58,23 +58,18 @@
   </div>
 </template>
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
 import FormModal, {Ext, ModalField} from "@/components/base/FormModal.vue";
 import MenuModal from "@/views/sys/sysrole/MenuModal.vue";
-import {createVNode} from "vue";
+import {createVNode, defineComponent, reactive, ref} from "vue";
 import SysDictApi from "@/api/SysDictApi";
 
-let api = new SysDictApi();
-
-@Options({
-  name: 'SysRole',
+export default defineComponent({
+  name: 'SysDict',
   components: {
     FormModal, MenuModal
   },
   data() {
     return {
-      //表格加载状态
-      loading: false,
       //接口url
       url: {
         get: "/sysDict/get",
@@ -87,18 +82,10 @@ let api = new SysDictApi();
         {name: "", icon: "HomeOutlined", href: "/home"},
         {name: "字典管理", icon: "KeyOutlined", href: "/sysrole/list"}
       ],
-      //查询数据
-      search: {},
-      //表格数据
-      data: [],
-      //分页
-      page: {},
-      //排序
-      sort: {},
       //表格字段
       columns: [
-        {title: '字典名称', key: 'dictName', dataIndex: 'dictName',sorter: true,},
-        {title: '字典Lable', key: 'dictKey', dataIndex: 'dictKey',sorter: true,},
+        {title: '字典名称', key: 'dictName', dataIndex: 'dictName', sorter: true,},
+        {title: '字典Lable', key: 'dictKey', dataIndex: 'dictKey', sorter: true,},
         {title: '字典Value', key: 'dictValue', dataIndex: 'dictValue',},
         {title: '描述', key: 'describe', dataIndex: 'describe',},
         {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "100px",},
@@ -132,34 +119,15 @@ let api = new SysDictApi();
     }
   },
   methods: {
-    load(data:any) {
-      this.loading = true
-      if(!!data && !!data.current ){
-        this.page.current = data.current
-      }
-      api.list(this.search,this.page,this.sort).then(res => {
-        this.data = res.data.data.records
-        this.page = {
-          current: res.data.data.current,
-          total: res.data.data.total
-        }
-        this.loading = false
-      })
-    },
-    tableChange(page:any, filters:any, sorter:any){
-      this.page = page
-      this.sort = {
-        field:sorter.field,
-        order:sorter.order
-      }
-      this.load()
-    },
     openAdd(parentId: string) {
-      this.$refs.form.open({parentId: parentId})
-      this.check.roleName = undefined;
+      const form:any = this.$refs.form
+      form.open({parentId: parentId})
+      const check:any = this.check
+      check.roleName = undefined;
     },
     openEdit(id: string) {
-      this.$refs.form.open({id: id})
+      const form:any = this.$refs.form
+      form.open({id: id})
       // setTimeout(() => {
       //   this.check.roleName = this.$refs.form.getData().roleName;
       // }, 1000)
@@ -170,22 +138,56 @@ let api = new SysDictApi();
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要删除吗？',
         onOk: () => {
-          return api.del([id]).then(res => {
+          return SysDictApi.del([id]).then(res => {
             this.load()
           })
         },
       });
     },
-    openExport(){
-      this.$download(this.url.export,"get","数据字典.xlsx",this.search)
+    openExport() {
+      this.$download(this.url.export, "get", "数据字典.xlsx", this.search)
     },
   },
   created() {
     this.load()
   },
+  setup() {
+    //表格加载状态
+    let loading = ref(false)
+    //分页
+    let page = reactive({current: 1, total: 0})
+    //排序
+    let sort = reactive({field: null, order: null})
+    //查询数据
+    let search = reactive({})
+    //表格数据
+    let data = ref([])
+
+    const load = function (param?: any) {
+      loading.value = true
+      if (!!param && !!param.current) {
+        page.current = param.current
+      }
+      SysDictApi.list(search, page, sort).then(res => {
+        data.value.length = 0
+        data.value = data.value.concat(res.data.data.records)
+        page.current = res.data.data.current
+        page.total = res.data.data.total
+        loading.value = false
+      })
+    }
+    const tableChange = function (pageParam: any, filters: any, sorter: any) {
+      page.current = pageParam.current
+      page.total = pageParam.total
+      sort.field = sorter.field
+      sort.order = sorter.order
+      load()
+    }
+    const tablePageOption = {loading, data, page, search, load, tableChange}
+
+    return {
+      ...tablePageOption
+    }
+  }
 })
-
-export default class SysRole extends Vue {
-}
-
 </script>

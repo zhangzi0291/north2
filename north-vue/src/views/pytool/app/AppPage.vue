@@ -104,13 +104,8 @@ import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
 import {createVNode} from "vue";
-import Qs from "qs";
-import {AxiosResponse} from "axios";
 import PytoolAppApi from "@/api/PytoolAppApi";
-import SysDictApi from "@/api/SysDictApi";
 
-let api = new PytoolAppApi();
-let dictApi = new SysDictApi();
 
 @Options({
   name: 'pytoolApp',
@@ -168,7 +163,7 @@ let dictApi = new SysDictApi();
                 return callback()
               }
               let originalValue = (<any>this.check).username;
-              api.checkSoftName(value,originalValue).then(res => {
+              PytoolAppApi.checkSoftName(value,originalValue).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -197,7 +192,7 @@ let dictApi = new SysDictApi();
       if(!!data && !!data.current ){
         this.page.current = data.current
       }
-      api.list(this.search,this.page,this.sort).then(res => {
+      PytoolAppApi.list(this.search,this.page,this.sort).then(res => {
         this.data = res.data.data.records
         this.page = {
           current: res.data.data.current,
@@ -216,7 +211,7 @@ let dictApi = new SysDictApi();
     },
     loadHis(softName:string) {
       this.hisLoading = true
-      api.gethistoryList(softName,this.hisPage).then(res => {
+      PytoolAppApi.gethistoryList(softName,this.hisPage).then(res => {
         this.hisData = res.data.data.records
         this.hisPage = {
           current: res.data.data.current,
@@ -247,7 +242,7 @@ let dictApi = new SysDictApi();
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要删除吗？',
         onOk: () => {
-          return api.del([id]).then(res => {
+          return PytoolAppApi.del([id]).then(res => {
             console.log(res);
             this.load()
           })

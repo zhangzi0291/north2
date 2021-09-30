@@ -52,20 +52,19 @@
 import {Options, Vue} from "vue-class-component";
 import {AxiosResponse} from "axios";
 import {NamePath} from "ant-design-vue/es/form/interface";
-import SysLoginApi, {LoginData, RegisterData} from "@/api/SysLoginApi";
-import BaseApi from "@/api/BaseApi";
+import SysLoginApi, {LoginData} from "@/api/SysLoginApi";
+import {defineComponent} from "vue";
 
 const MD5 = require('md5.js')
-
-@Options({
-  name: 'Login',
+export default defineComponent({
+  name: 'ssoLogin',
   data() {
     return {
       url: {
         login: "/sysLogin/login"
       },
       isLogin: true,
-      loginData: {},
+      loginData: <any>{},
       registerData: {},
       tmpPwd: "",
       title: window.title,
@@ -93,15 +92,17 @@ const MD5 = require('md5.js')
       if(this.isLogin){
         this.login()
       }else {
-        this.register()
+        // this.register()
       }
     },
     login() {
-      this.$refs.loginForm.validate().then((nameList: NamePath[]) => {
+      const loginForm:any = this.$refs.loginForm
+
+      loginForm.validate().then((nameList: NamePath[]) => {
         this.tmpPwd = this.loginData.password;
         this.loginData.password = new MD5().update(this.loginData.password).digest('hex');
         let data: LoginData = this.loginData
-        data.redirect = this.$route.query.redirect
+        data.redirect = <string>this.$route.query.redirect
         SysLoginApi.ssoLogin(data).then((res: AxiosResponse) => {
           console.log(res)
           this.loginData.password = this.tmpPwd;
@@ -122,8 +123,5 @@ const MD5 = require('md5.js')
   setup() {
   }
 })
-
-export default class Login extends Vue {
-}
 
 </script>

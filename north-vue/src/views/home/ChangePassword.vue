@@ -19,21 +19,16 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from "vue-class-component";
-import {toRef} from 'vue'
+import {defineComponent, toRef} from 'vue'
 import SysUserApi from "@/api/SysUserApi";
 import {AxiosResponse} from "axios";
 
-const MD5 = require('md5.js')
-
-let api = new SysUserApi();
-
-@Options({
+export default defineComponent({
   name: 'ChangePassword',
   data() {
     return {
       visible: false,
-      data: {},
+      data: <any>{},
       userId: "",
       layout: {
         labelCol: {span: 8},
@@ -44,7 +39,8 @@ let api = new SysUserApi();
           {required: true, type: 'string', trigger: 'blur', message: "旧密码不可为空"},
           {
             validator: (rule: any, value: any, callback: any) => {
-              api.checkPassword(this.userId, value).then(res => {
+              // @ts-ignore
+              SysUserApi.checkPassword(this.userId, value).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -77,7 +73,7 @@ let api = new SysUserApi();
   },
   methods: {
     ok() {
-      api.changePassword(this.userId, this.data.newPassword,this.data.oldPassword).then((res: AxiosResponse) => {
+      SysUserApi.changePassword(this.userId, this.data.newPassword, this.data.oldPassword).then((res: AxiosResponse) => {
         this.$message.success("操作成功")
         this.visible = false
       });
@@ -92,9 +88,6 @@ let api = new SysUserApi();
   }
 
 })
-
-export default class ChangePassword extends Vue {
-}
 
 </script>
 

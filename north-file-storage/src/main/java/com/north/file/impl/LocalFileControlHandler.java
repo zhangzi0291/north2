@@ -56,6 +56,9 @@ public class LocalFileControlHandler implements FileControlHandler {
     @Override
     public InputStream loadFileInputStream(String filePath) {
         Path file = Paths.get(this.config.getUploadPath(), filePath);
+        if(Files.notExists(file)){
+            return null;
+        }
         try {
             InputStream inputStream = new FileInputStream(file.toFile());
             return inputStream;

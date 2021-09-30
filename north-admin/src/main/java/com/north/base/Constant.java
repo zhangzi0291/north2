@@ -11,6 +11,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class Constant {
 
+    public static final String SATOKEN_REDIS_PERMISSION_KEY = "north.satoken.permission.";
+
+    public static final String SATOKEN_REDIS_ROLE_KEY = "north.satoken.role.";
+
+    public static final String SYS_MODULE_NAME = "sys";
+
+    public static final String GENEALOGY_MODULE_NAME = "genealogy";
+
     public static String CONTEXT_PATH;
 
     @Value("${server.servlet.context-path:}")
@@ -24,10 +32,6 @@ public class Constant {
     public void setUploadPath(String uploadPath) {
         UPLOAD_PATH = uploadPath;
     }
-
-    public static String SYS_MODULE_NAME = "sys";
-
-    public static String GENEALOGY_MODULE_NAME = "genealogy";
 
     public static String PY_SMALL_TOOL_WEB_URL;
 

@@ -1,8 +1,6 @@
 import {AxiosResponse} from "axios"
 import Qs from "qs";
 
-const MD5 = require('md5.js')
-
 const app = window.vm
 
 const axios = app.config.globalProperties.$axios
@@ -16,7 +14,7 @@ const url = {
 
 export default class SysUserOnlineApi {
 
-    public list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
+    public static list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.list,

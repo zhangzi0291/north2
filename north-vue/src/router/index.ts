@@ -1,12 +1,12 @@
 import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 
-const About = () => import(/* webpackChunkName: "About" */ '@/views/About.vue')
+// const About = () => import(/* webpackChunkName: "About" */ '@/views/About.vue')
 const Index = () => import(/* webpackChunkName: "Index" */ '@/views/Index.vue')
 const Home = () => import(/* webpackChunkName: "Home" */ '@/views/home/HomePage.vue')
 
 const Login = () => import(/* webpackChunkName: "Login" */ '@/views/login/LoginPage.vue')
 const SsoLogin = () => import(/* webpackChunkName: "SsoLogin" */ '@/views/login/SsoLoginPage.vue')
-const IframePanel = () => import(/* webpackChunkName: "test" */ '@/views/IframePanel.vue')
+const IframePanel = () => import(/* webpackChunkName: "IframePanel" */ '@/views/IframePanel.vue')
 /**
  * 后台管理
  */
@@ -29,7 +29,7 @@ const GenealogyTreeGraph = () => import(/* webpackChunkName: "GenealogyTreeGraph
  */
 const pyRegister = () => import(/* webpackChunkName: "pyRegister" */ '@/views/pytool/RegisterPage.vue')
 const pyChangePwd = () => import(/* webpackChunkName: "pyChangePwd" */ '@/views/pytool/ChangePwdPage.vue')
-const pyApp = () => import(/* webpackChunkName: "pyChangePwd" */ '@/views/pytool/app/AppPage.vue')
+const pyApp = () => import(/* webpackChunkName: "pyApp" */ '@/views/pytool/app/AppPage.vue')
 
 
 const test = () => import(/* webpackChunkName: "IframePanel" */ '@/views/test.vue')
@@ -92,11 +92,11 @@ const routes = [
                 name: '日志管理',
                 component: SysLog,
             },
-            {
-                path: 'genealogy/tree',
-                name: '族谱',
-                component: GenealogyTree,
-            },
+            // {
+            //     path: 'genealogy/tree',
+            //     name: '族谱',
+            //     component: GenealogyTree,
+            // },
             {
                 path: "/pytool/app",
                 name: "py工具应用列表",
@@ -114,11 +114,11 @@ const routes = [
         name: 'ssoLogin',
         component: SsoLogin,
     },
-    {
-        path: '/genealogyTreeGraph',
-        name: 'GenealogyTreeGraph',
-        component: GenealogyTreeGraph,
-    },
+    // {
+    //     path: '/genealogyTreeGraph',
+    //     name: 'GenealogyTreeGraph',
+    //     component: GenealogyTreeGraph,
+    // },
     {
         path: '/pytool/register',
         name: 'pytool-register',

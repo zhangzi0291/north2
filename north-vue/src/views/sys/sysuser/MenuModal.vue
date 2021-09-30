@@ -8,7 +8,6 @@
              :loading="loading" :pagination="false" :rowKey="(record)=>record.id"
              :rowSelection="rowSelection">
 
-
     </a-table>
   </a-modal>
 </template>
@@ -16,8 +15,6 @@
 <script lang="ts">
 import {Options, Vue} from "vue-class-component";
 import SysRoleApi from '@/api/SysRoleApi';
-
-let sysRoleApi = new SysRoleApi()
 
 @Options({
   name: 'MenuModal',
@@ -55,7 +52,7 @@ let sysRoleApi = new SysRoleApi()
       this.okCallback(this.data)
     },
     getAllResource() {
-      sysRoleApi.getAll().then(res => {
+      SysRoleApi.getAll().then(res => {
         this.roleList = res.data.data
         this.loading = false
       })

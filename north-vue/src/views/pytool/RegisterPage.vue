@@ -68,8 +68,6 @@ import {NamePath} from "ant-design-vue/es/form/interface";
 import SysLoginApi, {LoginData, RegisterData} from "@/api/SysLoginApi";
 import BaseApi from "@/api/BaseApi";
 
-const MD5 = require('md5.js')
-
 @Options({
   name: 'register',
   data() {

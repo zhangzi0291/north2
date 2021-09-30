@@ -3,11 +3,11 @@
 </style>
 <template>
   <base-page :breadcrumbs="breadcrumbs">
-   <template #content>
+    <template #content>
       <div>
         <a-row>
           <a-col :offset="16" :span="2">
-            <a-button type="primary" @click="getGenealogyTreeData(1)" >刷新</a-button>
+            <a-button type="primary" @click="getGenealogyTreeData(1)">刷新</a-button>
           </a-col>
           <a-col :span="2">
             <a-button type="primary" @click="openPeson">新增</a-button>
@@ -16,7 +16,7 @@
         </a-row>
         <a-row>
           <a-col :span="24" style="height:500px">
-            <genealogy-tree ref="genealogyTree" />
+            <genealogy-tree ref="genealogyTree"/>
           </a-col>
         </a-row>
 
@@ -28,17 +28,15 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
 import showPerson from './ShowPerson.vue';
 import GenealogyTree from './GenealogyTree.vue';
-import GenealogyApi from '@/api/GenealogyApi';
+import {defineComponent} from "vue";
 
 const echarts = require('echarts');
-
-@Options({
+export default defineComponent({
   name: "GenealogyTreePage",
   components: {
-    showPerson,GenealogyTree
+    showPerson, GenealogyTree
   },
   data() {
     return {
@@ -53,12 +51,14 @@ const echarts = require('echarts');
   computed: {},
   methods: {
     getGenealogyTreeData(id: string) {
-      this.$refs.genealogyTree.getGenealogyTreeData(id)
+      const genealogyTree: any = this.$refs.genealogyTree
+      genealogyTree.getGenealogyTreeData(id)
     },
     openPeson() {
-      this.$refs.showPerson.open(null,true)
+      const showPerson: any = this.$refs.showPerson
+      showPerson.open(null, true)
     },
-    okCallback(){
+    okCallback() {
       this.getGenealogyTreeData("1")
     },
 
@@ -69,6 +69,5 @@ const echarts = require('echarts');
   }
 
 })
-export default class GenealogyTreePage extends Vue {
-}
+
 </script>

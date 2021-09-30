@@ -18,7 +18,7 @@ const url = {
 
 export default class SysRoleApi {
 
-    public list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
+    public static list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.list,
@@ -26,14 +26,14 @@ export default class SysRoleApi {
         })
     }
 
-    public getAll(): Promise<AxiosResponse> {
+    public static getAll(): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.all,
         })
     }
 
-    public getResourceByRoleId(roleId: string): Promise<AxiosResponse> {
+    public static getResourceByRoleId(roleId: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             params: {
@@ -43,7 +43,7 @@ export default class SysRoleApi {
         })
     }
 
-    public del(ids: Array<string>): Promise<AxiosResponse> {
+    public static del(ids: Array<string>): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.del,
@@ -53,7 +53,7 @@ export default class SysRoleApi {
         })
     }
 
-    public add(data: any): Promise<AxiosResponse> {
+    public static add(data: any): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.add,
@@ -61,7 +61,7 @@ export default class SysRoleApi {
         })
     }
 
-    public checkRoleName(roleName: string, originalValue?: string): Promise<AxiosResponse> {
+    public static checkRoleName(roleName: string, originalValue?: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.checkRoleName,

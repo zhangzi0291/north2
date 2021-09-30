@@ -71,6 +71,7 @@ import {Options, Vue} from 'vue-class-component';
   name: "test",
   data() {
     return {
+
     }
   },
   methods: {

@@ -18,21 +18,21 @@ const url = {
 
 export default class SysResourceApi {
 
-    public getMenu(): Promise<AxiosResponse> {
+    public static getMenu(): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.getMenu,
         })
     }
 
-    public getAllResource(): Promise<AxiosResponse> {
+    public static getAllResource(): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.getAllResource,
         })
     }
 
-    public getResource(id: string): Promise<AxiosResponse> {
+    public static getResource(id: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.get,
@@ -42,7 +42,7 @@ export default class SysResourceApi {
         })
     }
 
-    public del(ids: Array<string>): Promise<AxiosResponse> {
+    public static del(ids: Array<string>): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.delResource,
@@ -52,7 +52,7 @@ export default class SysResourceApi {
         })
     }
 
-    public add(data: any): Promise<AxiosResponse> {
+    public static add(data: any): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.addResource,
@@ -60,7 +60,7 @@ export default class SysResourceApi {
         })
     }
 
-    public checkResourceName(resourceName: string, originalValue?: string): Promise<AxiosResponse> {
+    public static checkResourceName(resourceName: string, originalValue?: string): Promise<AxiosResponse> {
         return axios({
             method: 'get',
             url: url.checkResourceName,

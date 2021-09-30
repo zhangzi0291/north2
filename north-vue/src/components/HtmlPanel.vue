@@ -8,10 +8,10 @@
   </div>
 </template>
 
-<script>
-import {Options, Vue} from "vue-class-component";
+<script lang="ts">
+import {defineComponent} from "vue";
 
-@Options({
+export default defineComponent({
   name: "HtmlPanel",
   data() {
     return {}
@@ -27,7 +27,5 @@ import {Options, Vue} from "vue-class-component";
   mounted() {
   },
 })
-export default class HtmlPanel extends Vue {
-}
 </script>
 

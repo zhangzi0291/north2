@@ -1,6 +1,7 @@
 package com.north.base.configuration;
 
-import com.north.websocket.handler.SpringWebSocketHandler;
+import com.north.websocket.handler.HardwareInfoWebSocketHandler;
+import com.north.websocket.handler.NotificationWebSocketHandler;
 import com.north.websocket.handler.SpringWebSocketHandlerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,12 +21,11 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler(), "/ws")
+        registry
+                .addHandler(new HardwareInfoWebSocketHandler(), "/hardwareInfo")
+                .addInterceptors(new SpringWebSocketHandlerInterceptor()).setAllowedOrigins("*")
+                .addHandler(new NotificationWebSocketHandler(), "/notificationMessage")
                 .addInterceptors(new SpringWebSocketHandlerInterceptor()).setAllowedOrigins("*");
     }
 
-    @Bean
-    public TextWebSocketHandler webSocketHandler() {
-        return new SpringWebSocketHandler();
-    }
 }

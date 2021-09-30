@@ -41,13 +41,12 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 import SysUserOnlineApi from "@/api/SysUserOnlineApi";
-import {createVNode} from "vue";
+import {createVNode, defineComponent, reactive, ref} from "vue";
 import SysDictApi from "@/api/SysDictApi";
 import {AxiosResponse} from "axios";
 
-let api = new SysUserOnlineApi();
 
-@Options({
+export default defineComponent({
   name: 'SysOnlineUser',
   components: {
   },
@@ -57,17 +56,11 @@ let api = new SysUserOnlineApi();
       loginDevices = res.data.data
     });
     return {
-      //表格加载状态
-      loading: false,
       //面包屑
       breadcrumbs: [
         {name: "", icon: "HomeOutlined", href: "/home"},
         {name: "在线用户管理", icon: "UserOutlined", href: "/sysonlineuser/list"}
       ],
-      //查询数据
-      search: {},
-      //表格数据
-      data: [],
       //表格字段
       columns: [
         {title: '登录名', key: 'username', dataIndex: 'username'},
@@ -89,28 +82,6 @@ let api = new SysUserOnlineApi();
     }
   },
   methods: {
-    load(data:any) {
-      this.loading = true
-      if(!!data && !!data.current ){
-        this.page.current = data.current
-      }
-      api.list(this.search,this.page,this.sort).then(res => {
-        this.data = res.data.data.records
-        this.page = {
-          current: res.data.data.current,
-          total: res.data.data.total
-        }
-        this.loading = false
-      })
-    },
-    tableChange(page:any, filters:any, sorter:any){
-      this.page = page
-      this.sort = {
-        field:sorter.field,
-        order:sorter.order
-      }
-      this.load()
-    },
     kickUser(id: string) {
       this.$modal.confirm({
         title: '用户下线',
@@ -127,9 +98,44 @@ let api = new SysUserOnlineApi();
   created() {
     this.load()
   },
-})
+  setup() {
+    //表格加载状态
+    let loading = ref(false)
+    //分页
+    let page = reactive({current: 1, total: 0})
+    //排序
+    let sort = reactive({field: null, order: null})
+    //查询数据
+    let search = reactive({})
+    //表格数据
+    let data = ref([])
 
-export default class SysOnlineUser extends Vue {
-}
+    const load = function (param?: any) {
+      loading.value = true
+      if (!!param && !!param.current) {
+        page.current = param.current
+      }
+      SysUserOnlineApi.list(search, page, sort).then(res => {
+        data.value.length = 0
+        data.value = data.value.concat(res.data.data.records)
+        page.current = res.data.data.current
+        page.total = res.data.data.total
+        loading.value = false
+      })
+    }
+    const tableChange = function (pageParam: any, filters: any, sorter: any) {
+      page.current = pageParam.current
+      page.total = pageParam.total
+      sort.field = sorter.field
+      sort.order = sorter.order
+      load()
+    }
+    const tablePageOption = {loading, data, page, search, load, tableChange}
+
+    return {
+      ...tablePageOption
+    }
+  }
+})
 
 </script>
