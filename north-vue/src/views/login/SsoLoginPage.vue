@@ -54,6 +54,7 @@ import {AxiosResponse} from "axios";
 import {NamePath} from "ant-design-vue/es/form/interface";
 import SysLoginApi, {LoginData} from "@/api/SysLoginApi";
 import {defineComponent} from "vue";
+import BaseApi from "@/api/BaseApi";
 
 const MD5 = require('md5.js')
 export default defineComponent({
@@ -103,12 +104,23 @@ export default defineComponent({
         this.loginData.password = new MD5().update(this.loginData.password).digest('hex');
         let data: LoginData = this.loginData
         data.redirect = <string>this.$route.query.redirect
+        data.hash = <string>this.$route.query.hash
+        console.log(this.$route.query)
+        console.log(data)
         SysLoginApi.ssoLogin(data).then((res: AxiosResponse) => {
-          console.log(res)
           this.loginData.password = this.tmpPwd;
+          let user = {
+            userId: res.data.data.user.id,
+            username: res.data.data.user.username,
+            nickname: res.data.data.user.nickname,
+            iconUrl: res.data.data.user.iconUrl,
+          }
+          BaseApi.setUserByStorage(user)
+          BaseApi.setTokenByStorage(res.data.data.token)
+          BaseApi.setPermissionsByStorage(res.data.data.permissions)
+          BaseApi.setRolesByStorage(res.data.data.roles)
 
-          let href = res.data.data
-
+          let href = res.data.data.redirect
           window.location.href = href
         }).catch(() => {
           this.loginData.password = this.tmpPwd;

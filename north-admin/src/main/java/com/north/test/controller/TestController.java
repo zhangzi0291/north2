@@ -1,6 +1,7 @@
 package com.north.test.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.alibaba.fastjson.JSON;
 import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.aop.permissions.NorthWithoutPermissions;
 import com.north.base.api.R;
@@ -20,13 +21,13 @@ import java.util.Map;
  * @version 1.0
  * @since 2020-12-25
  */
+@NorthWithoutLogin
 @RestController
 public class TestController {
 
     @Resource
     RedisTemplate redisTemplate;
 
-    @NorthWithoutLogin
     @Operation(summary = "删除", description = "根据id数组删除")
     @RequestMapping(path = "test", method = {RequestMethod.GET})
     public R test() {
@@ -56,6 +57,19 @@ public class TestController {
         result.put("memery", SystemUtil.getSystemMemery());
         result.put("disk", SystemUtil.getSystemDisk());
 
+        return R.ok(result);
+    }
+
+    @RequestMapping(path = "test4", method = {RequestMethod.GET})
+    public R test4() throws Exception{
+        System.out.println("start");
+        Thread.sleep(1000*10);
+        Map<String, Object> result = new HashMap<>();
+        result.put("cpu", SystemUtil.getSystemCpu());
+        result.put("memery", SystemUtil.getSystemMemery());
+        result.put("disk", SystemUtil.getSystemDisk());
+        System.out.println(JSON.toJSONString(result));
+        System.out.println("end");
         return R.ok(result);
     }
 }

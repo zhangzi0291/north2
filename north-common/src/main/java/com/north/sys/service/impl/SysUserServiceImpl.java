@@ -13,7 +13,7 @@ import com.north.sys.mapper.SysUserMapper;
 import com.north.sys.service.ISysLogService;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
-import com.north.util.PasswordUtil;
+import com.north.utils.PasswordUtil;
 import org.redisson.api.RBucket;
 import org.redisson.api.RKeys;
 import org.redisson.api.RSet;
@@ -114,7 +114,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public void logout(String deviceType) {
         sysLogService.addLogoutLog();
-        StpUtil.logoutByLoginId(deviceType);
+        StpUtil.kickout(StpUtil.getLoginId(),deviceType);
     }
 
     @Override

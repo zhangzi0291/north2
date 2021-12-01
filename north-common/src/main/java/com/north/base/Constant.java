@@ -68,5 +68,13 @@ public class Constant {
         AES_IV = aesIv;
     }
 
+    public static String PY_HOMEPAGE_PATH;
 
+    @Value("${py-small-tool.homepage:./pyhomepage}")
+    public void setPyHomePagePath(String pyHomePagePath) {
+        Constant.PY_HOMEPAGE_PATH = pyHomePagePath;
+    }
+
+    public static String PY_HOMEPAGE_LOGO_NAME = "LOGO";
+    public static String PY_HOMEPAGE_CONTENT_NAME = "CONTENT";
 }

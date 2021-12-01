@@ -68,11 +68,11 @@
                 </a-button>
               </a-tooltip>
               <a-tooltip title="重置密码">
-                <a-button shape="circle" type="dashed" @click="resetPassword(record.id )">
-                  <template #icon>
-                    <LockOutlined/>
-                  </template>
-                </a-button>
+                  <a-button shape="circle" type="dashed" @click="resetPassword(record.id )">
+                    <template #icon>
+                      <LockOutlined/>
+                    </template>
+                  </a-button>
               </a-tooltip>
               <a-tooltip title="删除">
                 <a-button shape="circle" type="dashed" @click="del(record.id)">

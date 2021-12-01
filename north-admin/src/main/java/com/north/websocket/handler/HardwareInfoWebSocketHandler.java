@@ -107,7 +107,7 @@ public class HardwareInfoWebSocketHandler extends TextWebSocketHandler {
         ISysLogService sysLogService = SpringUtil.getBean(ISysLogService.class);
         Protobuf.HomeInfo.Builder homeinfoBuilder = Protobuf.HomeInfo.newBuilder();
         homeinfoBuilder.setTodayUser(sysLogService.getTodayUser().intValue());
-        homeinfoBuilder.setTotalUser(sysUserService.count());
+        homeinfoBuilder.setTotalUser((int)sysUserService.count());
         homeinfoBuilder.setOnlineUser(sysUserService.getTotalOnlineNum().intValue());
 
         Protobuf.HomeInfo.CpuInfo.Builder cpuInfo = Protobuf.HomeInfo.CpuInfo.newBuilder();

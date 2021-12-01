@@ -19,7 +19,7 @@ import com.north.sys.entity.SysUser;
 import com.north.sys.service.ISysRoleService;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
-import com.north.util.PasswordUtil;
+import com.north.utils.PasswordUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.transaction.annotation.Transactional;

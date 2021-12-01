@@ -9,7 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>north-file-storage</artifactId>
+    <artifactId>north-sso-server</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
     </properties>
@@ -20,13 +21,10 @@
             <artifactId>north-common</artifactId>
             <version>${north.common}</version>
         </dependency>
-        <!--    阿里云OSSAPI    -->
         <dependency>
-            <groupId>com.aliyun.oss</groupId>
-            <artifactId>aliyun-sdk-oss</artifactId>
-            <version>3.8.0</version>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-oauth2</artifactId>
+            <version>${sa-token.version}</version>
         </dependency>
-        <!--    阿里云OSSAPI    -->
-
     </dependencies>
 </project>

@@ -82,7 +82,7 @@ public class SysUser extends BaseModel implements Serializable {
     private String appName;
 
     /**
-     * 过期时间
+     * 最后登录时间
      */
     private LocalDateTime lastLoginTime;
 

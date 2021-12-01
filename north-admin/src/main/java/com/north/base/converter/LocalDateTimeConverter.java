@@ -41,7 +41,7 @@ public class LocalDateTimeConverter implements Converter<String, LocalDateTime> 
             return LocalDateTime.parse(source, DateTimeFormatter.ofPattern(FORMARTS.get(2)));
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
             return LocalDateTime.parse(source, DateTimeFormatter.ofPattern(FORMARTS.get(3)));
-        } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}T{1}\\d{1,2}:\\d{1,2}:\\d{1,2}\\.\\d{3}$")) {
+        } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}T{1}\\d{1,2}:\\d{1,2}:\\d{1,2}\\.\\d{1,5}$")) {
             LocalDateTime time = LocalDateTime.parse(source);
             return time;
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}T{1}\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
@@ -55,6 +55,5 @@ public class LocalDateTimeConverter implements Converter<String, LocalDateTime> 
             throw new IllegalArgumentException("Invalid boolean value '" + source + "'");
         }
     }
-
 
 }

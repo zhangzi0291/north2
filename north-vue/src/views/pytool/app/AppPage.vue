@@ -7,10 +7,7 @@
       <template #content>
         <a-page-header title="应用列表" >
           <template #extra>
-            <template v-if="hasPermissionOr('用户列表导入')">
-              <a-button type="primary" @click="openImport()">导入</a-button>
-              <a-button type="primary" @click="openAdd()">新增</a-button>
-            </template>
+            <a-button type="primary" @click="openAdd()">新增</a-button>
             <a-button type="primary" @click="load({current:1})">查询</a-button>
           </template>
         </a-page-header>

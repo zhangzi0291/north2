@@ -32,7 +32,11 @@ sa-token:
   # token风格
   token-style: uuid
   sso:
-    authUrl: http://127.0.0.1/sso-server/auth
+    auth-url: http://127.0.0.1/sso-server/auth
+    slo-url: http://127.0.0.1/sso-server/logout
+    not-login-url: http://localhost:8080/#/ssoLogin #登录页面url
+#    allow-url: *
+    secretkey: northnorth
   oauth2:
     is-code: true
     is-implicit: true

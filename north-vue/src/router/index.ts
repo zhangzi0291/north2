@@ -30,6 +30,7 @@ const GenealogyTreeGraph = () => import(/* webpackChunkName: "GenealogyTreeGraph
 const pyRegister = () => import(/* webpackChunkName: "pyRegister" */ '@/views/pytool/RegisterPage.vue')
 const pyChangePwd = () => import(/* webpackChunkName: "pyChangePwd" */ '@/views/pytool/ChangePwdPage.vue')
 const pyApp = () => import(/* webpackChunkName: "pyApp" */ '@/views/pytool/app/AppPage.vue')
+const pyHomePage = () => import(/* webpackChunkName: "pyApp" */ '@/views/pytool/homepage/HomePage.vue')
 
 
 const test = () => import(/* webpackChunkName: "IframePanel" */ '@/views/test.vue')
@@ -92,16 +93,22 @@ const routes = [
                 name: '日志管理',
                 component: SysLog,
             },
-            // {
-            //     path: 'genealogy/tree',
-            //     name: '族谱',
-            //     component: GenealogyTree,
-            // },
+            {
+                path: 'genealogy/tree',
+                name: '族谱',
+                component: GenealogyTree,
+            },
             {
                 path: "/pytool/app",
                 name: "py工具应用列表",
                 component: pyApp
+            },
+            {
+                path: "/pytool/homepage",
+                name: "py工具首页图标和说明",
+                component: pyHomePage
             }
+
         ]
     },
     {

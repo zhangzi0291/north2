@@ -3,6 +3,7 @@ package com.north.base.exception;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
+import cn.dev33.satoken.exception.SaTokenException;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
 import org.slf4j.Logger;
@@ -10,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,6 +66,13 @@ public class AdminGlobalExceptionHandler {
             message = NotLoginException.KICK_OUT_MESSAGE;
         }
         return R.failed(ApiErrorCode.UNAUTHORIZED, message);
+    }
+
+    @ExceptionHandler(value = SaTokenException.class)
+    public R SaTokenExceptionHandler(HttpServletRequest request, HttpServletResponse response, SaTokenException e) {
+        logger.error("SaToken Exception:", e);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        return R.failed(e.getMessage());
     }
 
     @ExceptionHandler(value = DataIntegrityViolationException.class)

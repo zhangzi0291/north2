@@ -1,7 +1,9 @@
 import axios from "axios";
 import {App} from "vue";
+import {has} from "lodash";
 
 declare let BASE_URL: any;
+declare let SSO_URL: any;
 
 var install = function install(app: App) {
 
@@ -58,7 +60,14 @@ var install = function install(app: App) {
         }
         console.log(error.response.status)
         if (error.response.status === 401) {
-            return router.push({path: '/login',})
+            const href = window.location.href.substring(0,window.location.href.indexOf("#")==-1?window.location.href.length:window.location.href.indexOf("#"))
+            const hash = window.location.hash.substring(1,window.location.hash.length)
+            console.log(href,hash)
+            axios.get(SSO_URL+"/sso-server/getSsoAuthUrl?redirect="+href+"&hash="+hash).then(res =>{
+                const url = res.data.data
+                window.location.href = url
+            })
+            // return router.push({path: '/login',})
         } else if (error.response.status === 403) {
             app.config.globalProperties.$message.error(error.response.config.url + " 权限不足")
             return Promise.reject(error);

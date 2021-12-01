@@ -12,7 +12,7 @@ const url = {
     pyToolRegister: "/smallTool/sys/register",
     pyChangePassword: "/smallTool/sys/changePassword",
     login: "/sysLogin/login",
-    ssoLogin:"/sso-server/doLogin",
+    ssoLogin:"/sso-server/ssoLogin",
     logout: "/sysLogin/logout",
 
 
@@ -31,6 +31,7 @@ export interface LoginData{
     username: string ;
     password: string ;
     redirect: string ;
+    hash: string ;
 }
 
 export default class SysLoginApi {
@@ -82,6 +83,7 @@ export default class SysLoginApi {
                 username: loginData.username,
                 password: loginData.password,
                 redirect: loginData.redirect,
+                hash: loginData.hash,
             }))
         })
     }

@@ -130,7 +130,7 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
 
         try {
             InputStream inputStream = fileControlHandler.loadFileInputStream(file.getFilePath());
-            if (inputStream == null){
+            if (inputStream == null) {
                 return R.failed("下载错误,文件不存在");
             }
             OutputStream outputStream = response.getOutputStream();

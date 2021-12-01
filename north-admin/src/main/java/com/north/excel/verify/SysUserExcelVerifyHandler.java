@@ -6,7 +6,7 @@ import com.north.base.cache.BaseRedisCacheService;
 import com.north.sys.controller.SysRoleController;
 import com.north.sys.controller.SysUserController;
 import com.north.sys.entity.SysUser;
-import com.north.util.ExcelUtil;
+import com.north.utils.ExcelUtil;
 import com.north.utils.SpringUtil;
 
 import java.util.Map;

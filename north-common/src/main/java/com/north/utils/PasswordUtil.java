@@ -1,4 +1,4 @@
-package com.north.util;
+package com.north.utils;
 
 import cn.hutool.crypto.SecureUtil;
 
