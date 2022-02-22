@@ -12,13 +12,15 @@ const url = {
     pyToolRegister: "/smallTool/sys/register",
     pyChangePassword: "/smallTool/sys/changePassword",
     login: "/sysLogin/login",
-    ssoLogin:"/sso-server/ssoLogin",
+    ssoLogin: "/sso-server/ssoLogin",
     logout: "/sysLogin/logout",
+    gen: "/sysLogin/gen",
+    check: "/sysLogin/check",
 
 
 }
 
-export interface RegisterData{
+export interface RegisterData {
     username: string | undefined;
     password: string | undefined;
     nickname: string | undefined;
@@ -27,16 +29,17 @@ export interface RegisterData{
 }
 
 
-export interface LoginData{
-    username: string ;
-    password: string ;
-    redirect: string ;
-    hash: string ;
+export interface LoginData {
+    username: string;
+    password: string;
+    redirect: string;
+    hash: string;
+    genId: string;
 }
 
 export default class SysLoginApi {
 
-    public static register(registerData:RegisterData): Promise<AxiosResponse> {
+    public static register(registerData: RegisterData): Promise<AxiosResponse> {
         return axios({
             method: "post",
             url: url.register,
@@ -50,7 +53,7 @@ export default class SysLoginApi {
         })
     }
 
-    public static pyToolRegister(registerData:RegisterData): Promise<AxiosResponse> {
+    public static pyToolRegister(registerData: RegisterData): Promise<AxiosResponse> {
         return axios({
             method: "post",
             url: url.pyToolRegister,
@@ -64,18 +67,19 @@ export default class SysLoginApi {
         })
     }
 
-    public static login(loginData:LoginData): Promise<AxiosResponse> {
+    public static login(loginData: LoginData): Promise<AxiosResponse> {
         return axios({
             method: "post",
             url: url.login,
             data: Qs.stringify(({
                 username: loginData.username,
                 password: loginData.password,
+                genId: loginData.genId,
             }))
         })
     }
 
-    public static ssoLogin(loginData:LoginData): Promise<AxiosResponse> {
+    public static ssoLogin(loginData: LoginData): Promise<AxiosResponse> {
         return axios({
             method: "post",
             url: url.ssoLogin,
@@ -96,7 +100,7 @@ export default class SysLoginApi {
     }
 
 
-    public static pyChangePassword(key:string,username: string, password: string,oldPassword: string): Promise<AxiosResponse> {
+    public static pyChangePassword(key: string, username: string, password: string, oldPassword: string): Promise<AxiosResponse> {
         console.log(password)
         password = new MD5().update(password).digest('hex')
         oldPassword = new MD5().update(oldPassword).digest('hex')
@@ -109,6 +113,24 @@ export default class SysLoginApi {
                 username: username,
                 password: password,
                 oldPassword: oldPassword,
+            }))
+        })
+    }
+
+    public static gen(): Promise<AxiosResponse> {
+        return axios({
+            method: 'post',
+            url: url.gen,
+        })
+    }
+
+    public static check(id: string, movePercent: string): Promise<AxiosResponse> {
+        return axios({
+            method: 'post',
+            url: url.check,
+            data: Qs.stringify(({
+                id: id,
+                percentage: movePercent
             }))
         })
     }

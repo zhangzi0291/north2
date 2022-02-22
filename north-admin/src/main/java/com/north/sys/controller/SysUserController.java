@@ -25,9 +25,9 @@ import com.north.sys.entity.SysUserRole;
 import com.north.sys.service.ISysRoleService;
 import com.north.sys.service.ISysUserRoleService;
 import com.north.sys.service.ISysUserService;
+import com.north.util.WebSocketUtil;
 import com.north.utils.ExcelUtil;
 import com.north.utils.PasswordUtil;
-import com.north.util.WebSocketUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.redisson.api.RedissonClient;
@@ -313,6 +313,12 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         return R.ok();
     }
 
+    /**
+     * 在线用户列表
+     *
+     * @param page
+     * @return
+     */
     @RequestMapping("onlineUserList")
     public R getOnlineUserList(Page page) {
         Page<Map> pageList = new Page<>(page.getCurrent(), page.getSize());
@@ -332,17 +338,30 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         return R.ok(pageList);
     }
 
+    /**
+     * 踢用户下线
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping("kickUser")
     public R kickUser(String id) {
+        StpUtil.kickout(id);
         try {
             WebSocketUtil.notifyUser(id, "下线", "您被管理员踢下线了");
-        } catch (Exception e){
-            logger.warn("WS下线消息推送失败",e);
+        } catch (Exception e) {
+            logger.warn("WS下线消息推送失败", e);
         }
-        StpUtil.kickout(id);
         return R.ok();
     }
 
+    /**
+     * 导入用户
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("import")
     public R importExcel(@RequestParam("file") MultipartFile file) throws IOException {
         ImportParams importParams = new ImportParams();
@@ -379,8 +398,30 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
         return R.ok();
     }
 
-    public static void main(String[] args) {
-        String s = "2106091419150004000000000000003800000000000000000000000000000004";
-        System.out.println(s.length());
+    /**
+     * 停用或启用用户
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("changeUserStatus")
+    public R changeUserStatus(String id) {
+        SysUser sysUser = service.getById(id);
+        if (sysUser.getStatus() == null || Integer.valueOf(1).equals(sysUser.getStatus())) {
+            sysUser.setStatus(0);
+            StpUtil.kickout(id);
+            try {
+                WebSocketUtil.notifyUser(id, "下线", "您被管理员踢下线了");
+            } catch (Exception e) {
+                logger.warn("WS下线消息推送失败", e);
+            }
+            service.updateById(sysUser);
+        } else {
+            sysUser.setStatus(1);
+            service.updateById(sysUser);
+        }
+        return R.ok();
     }
+
+
 }

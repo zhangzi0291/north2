@@ -1,27 +1,28 @@
 import * as $protobuf from "protobufjs";
+
 /** Properties of a HomeInfo. */
 export interface IHomeInfo {
 
     /** HomeInfo id */
-    id?: (string|null);
+    id?: (string | null);
 
     /** HomeInfo totalUser */
-    totalUser?: (number|null);
+    totalUser?: (number | null);
 
     /** HomeInfo onlineUser */
-    onlineUser?: (number|null);
+    onlineUser?: (number | null);
 
     /** HomeInfo todayUser */
-    todayUser?: (number|null);
+    todayUser?: (number | null);
 
     /** HomeInfo cpu */
-    cpu?: (HomeInfo.ICpuInfo|null);
+    cpu?: (HomeInfo.ICpuInfo | null);
 
     /** HomeInfo memery */
-    memery?: (HomeInfo.IMemeryInfo|null);
+    memery?: (HomeInfo.IMemeryInfo | null);
 
     /** HomeInfo disk */
-    disk?: (HomeInfo.IDiskInfo[]|null);
+    disk?: (HomeInfo.IDiskInfo[] | null);
 }
 
 /** Represents a HomeInfo. */
@@ -46,10 +47,10 @@ export class HomeInfo implements IHomeInfo {
     public todayUser: number;
 
     /** HomeInfo cpu. */
-    public cpu?: (HomeInfo.ICpuInfo|null);
+    public cpu?: (HomeInfo.ICpuInfo | null);
 
     /** HomeInfo memery. */
-    public memery?: (HomeInfo.IMemeryInfo|null);
+    public memery?: (HomeInfo.IMemeryInfo | null);
 
     /** HomeInfo disk. */
     public disk: HomeInfo.IDiskInfo[];
@@ -85,7 +86,7 @@ export class HomeInfo implements IHomeInfo {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): HomeInfo;
+    public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): HomeInfo;
 
     /**
      * Decodes a HomeInfo message from the specified reader or buffer, length delimited.
@@ -94,14 +95,14 @@ export class HomeInfo implements IHomeInfo {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): HomeInfo;
+    public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): HomeInfo;
 
     /**
      * Verifies a HomeInfo message.
      * @param message Plain object to verify
      * @returns `null` if valid, otherwise the reason why it is not
      */
-    public static verify(message: { [k: string]: any }): (string|null);
+    public static verify(message: { [k: string]: any }): (string | null);
 
     /**
      * Creates a HomeInfo message from a plain object. Also converts values to their respective internal types.
@@ -131,13 +132,13 @@ export namespace HomeInfo {
     interface ICpuInfo {
 
         /** CpuInfo system */
-        system?: (string|null);
+        system?: (string | null);
 
         /** CpuInfo process */
-        process?: (string|null);
+        process?: (string | null);
 
         /** CpuInfo loadAverage */
-        loadAverage?: (string|null);
+        loadAverage?: (string | null);
     }
 
     /** Represents a CpuInfo. */
@@ -189,7 +190,7 @@ export namespace HomeInfo {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): HomeInfo.CpuInfo;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): HomeInfo.CpuInfo;
 
         /**
          * Decodes a CpuInfo message from the specified reader or buffer, length delimited.
@@ -198,14 +199,14 @@ export namespace HomeInfo {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): HomeInfo.CpuInfo;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): HomeInfo.CpuInfo;
 
         /**
          * Verifies a CpuInfo message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a CpuInfo message from a plain object. Also converts values to their respective internal types.
@@ -233,10 +234,10 @@ export namespace HomeInfo {
     interface IMemeryInfo {
 
         /** MemeryInfo used */
-        used?: (string|null);
+        used?: (string | null);
 
         /** MemeryInfo total */
-        total?: (string|null);
+        total?: (string | null);
     }
 
     /** Represents a MemeryInfo. */
@@ -285,7 +286,7 @@ export namespace HomeInfo {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): HomeInfo.MemeryInfo;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): HomeInfo.MemeryInfo;
 
         /**
          * Decodes a MemeryInfo message from the specified reader or buffer, length delimited.
@@ -294,14 +295,14 @@ export namespace HomeInfo {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): HomeInfo.MemeryInfo;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): HomeInfo.MemeryInfo;
 
         /**
          * Verifies a MemeryInfo message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a MemeryInfo message from a plain object. Also converts values to their respective internal types.
@@ -329,13 +330,13 @@ export namespace HomeInfo {
     interface IDiskInfo {
 
         /** DiskInfo used */
-        used?: (string|null);
+        used?: (string | null);
 
         /** DiskInfo total */
-        total?: (string|null);
+        total?: (string | null);
 
         /** DiskInfo name */
-        name?: (string|null);
+        name?: (string | null);
     }
 
     /** Represents a DiskInfo. */
@@ -387,7 +388,7 @@ export namespace HomeInfo {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): HomeInfo.DiskInfo;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): HomeInfo.DiskInfo;
 
         /**
          * Decodes a DiskInfo message from the specified reader or buffer, length delimited.
@@ -396,14 +397,14 @@ export namespace HomeInfo {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): HomeInfo.DiskInfo;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): HomeInfo.DiskInfo;
 
         /**
          * Verifies a DiskInfo message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a DiskInfo message from a plain object. Also converts values to their respective internal types.
@@ -432,13 +433,13 @@ export namespace HomeInfo {
 export interface INotificationMessage {
 
     /** NotificationMessage id */
-    id?: (string|null);
+    id?: (string | null);
 
     /** NotificationMessage title */
-    title?: (string|null);
+    title?: (string | null);
 
     /** NotificationMessage message */
-    message?: (string|null);
+    message?: (string | null);
 }
 
 /** Represents a NotificationMessage. */
@@ -490,7 +491,7 @@ export class NotificationMessage implements INotificationMessage {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): NotificationMessage;
+    public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): NotificationMessage;
 
     /**
      * Decodes a NotificationMessage message from the specified reader or buffer, length delimited.
@@ -499,14 +500,14 @@ export class NotificationMessage implements INotificationMessage {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): NotificationMessage;
+    public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): NotificationMessage;
 
     /**
      * Verifies a NotificationMessage message.
      * @param message Plain object to verify
      * @returns `null` if valid, otherwise the reason why it is not
      */
-    public static verify(message: { [k: string]: any }): (string|null);
+    public static verify(message: { [k: string]: any }): (string | null);
 
     /**
      * Creates a NotificationMessage message from a plain object. Also converts values to their respective internal types.

@@ -5,7 +5,7 @@
   <div>
     <base-page :breadcrumbs="breadcrumbs">
       <template #content>
-        <a-page-header title="应用列表" >
+        <a-page-header title="应用列表">
           <template #extra>
             <a-button type="primary" @click="openAdd()">新增</a-button>
             <a-button type="primary" @click="load({current:1})">查询</a-button>
@@ -51,7 +51,7 @@
               <a-tooltip title="下载">
                 <a-button shape="circle" type="dashed" @click="download(record.fileId)" v-if="record.fileId">
                   <template #icon>
-                    <DownloadOutlined />
+                    <DownloadOutlined/>
                   </template>
                 </a-button>
               </a-tooltip>
@@ -69,8 +69,8 @@
         <a-button type="primary" @click="openMenuModal(data)">分配角色</a-button>
       </template>
     </form-modal>
-<!--    <menu-modal ref="menuModal"></menu-modal>-->
-<!--    <menu-modal ref="menuModal2" :okCallback="menuModalOkCallback"></menu-modal>-->
+    <!--    <menu-modal ref="menuModal"></menu-modal>-->
+    <!--    <menu-modal ref="menuModal2" :okCallback="menuModalOkCallback"></menu-modal>-->
 
     <import-modal ref="importModal" :title="'用户导入'" :url="url.import"></import-modal>
 
@@ -84,7 +84,7 @@
           <a-tooltip title="下载">
             <a-button shape="circle" type="dashed" @click="download(record.fileId)" v-if="record.fileId">
               <template #icon>
-                <DownloadOutlined />
+                <DownloadOutlined/>
               </template>
             </a-button>
           </a-tooltip>
@@ -96,7 +96,7 @@
 </template>
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import FormModal, {Ext, ModalField, SelectField} from "@/components/base/FormModal.vue";
+import FormModal, {Ext, ModalField} from "@/components/base/FormModal.vue";
 import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
@@ -111,15 +111,15 @@ import PytoolAppApi from "@/api/PytoolAppApi";
   },
   data() {
     return {
-      hisColumns:[
+      hisColumns: [
         {title: '应用名称', key: 'softName', dataIndex: 'softName', width: "100px"},
         {title: '应用版本', key: 'softVersion', dataIndex: 'softVersion', width: "100px"},
         {title: '版本更新时间', key: 'versionUpdateTime', dataIndex: 'versionUpdateTime', width: "100px"},
         {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "100px"},
       ],
-      hisData:[],
-      hisLoading:false,
-      visibleHis:false,
+      hisData: [],
+      hisLoading: false,
+      visibleHis: false,
       //表格加载状态
       loading: false,
       //接口url
@@ -160,7 +160,7 @@ import PytoolAppApi from "@/api/PytoolAppApi";
                 return callback()
               }
               let originalValue = (<any>this.check).username;
-              PytoolAppApi.checkSoftName(value,originalValue).then(res => {
+              PytoolAppApi.checkSoftName(value, originalValue).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -177,19 +177,19 @@ import PytoolAppApi from "@/api/PytoolAppApi";
         ],
 
       },
-      check:{
+      check: {
         nickname: "",
         username: "",
       }
     }
   },
   methods: {
-    load(data:any) {
+    load(data: any) {
       this.loading = true
-      if(!!data && !!data.current ){
+      if (!!data && !!data.current) {
         this.page.current = data.current
       }
-      PytoolAppApi.list(this.search,this.page,this.sort).then(res => {
+      PytoolAppApi.list(this.search, this.page, this.sort).then(res => {
         this.data = res.data.data.records
         this.page = {
           current: res.data.data.current,
@@ -198,17 +198,17 @@ import PytoolAppApi from "@/api/PytoolAppApi";
         this.loading = false
       })
     },
-    tableChange(page:any, filters:any, sorter:any){
+    tableChange(page: any, filters: any, sorter: any) {
       this.page = page
       this.sort = {
-        field:sorter.field,
-        order:sorter.order
+        field: sorter.field,
+        order: sorter.order
       }
       this.load()
     },
-    loadHis(softName:string) {
+    loadHis(softName: string) {
       this.hisLoading = true
-      PytoolAppApi.gethistoryList(softName,this.hisPage).then(res => {
+      PytoolAppApi.gethistoryList(softName, this.hisPage).then(res => {
         this.hisData = res.data.data.records
         this.hisPage = {
           current: res.data.data.current,
@@ -217,7 +217,7 @@ import PytoolAppApi from "@/api/PytoolAppApi";
         this.hisLoading = false
       })
     },
-    hisTableChange(page:any){
+    hisTableChange(page: any) {
       this.hisPage = page
       this.loadHis()
     },
@@ -246,19 +246,19 @@ import PytoolAppApi from "@/api/PytoolAppApi";
         },
       });
     },
-    download(fileId: string){
-      let href = window.BASE_URL+"/sysFile/download?id=" + fileId
+    download(fileId: string) {
+      let href = window.BASE_URL + "/sysFile/download?id=" + fileId
       window.location.href = href
     },
-    openHistory(softName:string){
+    openHistory(softName: string) {
       this.visibleHis = true
       this.loadHis(softName)
     },
-    ok(){
+    ok() {
       this.visibleHis = false
 
     },
-    cancel(){
+    cancel() {
       this.visibleHis = false
 
     }

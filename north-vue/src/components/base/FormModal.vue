@@ -47,7 +47,8 @@
         </a-form-item>
         <!--  上传文件  -->
         <a-form-item v-else-if="canEdit(item.key) && item.type == 'File'" :label="item.title" :name="item.key">
-          <a-upload :before-upload="beforeUpload" :file-list="fileList[item.key]" @change="handleChange($event, item)" :customRequest="customRequest">
+          <a-upload :before-upload="beforeUpload" :file-list="fileList[item.key]" @change="handleChange($event, item)"
+                    :customRequest="customRequest">
             <a-button v-if="fileList[item.key].length  < item.ext.fileNum">
               <upload-outlined></upload-outlined>
               上传
@@ -56,16 +57,7 @@
         </a-form-item>
         <!--  上传图片 -->
         <a-form-item v-else-if="canEdit(item.key) && item.type == 'Image'" :label="item.title" :name="item.key">
-          <a-upload :before-upload="beforeUpload" :customRequest="customRequest" :file-list="fileList[item.key]"
-                    list-type="picture-card"
-                    @change="handleChange($event, item)" @preview="handlePreview"
-          >
-            <div v-if="fileList[item.key].length < item.ext.fileNum">
-              <plus-outlined/>
-              <div class="ant-upload-text">上传</div>
-            </div>
-          </a-upload>
-
+          <upload-image @imageChange="imageChange($event,item.key)" :init-file-list="fileList[item.key]"></upload-image>
         </a-form-item>
 
         <template v-else>
@@ -74,9 +66,6 @@
 
       </template>
     </a-form>
-    <a-modal :footer="null" :visible="previewVisible" centered @cancel="previewCancel">
-      <img :src="previewImage" style="width: 100%"/>
-    </a-modal>
   </a-modal>
 </template>
 <script lang="ts">
@@ -85,6 +74,7 @@ import {Options, Vue} from 'vue-class-component';
 import {AxiosResponse} from 'axios';
 import {Moment} from 'moment';
 import SysDictApi from "@/api/SysDictApi";
+import UploadImage from "@/components/UploadImage.vue";
 
 let dictApi = new SysDictApi();
 
@@ -161,15 +151,14 @@ export class Ext {
 
 @Options({
   name: 'FormModal',
+  components: {UploadImage},
   data() {
     return {
       url: "",
       visible: false,
-      previewVisible: false,
       data: {},
       fileList: {},
       img: "",
-      previewImage: "",
       layout: {
         labelCol: {span: 8},
         wrapperCol: {span: 14},
@@ -254,8 +243,18 @@ export class Ext {
     },
     async open(data: any) {
       this.visible = true
+      if (data == undefined) {
+        data = {}
+      }
       if (!!data.id) {
         await this.list(data.id)
+        for (let columnsKey in this.columns) {
+          if (this.columns[columnsKey].type == 'Image') {
+            let key = this.columns[columnsKey].key
+            let value = this.data[this.columns[columnsKey].key]
+            this.fileList[key] = [{url: window.BASE_URL + '/sysFile/download?id=' + value}]
+          }
+        }
         this.url = this.editUrl
       } else {
         this.url = this.addUrl
@@ -303,106 +302,14 @@ export class Ext {
     onDateTimeOk(date: Moment, item: ModalField) {
       this.data[item.key] = date.toDate().Format('yyyy-MM-dd hh:mm:ss')
     },
-    loadImage(file: any) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = error => reject(error);
-      });
+    imageChange(fileList, key) {
+      this.fileList[key] = fileList
     },
-    beforeUpload(file: any) {
-      if (!file) {
-        return false
-      }
-      const isLt = file.size / 1024 / 1024 < 5;
-      if (!isLt) {
-        this.$message.error("文件大小超出限制，最大5M");
-        return false
-      }
 
-      return true
-    },
-    handleChange(fileItem: any, item: ModalField) {
-      let file = fileItem.file
-      if (file.status == 'uploading') {
-        if (!this.data[item.key]) {
-          this.data[item.key] = []
-        }
-        file.status = 'done'
-        // let a = await this.transformFile(file)
-        // this.loadImage(file).then((base64: string) => {
-        //   file.url = base64
-        // });
-        this.fileList[item.key] = [...this.fileList[item.key], file];
-      }
-      if (file.status == 'removed') {
-        const index = this.fileList[item.key].indexOf(file);
-        this.fileList[item.key].splice(index, 1);
-      }
-    },
-    customRequest(file: any) {
-      //不做任何实现不会自动上传
-    },
-    async transformFile(file: any) {
-      return new Promise(resolve => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          const canvas = document.createElement('canvas');
-          const image: HTMLImageElement = document.createElement('img');
-          image.src = reader.result as string;
-          image.onload = () => {
-            const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
-            if (image.width > 0 && image.height > 0) {
-              if (image.width / image.height >= 164 / 112) {
-                if (image.width > 164) {
-                  image.width = 164;
-                  image.height = (image.height * 164) / image.width;
-                } else {
-                  image.width = image.width;
-                  image.height = image.height;
-                }
-                image.alt = image.width + "×" + image.height;
-              } else {
-                if (image.height > 112) {
-                  image.height = 112;
-                  image.width = (image.width * 112) / image.height;
-                } else {
-                  image.width = image.width;
-                  image.height = image.height;
-                }
-                image.alt = image.width + "×" + image.height;
-              }
-            }
-            ctx.drawImage(image, 0, 0);
-            canvas.toBlob(resolve);
-          };
-        };
-      });
-    },
-    async handlePreview(file: any) {
-      if (!!file.url) {
-        this.previewImage = file.url
-      } else {
-        this.previewImage = await this.loadImage(file.originFileObj)
-      }
-      this.previewVisible = true
-    },
-    previewCancel() {
-      this.previewVisible = false
-    }
   },
   created() {
 
   },
-  beforeUpdate() {
-    for (let column of this.columns) {
-      if (column.type == "File" || column.type == "Image") {
-        this.fileList[column.key] = []
-      }
-    }
-  }
 
 })
 

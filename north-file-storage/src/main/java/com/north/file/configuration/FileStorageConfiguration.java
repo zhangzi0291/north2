@@ -39,14 +39,24 @@ public class FileStorageConfiguration {
     @ConditionalOnProperty(prefix = "north.file", name = "type", havingValue = "local", matchIfMissing = true)
     @Bean
     public FileControlHandler localFileControlHandler() {
-        LocalConfig localConfig = new LocalConfig(uploadPath);
+        LocalConfig localConfig = getLocalConfig ();
         return FileControlFactory.getFileControlHandler(FileControlType.LOCAL, localConfig);
+    }
+
+    @Bean
+    public LocalConfig getLocalConfig (){
+        return new LocalConfig(uploadPath);
     }
 
     @ConditionalOnProperty(prefix = "north.file", name = "type", havingValue = "oss")
     @Bean
     public FileControlHandler aliyunOssFileControlHandler() {
-        AliyunOssConfig config = new AliyunOssConfig(endpoint, accessKeyId, accessKeySecret, bucketName, prefixKey);
+        AliyunOssConfig config = getAliyunOssConfig();
         return FileControlFactory.getFileControlHandler(FileControlType.OSS, config);
+    }
+
+    @Bean
+    public AliyunOssConfig getAliyunOssConfig (){
+        return new AliyunOssConfig(endpoint, accessKeyId, accessKeySecret, bucketName, prefixKey);
     }
 }

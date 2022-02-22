@@ -197,13 +197,13 @@ export default defineComponent({
       this.collapsed = collapsed
     },
     openChangePassword() {
-      const cp:any = this.$refs.cp
+      const cp: any = this.$refs.cp
       cp.open()
     },
     openChangeUserInfo() {
-      const cui:any = this.$refs.cui
+      const cui: any = this.$refs.cui
       //@ts-ignore
-      const user:any = this.user
+      const user: any = this.user
       cui.open(user.userId)
     },
     logout() {

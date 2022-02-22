@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.north.base.Constant;
 import com.north.base.exception.LoginFailedException;
 import com.north.sys.entity.SysResource;
 import com.north.sys.entity.SysRole;
@@ -78,6 +79,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw LoginFailedException.newInstance(LoginFailedException.LoginFailedEnum.LOCKING_ERROR);
         }
         return sysUser;
+    }
+
+    @Override
+    public Boolean checkGen(String genId) {
+        if(!Boolean.TRUE.equals(redissonClient.getBucket(Constant.REDIS_PREFIX+genId).get())){
+            throw LoginFailedException.newInstance(LoginFailedException.LoginFailedEnum.GEN_ERROR);
+        }
+        redissonClient.getBucket(Constant.REDIS_PREFIX+genId).deleteAsync();
+        return Boolean.TRUE;
     }
 
     @Override

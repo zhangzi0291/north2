@@ -26,4 +26,12 @@ public enum FileControlType {
         }
         return null;
     }
+    public static FileControlType getEnumByName(String name) {
+        for (FileControlType eEnum : values()) {
+            if (eEnum.name.equals(name)) {
+                return eEnum;
+            }
+        }
+        return null;
+    }
 }

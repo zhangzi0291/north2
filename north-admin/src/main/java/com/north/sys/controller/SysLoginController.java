@@ -1,5 +1,8 @@
 package com.north.sys.controller;
 
+import cloud.tianai.captcha.slider.SliderCaptchaApplication;
+import cloud.tianai.captcha.vo.CaptchaResponse;
+import cloud.tianai.captcha.vo.SliderCaptchaVO;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
@@ -9,6 +12,7 @@ import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.aop.validator.ValidateParam;
 import com.north.aop.validator.ValidateParams;
 import com.north.aop.validator.ValidatorEnum;
+import com.north.base.Constant;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
 import com.north.constant.DeviceTypeEnum;
@@ -22,19 +26,19 @@ import com.north.sys.service.ISysUserService;
 import com.north.utils.PasswordUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.redisson.api.RedissonClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Northzx
@@ -56,6 +60,10 @@ public class SysLoginController {
     private Map<String, IMsgService> msgService;
     @Resource
     private ISysUserRoleService sysUserRoleService;
+    @Resource
+    private SliderCaptchaApplication sliderCaptchaApplication;
+    @Resource
+    private RedissonClient redissonClient;
 
     /**
      * 注册
@@ -117,7 +125,9 @@ public class SysLoginController {
     @ValidateParams(
             @ValidateParam(value = ValidatorEnum.ENUM_CLASS, parameterName = "deviceType", express = "DeviceTypeEnum")
     )
-    public R login(String username, String password, String deviceType) {
+    public R login(String genId,String username, String password, String deviceType) {
+        //检查验证码
+        sysUserService.checkGen(genId);
         //检查密码是否可以登陆
         SysUser sysUser = sysUserService.checkCanUserLogin(username, password);
         //获取角色返回
@@ -205,4 +215,26 @@ public class SysLoginController {
         sysUserService.logout(deviceType);
         return R.ok();
     }
+
+    @NorthWithoutLogin
+    @Operation(summary = "滑块验证码", description = "滑块验证码")
+    @RequestMapping(path = "gen", method = {RequestMethod.GET, RequestMethod.POST})
+    public CaptchaResponse<SliderCaptchaVO> gen(HttpServletRequest request) {
+        CaptchaResponse<SliderCaptchaVO> response = sliderCaptchaApplication.generateSliderCaptcha();
+        return response;
+    }
+
+    @NorthWithoutLogin
+    @Operation(summary = "滑块验证", description = "滑块验证")
+    @RequestMapping(path = "check", method = {RequestMethod.GET, RequestMethod.POST})
+    public R check(@RequestParam("id") String id,
+                                @RequestParam("percentage") Float percentage,
+                                HttpServletRequest request) {
+        Boolean flag = sliderCaptchaApplication.matching(id, percentage);
+        if(flag){
+            redissonClient.getBucket(Constant.REDIS_PREFIX+id).set(true,5, TimeUnit.MINUTES);
+        }
+        return R.ok(flag.toString());
+    }
+
 }

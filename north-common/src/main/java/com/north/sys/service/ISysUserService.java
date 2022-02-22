@@ -44,6 +44,12 @@ public interface ISysUserService extends IService<SysUser> {
     SysUser checkCanUserLogin(String usernaem, String password);
 
     /**
+     * 校验验证码是否通过
+     * @param genId
+     * @return
+     */
+    Boolean checkGen(String genId);
+    /**
      * 登录
      *
      * @param user

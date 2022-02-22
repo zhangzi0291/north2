@@ -1,6 +1,7 @@
 package com.north.file;
 
 import java.io.InputStream;
+import java.time.LocalDate;
 
 /**
  * @author Northzx
@@ -60,4 +61,9 @@ public interface FileControlHandler {
     void deleteFile(String filePath);
 
 
+    default String getDatePathStr() {
+        LocalDate localDate = LocalDate.now();
+        String datePath =  localDate.getYear() + "/" + localDate.getMonthValue() + "/" + localDate.getDayOfMonth()+ "/";
+        return datePath;
+    }
 }

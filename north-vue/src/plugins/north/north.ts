@@ -2,12 +2,17 @@ import {App} from 'vue';
 import BasePage from '@/components/base/page/BasePage.vue'
 import HtmlPanel from '@/components/HtmlPanel.vue'
 import {AxiosResponse} from "axios";
-import lodash from "lodash"
+
+import MdEditor from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
+import UploadImage from "@/components/UploadImage.vue";
 
 var install = function install(app: App) {
 
+    app.component("md-editor", MdEditor)
     app.component("base-page", BasePage)
     app.component("html-panel", HtmlPanel)
+    app.component("upload-image", UploadImage)
 
     app.config.globalProperties.$download = function (url: string, method: string, fileName: string, data: any) {
         app.config.globalProperties.$axios({
@@ -27,8 +32,6 @@ var install = function install(app: App) {
         });
 
     }
-
-    app.config.globalProperties.$lodash = lodash
 
     Date.prototype.Format = function (fmt: string) {
         var o = {

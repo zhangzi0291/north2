@@ -7,10 +7,10 @@
       <template #content>
         <a-page-header sub-title="用户管理" title="用户">
           <template #extra>
-            <template v-if="hasPermissionOr('用户列表导入')">
-              <a-button type="primary" @click="openImport()">导入</a-button>
-              <a-button type="primary" @click="openAdd()">新增</a-button>
-            </template>
+            <!--            <template v-if="hasPermissionOr('用户列表导入')">-->
+            <a-button type="primary" @click="openImport()">导入</a-button>
+            <a-button type="primary" @click="openAdd()">新增</a-button>
+            <!--            </template>-->
             <a-button type="primary" @click="load({current:1})">查询</a-button>
           </template>
         </a-page-header>
@@ -26,7 +26,7 @@
           </a-form>
         </a-row>
         <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 500 }"  :pagination="page" @change="tableChange"
+                 :scroll="{ x: 900, y: 500 }" :pagination="page" @change="tableChange"
                  bordered style="width: 100%">
           <template #expandedRowRender="{ record }">
             <a-row>
@@ -67,12 +67,20 @@
                   </template>
                 </a-button>
               </a-tooltip>
+              <a-tooltip :title="record.status == 0?'启用':'停用'">
+                <a-button shape="circle" type="dashed" @click="changeUserStatus(record.id, record)">
+                  <template #icon>
+                    <CheckOutlined v-if="record.status==0"/>
+                    <CloseOutlined v-else/>
+                  </template>
+                </a-button>
+              </a-tooltip>
               <a-tooltip title="重置密码">
-                  <a-button shape="circle" type="dashed" @click="resetPassword(record.id )">
-                    <template #icon>
-                      <LockOutlined/>
-                    </template>
-                  </a-button>
+                <a-button shape="circle" type="dashed" @click="resetPassword(record.id )">
+                  <template #icon>
+                    <LockOutlined/>
+                  </template>
+                </a-button>
               </a-tooltip>
               <a-tooltip title="删除">
                 <a-button shape="circle" type="dashed" @click="del(record.id)">
@@ -109,7 +117,7 @@ import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
 import SysUserApi from "@/api/SysUserApi";
-import {createVNode, defineComponent, reactive, ref,toRefs} from "vue";
+import {createVNode, defineComponent, reactive, ref} from "vue";
 import Qs from "qs";
 import {AxiosResponse} from "axios";
 
@@ -144,9 +152,9 @@ export default defineComponent({
         {title: '用户名', key: 'nickname', dataIndex: 'nickname', ellipsis: "true"},
         {title: '状态', key: 'status', dataIndex: 'status'},
         // {title: '过期时间', key: 'expiredTime', dataIndex: 'expiredTime', width: "180px"},
-        {title: '最后登录', key: 'lastLoginTime', dataIndex: 'lastLoginTime', width: "180px",sorter: true},
+        {title: '最后登录', key: 'lastLoginTime', dataIndex: 'lastLoginTime', width: "180px", sorter: true},
         {title: '头像', key: 'iconUrl', dataIndex: 'iconUrl', slots: {customRender: 'iconUrl'}},
-        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "180px"},
+        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "210px"},
       ],
       //form中的字段
       formColumns: [
@@ -155,7 +163,7 @@ export default defineComponent({
         new ModalField().init('密码', 'password', 'Password', false),
         new ModalField().init('手机号', 'phone', 'String'),
         new ModalField().init('Email', 'email', 'String'),
-        new ModalField().initSelect('状态', 'status', new Ext(), [new SelectField("启用", 1), new SelectField("禁用", 0)],"启用状态"),
+        new ModalField().initSelect('状态', 'status', new Ext(), [new SelectField("启用", 1), new SelectField("禁用", 0)], "启用状态"),
         new ModalField().init('过期时间', 'expiredTime', 'DateTime'),
         new ModalField().init('ICON', 'iconUrl', 'Image', true, new Ext()),
         new ModalField().init('描述', 'describe', 'String'),
@@ -171,7 +179,7 @@ export default defineComponent({
                 return callback()
               }
               let originalValue = (<any>this.check).username;
-              SysUserApi.checkUseruame(value,originalValue).then(res => {
+              SysUserApi.checkUseruame(value, originalValue).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -191,7 +199,7 @@ export default defineComponent({
                 return callback()
               }
               let originalValue = (<any>this.check).nickname;
-              SysUserApi.checkNickname(value,originalValue).then(res => {
+              SysUserApi.checkNickname(value, originalValue).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -211,7 +219,7 @@ export default defineComponent({
         ],
 
       },
-      check:{
+      check: {
         nickname: "",
         username: "",
       }
@@ -222,14 +230,14 @@ export default defineComponent({
     openAdd(parentId: string) {
       console.log(this.data)
       console.log(this.loading)
-      const form:any = this.$refs.form
+      const form: any = this.$refs.form
       form.open({parentId: parentId})
-      const check:any = this.check
+      const check: any = this.check
       check.nickname = undefined;
       check.username = undefined;
     },
     openEdit(id: string) {
-      const form:any = this.$refs.form
+      const form: any = this.$refs.form
       form.open({id: id})
       setTimeout(() => {
         this.check.nickname = form.getData().nickname;
@@ -242,7 +250,7 @@ export default defineComponent({
         res.data.data.forEach((d: any) => {
           data.resources.push(d.roleId)
         })
-        const menuModal:any = this.$refs.menuModal
+        const menuModal: any = this.$refs.menuModal
         menuModal.open(data)
       })
     },
@@ -252,7 +260,7 @@ export default defineComponent({
         res.data.data.forEach((d: any) => {
           data.roleIds.push(d.roleId)
         })
-        const menuModal2:any = this.$refs.menuModal2
+        const menuModal2: any = this.$refs.menuModal2
         menuModal2.open(data)
       })
     },
@@ -267,7 +275,7 @@ export default defineComponent({
       });
     },
     openChangePassword(id: string) {
-      const cp:any = this.$refs.cp
+      const cp: any = this.$refs.cp
       cp.open(id)
     },
     resetPassword(id: string) {
@@ -278,6 +286,21 @@ export default defineComponent({
         onOk: () => {
           return SysUserApi.resetPassword(id).then(res => {
             this.$message.success("操作成功")
+          })
+        },
+      });
+    },
+    changeUserStatus(id: string, record: any) {
+      const text = record.status == 0 ? '启用' : '停用'
+      this.$modal.confirm({
+        title: '修改用户状态',
+        icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
+        content: '确定' + text + '用户吗？',
+        onOk: () => {
+          return SysUserApi.changeUserStatus(id).then(res => {
+            this.$message.success("操作成功")
+            const status = record.status == 0 ? 1 : 0;
+            record.status = status
           })
         },
       });
@@ -295,8 +318,8 @@ export default defineComponent({
         },
       });
     },
-    openImport(){
-      const importModal:any = this.$refs.importModal
+    openImport() {
+      const importModal: any = this.$refs.importModal
       importModal.open()
     },
 
@@ -304,39 +327,39 @@ export default defineComponent({
   created() {
     this.load()
   },
-  setup(){
+  setup() {
     //表格加载状态
     let loading = ref(false)
     //分页
-    let page = reactive({ current:1,total:0 })
+    let page = reactive({current: 1, total: 0})
     //排序
-    let sort = reactive({ field:null,order:null})
+    let sort = reactive({field: null, order: null})
     //查询数据
-    let search = reactive({ })
+    let search = reactive({})
     //表格数据
     let data = ref([])
 
-    const load = function (param?:any) {
+    const load = function (param?: any) {
       loading.value = true
-      if(!!param && !!param.current ){
+      if (!!param && !!param.current) {
         page.current = param.current
       }
-      SysUserApi.list(search,page,sort).then(res => {
-        data.value.length=0
+      SysUserApi.list(search, page, sort).then(res => {
+        data.value.length = 0
         data.value = data.value.concat(res.data.data.records)
         page.current = res.data.data.current
         page.total = res.data.data.total
         loading.value = false
       })
     }
-    const tableChange = function (pageParam:any, filters:any, sorter:any){
+    const tableChange = function (pageParam: any, filters: any, sorter: any) {
       page.current = pageParam.current
       page.total = pageParam.total
       sort.field = sorter.field
       sort.order = sorter.order
       load()
     }
-    const tablePageOption = {loading,data,page,search,load,tableChange}
+    const tablePageOption = {loading, data, page, search, load, tableChange}
 
     return {
       ...tablePageOption

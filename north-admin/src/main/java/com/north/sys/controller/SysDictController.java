@@ -69,7 +69,7 @@ public class SysDictController extends BaseController<SysDict, ISysDictService> 
      * @param dictName
      * @return
      */
-    @NorthWithoutLogin
+    @NorthWithoutLogin  
     @Operation(summary = "获取下拉框列表", description = "通过字典名称获取下拉框列表")
     @RequestMapping(path = "getSelectFieldList", method = RequestMethod.GET)
     public R getSelectFieldList(String dictName) {

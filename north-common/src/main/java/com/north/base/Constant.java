@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Constant {
 
+    public static final String REDIS_PREFIX = "north:gen:";
+
     public static final String SATOKEN_REDIS_PERMISSION_KEY = "north.satoken.permission.";
 
     public static final String SATOKEN_REDIS_ROLE_KEY = "north.satoken.role.";

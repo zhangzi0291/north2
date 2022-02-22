@@ -33,9 +33,10 @@
 import showPerson from './ShowPerson.vue';
 import GenealogyTree from './GenealogyTree.vue';
 import {defineComponent} from "vue";
-import {Edge, Graph, Node, NodeView, Shape} from "@antv/x6";
+import {Edge, Graph, Node, NodeView} from "@antv/x6";
 import {MyShape} from "./MyShape";
 import dagre from 'dagrejs'
+
 const echarts = require('echarts');
 
 export default defineComponent({
@@ -83,7 +84,7 @@ export default defineComponent({
       }
     },
     layout() {
-      const dir:string = "BT"
+      const dir: string = "BT"
       const nodes = this.graph.getNodes()
       const edges = this.graph.getEdges()
       const g = new dagre.graphlib.Graph()
@@ -147,8 +148,7 @@ export default defineComponent({
             {x: sourceBBox.center.x, y},
             {x: targetBBox.center.x, y},
           ])
-        }
-        else {
+        } else {
           edge.setVertices([])
         }
       })
@@ -510,9 +510,9 @@ export default defineComponent({
         },
       ],
     })
-    const parent = new MyShape({id:'1'}).init().resize(120, 40).updateInPorts(this.graph as Graph)
-    parent.addChild(new MyShape({id:'2'}).init().resize(120, 40).updateInPorts(this.graph as Graph))
-    parent.addChild(new MyShape({id:'3'}).init().resize(120, 40).updateInPorts(this.graph as Graph))
+    const parent = new MyShape({id: '1'}).init().resize(120, 40).updateInPorts(this.graph as Graph)
+    parent.addChild(new MyShape({id: '2'}).init().resize(120, 40).updateInPorts(this.graph as Graph))
+    parent.addChild(new MyShape({id: '3'}).init().resize(120, 40).updateInPorts(this.graph as Graph))
     this.graph.addNode(parent)
     this.graph.addEdge({
       source: '3', // String，必须，起始节点 id
@@ -521,8 +521,8 @@ export default defineComponent({
     this.graph.addEdge({
       source: '2', // String，必须，起始节点 id
       target: '1', // String，必须，目标节点 id
-      data:{
-        name:"a"
+      data: {
+        name: "a"
       }
     })
     // this.graph.fromJSON(newModel)

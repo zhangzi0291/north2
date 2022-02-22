@@ -5,6 +5,7 @@ public enum LogTypeEnum {
     LOGIN("登录", 1),
     LOGOUT("注销", 2),
     BUSINESS("业务", 3),
+    SYSTEM("系统", 4),
     ;
 
     private String name;

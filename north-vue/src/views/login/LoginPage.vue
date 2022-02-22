@@ -23,9 +23,9 @@
     <a-layout-header class="title">{{ title }}</a-layout-header>
     <a-layout-content class="content">
       <a-card :title="'登录'" style="width: 450px">
-<!--        <template #extra>-->
-<!--          <a-button type="link" @click="changeBox">{{ changeTitle }}</a-button>-->
-<!--        </template>-->
+        <!--        <template #extra>-->
+        <!--          <a-button type="link" @click="changeBox">{{ changeTitle }}</a-button>-->
+        <!--        </template>-->
 
         <a-form v-if="isLogin" ref="loginForm" v-bind="layout" :model="loginData" :rules="loginRules" hideRequiredMark>
           <a-form-item label="用户名" name="username">
@@ -33,6 +33,9 @@
           </a-form-item>
           <a-form-item label="密码" name="password">
             <a-input-password v-model:value="loginData.password" autocomplete="off" type="password"/>
+          </a-form-item>
+          <a-form-item label="验证码" name="genId">
+            <gen-slider @valid="valid"></gen-slider>
           </a-form-item>
           <a-form-item :wrapper-col="{ span: 24 }">
             <div class="button-group">
@@ -74,16 +77,20 @@
 
 </template>
 <script lang="ts">
-import { defineComponent} from 'vue'
+import {defineComponent} from 'vue'
 import {AxiosResponse} from "axios";
 import {NamePath} from "ant-design-vue/es/form/interface";
 import SysLoginApi, {LoginData, RegisterData} from "@/api/SysLoginApi";
 import BaseApi from "@/api/BaseApi";
+import GenSlider from "@/components/GenSlider.vue";
 
 const MD5 = require('md5.js')
 
 export default defineComponent({
   name: 'Login',
+  components: {
+    GenSlider
+  },
   data() {
     return {
       url: {
@@ -101,6 +108,7 @@ export default defineComponent({
       loginRules: {
         username: [{required: true, type: 'string', trigger: 'blur', message: "用户名不可为空"}],
         password: [{required: true, type: 'string', trigger: 'blur', message: "密码不可为空"}],
+        genId: [{required: true, type: 'string', trigger: 'blur', message: "需要校验"}],
       },
       registerRules: {
         username: [{required: true, type: 'string', trigger: 'blur', message: "用户名不可为空"}],
@@ -131,16 +139,16 @@ export default defineComponent({
     }
   },
   methods: {
-    keydown(){
-      if(this.isLogin){
+    keydown() {
+      if (this.isLogin) {
         this.login()
-      }else {
+      } else {
         this.register()
       }
     },
     login() {
-        const loginForm:any = this.$refs.loginForm
-        loginForm.validate().then((nameList: NamePath[]) => {
+      const loginForm: any = this.$refs.loginForm
+      loginForm.validate().then((nameList: NamePath[]) => {
         let data: LoginData = <LoginData>this.loginData
         this.tmpPwd = data.password;
         data.password = new MD5().update(data.password).digest('hex');
@@ -167,7 +175,7 @@ export default defineComponent({
       })
     },
     register() {
-      const registerForm:any = this.$refs.registerForm
+      const registerForm: any = this.$refs.registerForm
       registerForm.validate().then((nameList: NamePath[]) => {
         let data: RegisterData = <RegisterData>this.registerData
         SysLoginApi.register(data).then((res: AxiosResponse) => {
@@ -179,6 +187,15 @@ export default defineComponent({
     changeBox() {
       this.isLogin = !this.isLogin
     },
+    valid(valid) {
+      console.log(valid)
+      if (valid) {
+        this.isValid = true
+        this.loginData.genId = valid
+      } else {
+        this.isValid = false
+      }
+    }
   },
   created() {
   },

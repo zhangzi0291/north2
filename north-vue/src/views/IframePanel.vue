@@ -2,9 +2,9 @@
 
 </style>
 <template>
-  <base-page >
+  <base-page>
     <template #content>
-      <html-panel :url.asyc= "$route.query.url" style="width: 100%;height: 100%"></html-panel>
+      <html-panel :url.asyc="$route.query.url" style="width: 100%;height: 100%"></html-panel>
     </template>
   </base-page>
 
@@ -16,12 +16,9 @@ import {Options, Vue} from 'vue-class-component';
 @Options({
   name: "IframePanel",
   data() {
-    return {
-    }
+    return {}
   },
-  methods: {
-
-  },
+  methods: {},
   created() {
   }
 })

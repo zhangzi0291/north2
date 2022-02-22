@@ -11,7 +11,7 @@
   text-align: right;
 }
 
-.input-length{
+.input-length {
   width: 250px;
 }
 
@@ -47,7 +47,8 @@
 
           <a-form-item label="生日：" name="birthday">
             <template v-if="edit">
-              <a-date-picker v-model:value="data.birthday" @change="onDateTimeOk($event,'birthday')" class="input-length"/>
+              <a-date-picker v-model:value="data.birthday" @change="onDateTimeOk($event,'birthday')"
+                             class="input-length"/>
             </template>
             <template v-else>
               {{ getDateStr(data.birthday) }}
@@ -55,15 +56,18 @@
           </a-form-item>
           <a-form-item label="逝日：" name="deathday">
             <template v-if="edit">
-              <a-date-picker v-model:value="data.deathday" @change="onDateTimeOk($event,'deathday')" class="input-length"/>
+              <a-date-picker v-model:value="data.deathday" @change="onDateTimeOk($event,'deathday')"
+                             class="input-length"/>
             </template>
             <template v-else>
               {{ getDateStr(data.deathday) }}
             </template>
           </a-form-item>
-          <a-form-item label="是谁子女：" name="parentId" v-if="!!data.parentId?(true):edit"  >
-            <template v-if="edit" >
-              <a-select v-model:value="data.parentId" style="width:250px" show-search @search="debounceSearch($event,'parentNameOption')" :filterOption="false" allowClear placeholder="首字查询，只有一个生效">
+          <a-form-item label="是谁子女：" name="parentId" v-if="!!data.parentId?(true):edit">
+            <template v-if="edit">
+              <a-select v-model:value="data.parentId" style="width:250px" show-search
+                        @search="debounceSearch($event,'parentNameOption')" :filterOption="false" allowClear
+                        placeholder="首字查询，只有一个生效">
                 <template v-for="select in parentNameOption">
                   <a-select-option :value="select.value">
                     {{ select.lable }}
@@ -75,9 +79,11 @@
               {{ parentName }}
             </template>
           </a-form-item>
-          <a-form-item label="是谁配偶：" name="partnerId"  v-if="!!data.partnerId?(true):edit"  >
-            <template v-if="edit" >
-              <a-select v-model:value="data.partnerId" style="width:250px" show-search @search="debounceSearch($event,'partnerNameOption')" :filterOption="false" allowClear placeholder="首字查询，只有一个生效">
+          <a-form-item label="是谁配偶：" name="partnerId" v-if="!!data.partnerId?(true):edit">
+            <template v-if="edit">
+              <a-select v-model:value="data.partnerId" style="width:250px" show-search
+                        @search="debounceSearch($event,'partnerNameOption')" :filterOption="false" allowClear
+                        placeholder="首字查询，只有一个生效">
                 <template v-for="select in partnerNameOption">
                   <a-select-option :value="select.value">
                     {{ select.lable }}
@@ -92,7 +98,7 @@
 
         </a-collapse-panel>
         <a-collapse-panel key="2" header="相片" v-if="!!fileList.length>0?(true):edit">
-          <a-form-item :wrapperCol="{span: 24}" >
+          <a-form-item :wrapperCol="{span: 24}">
             <a-upload :before-upload="beforeUpload" :customRequest="customRequest" :file-list="fileList"
                       list-type="picture-card"
                       @change="handleChange" @preview="handlePreview"
@@ -109,9 +115,9 @@
         <a-collapse-panel key="3" header="时间轴" v-if="!!timelines  .length>0?(true):edit">
           <template v-if="edit">
             <a-row v-for=" (timeline,index) in timelines" :key="'timelines'+index">
-              <a-col :span="10" >
+              <a-col :span="10">
                 <a-form-item label="时间：" name="name">
-                  <a-date-picker v-model:value="timeline.eventTime" />
+                  <a-date-picker v-model:value="timeline.eventTime"/>
                 </a-form-item>
               </a-col>
               <a-col :span="12">
@@ -121,20 +127,24 @@
               </a-col>
               <a-col :span="2">
                 <a-button type="primary" @click="removeTimeLine(index)">
-                  <template #icon><MinusOutlined /></template>
+                  <template #icon>
+                    <MinusOutlined/>
+                  </template>
                 </a-button>
               </a-col>
             </a-row>
 
             <a-row type="flex" justify="center" align="middle">
               <a-button type="primary" @click="addTimeLine">
-                <template #icon><PlusOutlined /></template>
+                <template #icon>
+                  <PlusOutlined/>
+                </template>
               </a-button>
             </a-row>
           </template>
           <template v-else>
             <template v-if="timelines.length>0">
-              <a-timeline >
+              <a-timeline>
                 <a-timeline-item v-for=" (timeline) in timelines" :key="'timelines'+index">
                   <a-row>
                     <a-col>
@@ -177,7 +187,7 @@
 
     <template #footer>
       <a-button key="edit" @click="toEdit" v-if="!!data.id">
-        {{edit?"取消编辑":"编辑"}}
+        {{ edit ? "取消编辑" : "编辑" }}
       </a-button>
       <a-button key="cancel" @click="cancel">取消</a-button>
       <a-button key="ok" type="primary" :loading="loading" @click="ok">确定</a-button>
@@ -189,7 +199,6 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
 import SysDictApi from "@/api/SysDictApi";
 import {AxiosResponse} from "axios";
 import {Moment} from "moment";
@@ -201,13 +210,13 @@ export default defineComponent({
   data() {
     return {
       visible: false,
-      previewVisible:false,
-      previewImage:"",
-      loading:false,
+      previewVisible: false,
+      previewImage: "",
+      loading: false,
       title: "添加",
       activeKey: 1,
       edit: true,
-      initData:{
+      initData: {
         sex: 1
       },
       data: <any>{},
@@ -217,12 +226,12 @@ export default defineComponent({
       },
       sexSelect: [],
       fileList: <any>[],
-      timelines:<any>[],
-      parentName:"",
-      parentNameOption:<any>[],
-      partnerName:"",
-      partnerNameOption:<any>[],
-      debounceSearch:<any>{}
+      timelines: <any>[],
+      parentName: "",
+      parentNameOption: <any>[],
+      partnerName: "",
+      partnerNameOption: <any>[],
+      debounceSearch: <any>{}
     }
   },
   props: {
@@ -234,29 +243,29 @@ export default defineComponent({
     },
   },
   methods: {
-    toEdit(){
+    toEdit() {
       this.edit = !this.edit
     },
-    open(data:any,isEdit:boolean) {
+    open(data: any, isEdit: boolean) {
       this.data = this.initData
       this.loading = false
       this.fileList = []
       this.timelines = []
       this.activeKey = 1
-      if(!!data){
+      if (!!data) {
         this.data = data
         this.getParentName()
         this.getPartnerName()
-        GenealogyApi.getGenealogyPersonImages(data.id).then(res=>{
+        GenealogyApi.getGenealogyPersonImages(data.id).then(res => {
           this.fileList = []
           for (let idKey in res.data.data) {
-            this.fileList.push({url: window.BASE_URL+"/sysFile/download?id="+res.data.data[idKey]})
+            this.fileList.push({url: window.BASE_URL + "/sysFile/download?id=" + res.data.data[idKey]})
           }
         })
-        GenealogyApi.getGenealogyPersonTimeLines(data.id).then(res=>{
+        GenealogyApi.getGenealogyPersonTimeLines(data.id).then(res => {
           this.timelines = res.data.data
         })
-      }else{
+      } else {
         this.data = {
           sex: 1
         }
@@ -275,9 +284,9 @@ export default defineComponent({
       }
       if (this.fileList.length > 0) {
         this.fileList.forEach((file: any) => {
-          if(!!file.url){
-            let fileId = file.url.replace(window.BASE_URL+"/sysFile/download?id=","")
-            formData.append("fileId", fileId );
+          if (!!file.url) {
+            let fileId = file.url.replace(window.BASE_URL + "/sysFile/download?id=", "")
+            formData.append("fileId", fileId);
             console.log(fileId)
             return
           }
@@ -288,14 +297,14 @@ export default defineComponent({
       if (this.timelines.length > 0) {
         formData.append("personTimelines", JSON.stringify(this.timelines));
       }
-      if(!!this.data.id){
-        await GenealogyApi.editGenealogyPerson(formData).then(res =>{
+      if (!!this.data.id) {
+        await GenealogyApi.editGenealogyPerson(formData).then(res => {
           this.loading = false
           this.visible = false
 
         })
-      }else{
-        await GenealogyApi.addGenealogyPerson(formData).then(res =>{
+      } else {
+        await GenealogyApi.addGenealogyPerson(formData).then(res => {
           this.loading = false
           this.visible = false
 
@@ -323,14 +332,14 @@ export default defineComponent({
       const mb = 5
       const isLtSize = file.size / 1024 / 1024 < mb;
       if (!isLtSize) {
-        this.$message.error("文件大小超出限制，最大"+ mb +"M");
+        this.$message.error("文件大小超出限制，最大" + mb + "M");
         return false
       }
 
       return true
     },
     handleChange(fileItem: any) {
-      if(!this.edit){
+      if (!this.edit) {
         return
       }
       let file = fileItem.file
@@ -394,57 +403,57 @@ export default defineComponent({
     previewCancel() {
       this.previewVisible = false
     },
-    addTimeLine(){
-      this.$nextTick(()=>{
+    addTimeLine() {
+      this.$nextTick(() => {
         this.timelines.push({})
       })
     },
-    removeTimeLine(index:number){
+    removeTimeLine(index: number) {
       this.timelines.splice(index, 1);
     },
-    getDateStr(value:any){
-      if(!!value){
+    getDateStr(value: any) {
+      if (!!value) {
         return new Date(value).Format("yyyy-MM-dd")
       }
       return ""
     },
-    getParentName(){
-      if(!!this.data.parentId){
-        GenealogyApi.getGenealogyPerson(this.data.parentId).then(res=>{
-          this.parentNameOption = [{value:res.data.data.id,lable:res.data.data.personName}]
+    getParentName() {
+      if (!!this.data.parentId) {
+        GenealogyApi.getGenealogyPerson(this.data.parentId).then(res => {
+          this.parentNameOption = [{value: res.data.data.id, lable: res.data.data.personName}]
           this.parentName = res.data.data.personName
         })
-      }else{
+      } else {
         this.parentName = ""
       }
 
     },
-    getPartnerName(){
-      if(!!this.data.partnerId){
-        GenealogyApi.getGenealogyPerson(this.data.partnerId).then(res=>{
-          this.partnerNameOption = [{value:res.data.data.id,lable:res.data.data.personName}]
+    getPartnerName() {
+      if (!!this.data.partnerId) {
+        GenealogyApi.getGenealogyPerson(this.data.partnerId).then(res => {
+          this.partnerNameOption = [{value: res.data.data.id, lable: res.data.data.personName}]
           this.partnerName = res.data.data.personName
         })
-      }else{
+      } else {
         this.partnerName = ""
       }
     },
-    async search(value:string){
+    async search(value: string) {
       let option: { value: any; lable: any; }[] = []
-      await GenealogyApi.getGenealogyTreePersonSearch("1",value).then(res=>{
+      await GenealogyApi.getGenealogyTreePersonSearch("1", value).then(res => {
         for (let index in res.data.data) {
-          option.push({value:res.data.data[index].id,lable:res.data.data[index].personName})
+          option.push({value: res.data.data[index].id, lable: res.data.data[index].personName})
         }
       })
       return option
     },
-    remove(){
+    remove() {
       this.$modal.confirm({
         title: '删除',
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要删除吗？',
         onOk: () => {
-          GenealogyApi.removeGenealogyPerson(this.data.id).then(res =>{
+          GenealogyApi.removeGenealogyPerson(this.data.id).then(res => {
             console.log(this.data)
             this.okCallback()
             this.cancel()
@@ -484,11 +493,11 @@ export default defineComponent({
     // },
   },
   created() {
-    this.debounceSearch = this.$lodash.debounce((value:string,option:string)=>{
-      this.search(value).then((data:Array<any>) =>{
+    this.debounceSearch = this.$lodash.debounce((value: string, option: string) => {
+      this.search(value).then((data: Array<any>) => {
         this[option] = data
       })
-    },600)
+    }, 600)
     SysDictApi.getSelect('性别').then((res: AxiosResponse) => {
       this.sexSelect = res.data.data
     });

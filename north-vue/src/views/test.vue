@@ -8,12 +8,14 @@
   height: @border-box-height;
   padding: @border-box-padding;
   display: inline-block;
-  background: repeating-linear-gradient(135deg,transparent,transparent 3px,#66ccff 3px,#66ccff 8px);
+  background: repeating-linear-gradient(135deg, transparent, transparent 3px, #66ccff 3px, #66ccff 8px);
   animation: shine 100s infinite linear;
   overflow: hidden;
+
   input {
     border: 0;
   }
+
   @keyframes shine {
     0% {
       background-position: -1px -1px;
@@ -22,20 +24,22 @@
       background-position: -810px -810px;
     }
   }
-  .box{
+
+  .box {
     display: inline-block;
-    width: calc(@border-box-width - 2*@border-box-padding);
-    height: calc(@border-box-height - 2*@border-box-padding);
+    width: calc(@border-box-width - 2 * @border-box-padding);
+    height: calc(@border-box-height - 2 * @border-box-padding);
     background-color: #fff;
   }
 }
 
 
-.arrow-box{
+.arrow-box {
   width: @border-box-width;
   height: @border-box-height;
   display: inline-block;
-  .arrow{
+
+  .arrow {
 
   }
 }
@@ -70,13 +74,9 @@ import {Options, Vue} from 'vue-class-component';
 @Options({
   name: "test",
   data() {
-    return {
-
-    }
+    return {}
   },
-  methods: {
-
-  },
+  methods: {},
   created() {
   }
 })

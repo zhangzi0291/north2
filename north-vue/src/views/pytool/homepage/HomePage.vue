@@ -5,7 +5,7 @@
   <div>
     <base-page :breadcrumbs="breadcrumbs">
       <template #content>
-        <a-page-header title="应用列表" >
+        <a-page-header title="应用列表">
           <template #extra>
             <a-button type="primary" @click="openAdd()">新增</a-button>
             <a-button type="primary" @click="load({current:1})">查询</a-button>
@@ -16,9 +16,9 @@
         </a-row>
         <a-row>
           <a-form layout="inline">
-<!--            <a-form-item label="应用名">-->
-<!--              <a-input v-model:value="search.softName" allowClear/>-->
-<!--            </a-form-item>-->
+            <!--            <a-form-item label="应用名">-->
+            <!--              <a-input v-model:value="search.softName" allowClear/>-->
+            <!--            </a-form-item>-->
 
           </a-form>
         </a-row>
@@ -54,24 +54,20 @@
 
     </base-page>
 
-    <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
+    <form-modal ref="form" :columns="formColumns" :addUrl="url.add" :editUrl="url.edit" :getUrl="url.get"
                 :okCallback="load" :rules="rules"
                 :title="'应用'">
-      <template #roleIds="{data}">
-        <a-button type="primary" @click="openMenuModal(data)">分配角色</a-button>
-      </template>
     </form-modal>
 
   </div>
 </template>
 <script lang="ts">
-import FormModal, {Ext, ModalField, SelectField} from "@/components/base/FormModal.vue";
+import FormModal, {Ext, ModalField} from "@/components/base/FormModal.vue";
 import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
 import {createVNode, defineComponent, reactive, ref} from "vue";
 import PytoolAppApi from "@/api/PytoolAppApi";
-import PytoolHomepageApi from "@/api/PytoolHomepageApi";
 
 
 export default defineComponent({
@@ -115,12 +111,12 @@ export default defineComponent({
   },
   methods: {
     openAdd() {
-      const form:any = this.$refs.form
+      const form: any = this.$refs.form
       form.open()
     },
     openEdit(homeName: string) {
-      const form:any = this.$refs.form
-      form.open({id:homeName})
+      const form: any = this.$refs.form
+      form.open({id: homeName})
     },
     del(id: string) {
       this.$modal.confirm({
@@ -128,53 +124,53 @@ export default defineComponent({
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要删除吗？',
         onOk: () => {
-          return PytoolHomepageApi.del([id]).then(res => {
+          return PytoolAppApi.homePageDel([id]).then(res => {
             console.log(res);
             this.load()
           })
         },
       });
     },
-    download(fileId: string){
-      let href = window.BASE_URL+"/sysFile/download?id=" + fileId
+    download(fileId: string) {
+      let href = window.BASE_URL + "/sysFile/download?id=" + fileId
       window.location.href = href
     },
   },
   mounted() {
     this.load()
   },
-  setup(){
+  setup() {
     //表格加载状态
     let loading = ref(false)
     //分页
-    let page = reactive({ current:1,total:0 })
+    let page = reactive({current: 1, total: 0})
     //排序
-    let sort = reactive({ field:null,order:null})
+    let sort = reactive({field: null, order: null})
     //查询数据
-    let search = reactive({ })
+    let search = reactive({})
     //表格数据
     let data = ref([])
-    const load = function (param?:any) {
+    const load = function (param?: any) {
       loading.value = true
-      if(!!param && !!param.current ){
+      if (!!param && !!param.current) {
         page.current = param.current
       }
-      PytoolHomepageApi.list(search,page,sort).then(res => {
-        data.value.length=0
+      PytoolAppApi.homePageList(search, page, sort).then(res => {
+        data.value.length = 0
         data.value = data.value.concat(res.data.data.records)
         page.current = res.data.data.current
         page.total = res.data.data.total
         loading.value = false
       })
     }
-    const tableChange = function (pageParam:any, filters:any, sorter:any){
+    const tableChange = function (pageParam: any, filters: any, sorter: any) {
       page.current = pageParam.current
       page.total = pageParam.total
       sort.field = sorter.field
       sort.order = sorter.order
       load()
     }
-    const tablePageOption = {loading,data,page,search,load,tableChange}
+    const tablePageOption = {loading, data, page, search, load, tableChange}
     return {
       ...tablePageOption
     }

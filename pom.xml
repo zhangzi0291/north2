@@ -29,13 +29,14 @@
         <north.sso.server>2.0-SNAPSHOT</north.sso.server>
 
         <openapi.version>1.5.9</openapi.version>
-        <mybatis.plus.version>3.4.3.4</mybatis.plus.version>
+        <mybatis.plus.version>3.5.0</mybatis.plus.version>
         <fastjson.version>1.2.78</fastjson.version>
         <postgresql.version>42.2.23</postgresql.version>
         <redisson.version>3.16.3</redisson.version>
         <sa-token.version>1.28.0</sa-token.version>
         <hutool.version>5.7.14</hutool.version>
         <easypoi.version>4.4.0</easypoi.version>
+        <tianai-captcha.version>1.2.3</tianai-captcha.version>
 
     </properties>
 
@@ -45,7 +46,6 @@
         <module>north-file-storage</module>
         <module>north-generator</module>
         <module>north-sso-server</module>
-        <module>north-sso-client</module>
     </modules>
 
 

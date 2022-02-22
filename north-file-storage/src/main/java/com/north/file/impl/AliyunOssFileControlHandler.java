@@ -60,14 +60,14 @@ public class AliyunOssFileControlHandler implements FileControlHandler {
 
     @Override
     public void saveFile(InputStream input, String filePath) {
-        String saveKey = getKey(filePath);
+        String saveKey = getKey(getDatePathStr()+filePath);
 
         ossClient.putObject(this.config.getBucketName(), saveKey, input);
     }
 
     @Override
     public InputStream loadFileInputStream(String filePath) {
-        String saveKey = getKey(filePath);
+        String saveKey = getKey(getDatePathStr()+filePath);
 
         OSSObject object = ossClient.getObject(this.config.getBucketName(), saveKey);
         return object.getObjectContent();

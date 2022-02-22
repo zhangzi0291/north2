@@ -13,9 +13,8 @@ declare module "@vue/runtime-core" {
         $modal: any,
         $message: any,
         $notification: any,
-        $axios:AxiosStatic,
-        $download:any,
-        $lodash:any,
+        $axios: AxiosStatic,
+        $download: any,
     }
 }
 

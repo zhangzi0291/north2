@@ -30,7 +30,7 @@ import SysDictApi from "@/api/SysDictApi";
 @Options({
   name: 'MenuModal',
   data() {
-    let resourceTypes: never[] = [];
+    let resourceTypes = [];
     SysDictApi.getSelect('资源类型').then((res: AxiosResponse) => {
       resourceTypes = res.data.data
     });
@@ -86,15 +86,15 @@ import SysDictApi from "@/api/SysDictApi";
     },
   },
   methods: {
-    okroot(){
+    okroot() {
       this.visible = false
       this.data.parentId = '-1'
       this.data.resources = ['-1']
       let selectData: any[] = []
       selectData.push(
           {
-            id : '-1',
-            resourceName : '根'
+            id: '-1',
+            resourceName: '根'
           }
       )
       this.okCallback(this.data, selectData)

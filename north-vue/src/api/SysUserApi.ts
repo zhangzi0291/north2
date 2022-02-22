@@ -18,6 +18,7 @@ const url = {
     checkPassword: "/sysUser/checkPassword",
     changePassword: "/sysUser/changePassword",
     resetPassword: "/sysUser/resetPassword",
+    changeUserStatus: "/sysUser/changeUserStatus",
     checkUsername: "/sysUser/checkUsername",
     checkNickname: "/sysUser/checkNickname",
 
@@ -34,7 +35,7 @@ export default class SysUserApi {
         })
     }
 
-    public static get(id:string): Promise<AxiosResponse> {
+    public static get(id: string): Promise<AxiosResponse> {
         console.log(id)
         return axios({
             method: 'get',
@@ -80,7 +81,7 @@ export default class SysUserApi {
         })
     }
 
-    public static changePassword(userId: string, password: string,oldPassword: string): Promise<AxiosResponse> {
+    public static changePassword(userId: string, password: string, oldPassword: string): Promise<AxiosResponse> {
         password = new MD5().update(password).digest('hex')
         oldPassword = new MD5().update(oldPassword).digest('hex')
         return axios({
@@ -116,7 +117,7 @@ export default class SysUserApi {
         })
     }
 
-    public static checkPassword(userId: string, password: string,username?:string): Promise<AxiosResponse> {
+    public static checkPassword(userId: string, password: string, username?: string): Promise<AxiosResponse> {
         password = new MD5().update(password).digest('hex')
         return axios({
             method: 'get',
@@ -135,6 +136,16 @@ export default class SysUserApi {
             url: url.resetPassword,
             data: Qs.stringify({
                 userId: userId,
+            })
+        })
+    }
+
+    public static changeUserStatus(id: string): Promise<AxiosResponse> {
+        return axios({
+            method: 'post',
+            url: url.changeUserStatus,
+            data: Qs.stringify({
+                id: id,
             })
         })
     }

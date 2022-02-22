@@ -68,7 +68,6 @@
   </div>
 </template>
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
 import FormModal, {Ext, ModalField} from "@/components/base/FormModal.vue";
 import MenuModal from "@/views/sys/sysrole/MenuModal.vue";
 import {createVNode, defineComponent, reactive, ref} from "vue";
@@ -83,7 +82,7 @@ export default defineComponent({
     FormModal, MenuModal
   },
   data() {
-    let areaLevels: never[] = [];
+    let areaLevels = [];
     SysDictApi.getSelect('区域级别').then((res: AxiosResponse) => {
       areaLevels = res.data.data
     });
@@ -99,24 +98,24 @@ export default defineComponent({
         {name: "", icon: "HomeOutlined", href: "/home"},
         {name: "字典管理", icon: "KeyOutlined", href: "/sysrole/list"}
       ],
-      areaLevels:[],
+      areaLevels: [],
       //表格字段
       columns: [
-        {title: '区域码', key: 'id', dataIndex: 'id',sorter: true,},
+        {title: '区域码', key: 'id', dataIndex: 'id', sorter: true,},
         {title: '区域名称', key: 'areaName', dataIndex: 'areaName',},
         {
-          title: '区域级别', key: 'areaLevel', dataIndex: 'data.resourceType',sorter: true,
+          title: '区域级别', key: 'areaLevel', dataIndex: 'data.resourceType', sorter: true,
           customRender: function (record: any) {
-            for (let areaLevel  of areaLevels) {
+            for (let areaLevel of areaLevels) {
               let type = (<any>areaLevel)
-              if(type.value == record.record.areaLevel){
+              if (type.value == record.record.areaLevel) {
                 return type.lable
               }
             }
             return "未知"
           }
         },
-        {title: '城乡分类代码', key: 'townCode', dataIndex: 'townCode',sorter: true,},
+        {title: '城乡分类代码', key: 'townCode', dataIndex: 'townCode', sorter: true,},
         {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "100px",},
       ],
       //form中的字段
@@ -147,13 +146,13 @@ export default defineComponent({
   },
   methods: {
     openAdd(parentId: string) {
-      const form:any = this.$refs.form
+      const form: any = this.$refs.form
       form.open({parentId: parentId})
-      const check:any = this.check
+      const check: any = this.check
       check.roleName = undefined;
     },
     openEdit(id: string) {
-      const form:any = this.$refs.form
+      const form: any = this.$refs.form
       form.open({id: id})
       // setTimeout(() => {
       //   this.check.roleName = this.$refs.form.getData().roleName;
@@ -171,7 +170,7 @@ export default defineComponent({
         },
       });
     },
-    loadAreaLevel(){
+    loadAreaLevel() {
       SysDictApi.getSelect('区域级别').then((res: AxiosResponse) => {
         this.areaLevels = res.data.data
       });

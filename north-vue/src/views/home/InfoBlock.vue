@@ -9,9 +9,9 @@
 </style>
 <template>
   <a-card style="width: 200px">
-    <a-statistic :title="title" :value="number"  >
+    <a-statistic :title="title" :value="number">
       <template #prefix>
-        <component :is="icon" />
+        <component :is="icon"/>
       </template>
     </a-statistic>
   </a-card>

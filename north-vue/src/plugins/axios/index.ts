@@ -1,6 +1,5 @@
 import axios from "axios";
 import {App} from "vue";
-import {has} from "lodash";
 
 declare let BASE_URL: any;
 declare let SSO_URL: any;
@@ -42,9 +41,9 @@ var install = function install(app: App) {
     //错误统一处理
     axios.interceptors.response.use(response => {
         if (response.data.code == 500 || response.data.code == 403) {
-            if(window.isDev){
+            if (window.isDev) {
                 app.config.globalProperties.$message.error(response.config.url + " " + response.data.msg)
-            }else {
+            } else {
                 app.config.globalProperties.$message.error(response.data.msg)
             }
             throw new Error(response.config.url + " " + response.data.msg)
@@ -60,14 +59,17 @@ var install = function install(app: App) {
         }
         console.log(error.response.status)
         if (error.response.status === 401) {
-            const href = window.location.href.substring(0,window.location.href.indexOf("#")==-1?window.location.href.length:window.location.href.indexOf("#"))
-            const hash = window.location.hash.substring(1,window.location.hash.length)
-            console.log(href,hash)
-            axios.get(SSO_URL+"/sso-server/getSsoAuthUrl?redirect="+href+"&hash="+hash).then(res =>{
-                const url = res.data.data
-                window.location.href = url
-            })
-            // return router.push({path: '/login',})
+            const href = window.location.href.substring(0, window.location.href.indexOf("#") == -1 ? window.location.href.length : window.location.href.indexOf("#"))
+            const hash = window.location.hash.substring(1, window.location.hash.length)
+            console.log(href, hash)
+            if (SSO_URL) {
+                axios.get(SSO_URL + "/sso-server/getSsoAuthUrl?redirect=" + href + "&hash=" + hash).then(res => {
+                    const url = res.data.data
+                    window.location.href = url
+                })
+            } else {
+                return router.push({path: '/login',})
+            }
         } else if (error.response.status === 403) {
             app.config.globalProperties.$message.error(error.response.config.url + " 权限不足")
             return Promise.reject(error);

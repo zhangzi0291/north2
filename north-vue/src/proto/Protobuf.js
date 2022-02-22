@@ -9,7 +9,7 @@ var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.ut
 // Exported root namespace
 var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-$root.HomeInfo = (function() {
+$root.HomeInfo = (function () {
 
     /**
      * Properties of a HomeInfo.
@@ -169,32 +169,32 @@ $root.HomeInfo = (function() {
         while (reader.pos < end) {
             var tag = reader.uint32();
             switch (tag >>> 3) {
-            case 1:
-                message.id = reader.string();
-                break;
-            case 21:
-                message.totalUser = reader.int32();
-                break;
-            case 22:
-                message.onlineUser = reader.int32();
-                break;
-            case 23:
-                message.todayUser = reader.int32();
-                break;
-            case 24:
-                message.cpu = $root.HomeInfo.CpuInfo.decode(reader, reader.uint32());
-                break;
-            case 25:
-                message.memery = $root.HomeInfo.MemeryInfo.decode(reader, reader.uint32());
-                break;
-            case 26:
-                if (!(message.disk && message.disk.length))
-                    message.disk = [];
-                message.disk.push($root.HomeInfo.DiskInfo.decode(reader, reader.uint32()));
-                break;
-            default:
-                reader.skipType(tag & 7);
-                break;
+                case 1:
+                    message.id = reader.string();
+                    break;
+                case 21:
+                    message.totalUser = reader.int32();
+                    break;
+                case 22:
+                    message.onlineUser = reader.int32();
+                    break;
+                case 23:
+                    message.todayUser = reader.int32();
+                    break;
+                case 24:
+                    message.cpu = $root.HomeInfo.CpuInfo.decode(reader, reader.uint32());
+                    break;
+                case 25:
+                    message.memery = $root.HomeInfo.MemeryInfo.decode(reader, reader.uint32());
+                    break;
+                case 26:
+                    if (!(message.disk && message.disk.length))
+                        message.disk = [];
+                    message.disk.push($root.HomeInfo.DiskInfo.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
             }
         }
         return message;
@@ -358,7 +358,7 @@ $root.HomeInfo = (function() {
         return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
     };
 
-    HomeInfo.CpuInfo = (function() {
+    HomeInfo.CpuInfo = (function () {
 
         /**
          * Properties of a CpuInfo.
@@ -472,18 +472,18 @@ $root.HomeInfo = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 11:
-                    message.system = reader.string();
-                    break;
-                case 12:
-                    message.process = reader.string();
-                    break;
-                case 13:
-                    message.loadAverage = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    case 11:
+                        message.system = reader.string();
+                        break;
+                    case 12:
+                        message.process = reader.string();
+                        break;
+                    case 13:
+                        message.loadAverage = reader.string();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -590,7 +590,7 @@ $root.HomeInfo = (function() {
         return CpuInfo;
     })();
 
-    HomeInfo.MemeryInfo = (function() {
+    HomeInfo.MemeryInfo = (function () {
 
         /**
          * Properties of a MemeryInfo.
@@ -689,19 +689,20 @@ $root.HomeInfo = (function() {
         MemeryInfo.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.HomeInfo.MemeryInfo();
+            var end = length === undefined ? reader.len : reader.pos + length,
+                message = new $root.HomeInfo.MemeryInfo();
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 11:
-                    message.used = reader.string();
-                    break;
-                case 12:
-                    message.total = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    case 11:
+                        message.used = reader.string();
+                        break;
+                    case 12:
+                        message.total = reader.string();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -800,7 +801,7 @@ $root.HomeInfo = (function() {
         return MemeryInfo;
     })();
 
-    HomeInfo.DiskInfo = (function() {
+    HomeInfo.DiskInfo = (function () {
 
         /**
          * Properties of a DiskInfo.
@@ -914,18 +915,18 @@ $root.HomeInfo = (function() {
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 11:
-                    message.used = reader.string();
-                    break;
-                case 12:
-                    message.total = reader.string();
-                    break;
-                case 13:
-                    message.name = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    case 11:
+                        message.used = reader.string();
+                        break;
+                    case 12:
+                        message.total = reader.string();
+                        break;
+                    case 13:
+                        message.name = reader.string();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -1035,7 +1036,7 @@ $root.HomeInfo = (function() {
     return HomeInfo;
 })();
 
-$root.NotificationMessage = (function() {
+$root.NotificationMessage = (function () {
 
     /**
      * Properties of a NotificationMessage.
@@ -1149,18 +1150,18 @@ $root.NotificationMessage = (function() {
         while (reader.pos < end) {
             var tag = reader.uint32();
             switch (tag >>> 3) {
-            case 1:
-                message.id = reader.string();
-                break;
-            case 20:
-                message.title = reader.string();
-                break;
-            case 21:
-                message.message = reader.string();
-                break;
-            default:
-                reader.skipType(tag & 7);
-                break;
+                case 1:
+                    message.id = reader.string();
+                    break;
+                case 20:
+                    message.title = reader.string();
+                    break;
+                case 21:
+                    message.message = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
             }
         }
         return message;

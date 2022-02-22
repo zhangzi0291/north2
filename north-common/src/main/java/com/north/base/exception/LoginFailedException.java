@@ -36,7 +36,8 @@ public class LoginFailedException extends NorthBaseException {
         UNKNOWN_ERROR("-1", "登陆错误"),
         USER_PWD_ERROR("1", "用户名或密码错误"),
         EXPIRED_ERROR("2", "用户过期"),
-        LOCKING_ERROR("3", "用户锁定");
+        LOCKING_ERROR("3", "用户锁定"),
+        GEN_ERROR("4", "验证码校验失败");
         private String type;
         private String message;
 

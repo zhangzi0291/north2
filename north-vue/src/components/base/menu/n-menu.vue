@@ -1,5 +1,5 @@
 <template>
-  <a-sub-menu :key="menu.data.id" >
+  <a-sub-menu :key="menu.data.id">
     <template #title>
       <span>
         <component :is="$icons[menu.data.resourceIcon]"/>
@@ -11,7 +11,7 @@
         <n-menu :menu="child" :key="child.id"/>
       </template>
       <template v-else>
-        <a-menu-item :key="child.data.resourceUrl" :title="child.data.resourceType+''" >
+        <a-menu-item :key="child.data.resourceUrl" :title="child.data.resourceType+''">
           <component :is="$icons[child.data.resourceIcon]"/>
           <span>{{ child.data.resourceName }}</span>
         </a-menu-item>

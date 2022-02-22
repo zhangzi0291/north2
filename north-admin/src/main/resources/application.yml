@@ -63,10 +63,9 @@ springdoc:
 #mybatis配置
 mybatis-plus:
   config-location: classpath:mybatis-config.xml
-  mapper-locations: classpath*:mybatis/**/*Mapper.xml
+  mapper-locations: classpath*:com/north/**/xml/*Mapper.xml
   typeAliasesPackage: com.north.*.entity
   type-handlers-package: com.north.base.typehandler
   global-config:
     db-config:
       id-type: ASSIGN_ID
-      logic-delete-field: isDeleted

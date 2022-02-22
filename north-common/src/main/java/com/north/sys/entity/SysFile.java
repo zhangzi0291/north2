@@ -1,7 +1,7 @@
 package com.north.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.north.base.BaseModel;
+import com.north.base.LogicDeleteBaseModel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import java.util.StringJoiner;
  * @since 2021-02-18
  */
 @TableName("sys_file")
-public class SysFile extends BaseModel implements Serializable {
+public class SysFile extends LogicDeleteBaseModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -70,6 +70,10 @@ public class SysFile extends BaseModel implements Serializable {
      */
     private String relationId;
 
+    /**
+     * 文件控制方式
+     */
+    private String fileControl;
 
     public String getId() {
         return id;
@@ -152,6 +156,14 @@ public class SysFile extends BaseModel implements Serializable {
         this.relationId = relationId;
     }
 
+    public String getFileControl() {
+        return fileControl;
+    }
+
+    public void setFileControl(String fileControl) {
+        this.fileControl = fileControl;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", SysFile.class.getSimpleName() + "[", "]")
@@ -165,6 +177,7 @@ public class SysFile extends BaseModel implements Serializable {
                 .add("md5Value='" + md5Value + "'")
                 .add("moduleName='" + moduleName + "'")
                 .add("relationId='" + relationId + "'")
+                .add("saveModel='" + fileControl + "'")
                 .toString();
     }
 }

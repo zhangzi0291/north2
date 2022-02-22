@@ -67,13 +67,11 @@
 </template>
 <script lang="ts">
 import SysRoleApi from '@/api/SysRoleApi'
-import {Options, Vue} from 'vue-class-component';
 import FormModal, {ModalField} from "@/components/base/FormModal.vue";
 import MenuModal from "@/views/sys/sysresource/MenuModal.vue";
 import {createVNode, defineComponent, reactive, ref} from "vue";
 import Qs from "qs";
 import {AxiosResponse} from "axios";
-import SysUserApi from "@/api/SysUserApi";
 
 let api = new SysRoleApi();
 
@@ -133,7 +131,7 @@ export default defineComponent({
           {required: true, type: 'array', trigger: 'change', message: "资源不可为空"},
         ]
       },
-      check:{
+      check: {
         roleName: "",
       }
     }
@@ -141,14 +139,14 @@ export default defineComponent({
   methods: {
 
     openAdd(parentId: string) {
-      const form:any = this.$refs.form
-      const check:any = this.check
+      const form: any = this.$refs.form
+      const check: any = this.check
       form.open({parentId: parentId})
       check.roleName = undefined;
     },
     openEdit(id: string) {
-      const form:any = this.$refs.form
-      const check:any = this.check
+      const form: any = this.$refs.form
+      const check: any = this.check
       form.open({id: id})
       setTimeout(() => {
         check.roleName = form.getData().roleName;
@@ -160,7 +158,7 @@ export default defineComponent({
         res.data.data.forEach((d: any) => {
           data.resources.push(d.resourceId)
         })
-        const menuModal:any = this.$refs.menuModal
+        const menuModal: any = this.$refs.menuModal
         menuModal.open(data)
       })
     },
@@ -170,7 +168,7 @@ export default defineComponent({
         res.data.data.forEach((d: any) => {
           data.resources.push(d.resourceId)
         })
-        const menuModal2:any = this.$refs.menuModal2
+        const menuModal2: any = this.$refs.menuModal2
         menuModal2.open(data)
       })
     },
@@ -201,39 +199,39 @@ export default defineComponent({
   created() {
     this.load()
   },
-  setup(){
+  setup() {
     //表格加载状态
     let loading = ref(false)
     //分页
-    let page = reactive({ current:1,total:0 })
+    let page = reactive({current: 1, total: 0})
     //排序
-    let sort = reactive({ field:null,order:null})
+    let sort = reactive({field: null, order: null})
     //查询数据
-    let search = reactive({ })
+    let search = reactive({})
     //表格数据
     let data = ref([])
 
-    const load = function (param?:any) {
+    const load = function (param?: any) {
       loading.value = true
-      if(!!param && !!param.current ){
+      if (!!param && !!param.current) {
         page.current = param.current
       }
-      SysRoleApi.list(search,page,sort).then(res => {
-        data.value.length=0
+      SysRoleApi.list(search, page, sort).then(res => {
+        data.value.length = 0
         data.value = data.value.concat(res.data.data.records)
         page.current = res.data.data.current
         page.total = res.data.data.total
         loading.value = false
       })
     }
-    const tableChange = function (pageParam:any, filters:any, sorter:any){
+    const tableChange = function (pageParam: any, filters: any, sorter: any) {
       page.current = pageParam.current
       page.total = pageParam.total
       sort.field = sorter.field
       sort.order = sorter.order
       load()
     }
-    const tablePageOption = {loading,data,page,search,load,tableChange}
+    const tablePageOption = {loading, data, page, search, load, tableChange}
 
     return {
       ...tablePageOption

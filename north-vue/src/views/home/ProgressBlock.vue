@@ -17,7 +17,7 @@
         </template>
       </a-progress>
 
-      <b>{{title}}</b>
+      <b>{{ title }}</b>
     </a-space>
   </a-card>
 </template>
@@ -44,7 +44,7 @@ export default defineComponent({
       type: Number,
     },
   },
-  methods:{
+  methods: {
     getDashboardColor(percent: number) {
       if (percent > 85) {
         return this.dashboardColor.danger

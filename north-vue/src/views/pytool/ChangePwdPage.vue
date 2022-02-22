@@ -74,11 +74,11 @@ import SysUserApi from "@/api/SysUserApi";
           {required: true, type: 'string', trigger: 'blur', message: "旧密码不可为空"},
           {
             validator: (rule: any, value: any, callback: any) => {
-              let data:any = this.data
-              if(!data.username){
+              let data: any = this.data
+              if (!data.username) {
                 return callback("用户名未填写")
               }
-              SysUserApi.checkPassword(this.userId, value,data.username).then(res => {
+              SysUserApi.checkPassword(this.userId, value, data.username).then(res => {
                 if (res.data.code == '40001') {
                   callback(res.data.msg)
                 } else if (res.data.code == '200') {
@@ -114,7 +114,7 @@ import SysUserApi from "@/api/SysUserApi";
       this.$refs.form.validate().then((nameList: NamePath[]) => {
         SysLoginApi.pyChangePassword(this.data.key, this.data.username, this.data.newPassword, this.data.oldPassword).then((res: AxiosResponse) => {
           this.$message.success("修改成功")
-          this.data={}
+          this.data = {}
         })
       })
     }

@@ -35,8 +35,8 @@ public class MybatisPlusGenerator {
     public static void main(String[] args) {
         String TEMPLATE_PATH = "src\\main\\resources\\ftl\\";
         String CLASS_PATH = "D:\\mybatis";
-        String packageName = "com.north.pytool";
-        String[] tableName = new String[]{"pytool_app"};
+        String packageName = "com.north.blog";
+        String[] tableName = new String[]{"weblog"};
 //
 //
 //
@@ -278,8 +278,9 @@ public class MybatisPlusGenerator {
         strategy.setRestControllerStyle(true);
         // 自定义 controller 父类
         strategy.setSuperControllerClass("com.north.base.BaseController");
+
         //自定义实体父类
-        strategy.setSuperEntityClass("com.north.base.BaseModel");
+        strategy.setSuperEntityClass("com.north.base.LogicDeleteBaseModel");
         // 自定义实体，公共字段
         strategy.setSuperEntityColumns(new String[]{"is_deleted", "revision", "created_by", "created_time", "updated_by", "update_time"});
 

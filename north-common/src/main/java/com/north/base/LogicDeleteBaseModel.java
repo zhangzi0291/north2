@@ -1,5 +1,8 @@
 package com.north.base;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
@@ -10,11 +13,12 @@ import java.time.LocalDateTime;
  * @version 1.0
  * @since 2021-02-24
  */
-public class BaseModel implements Serializable {
+public class LogicDeleteBaseModel implements Serializable, IBaseModel {
 
     /**
      * 是否删除
      */
+    @TableLogic
     @JsonIgnore
     private Integer isDeleted;
 
@@ -28,24 +32,28 @@ public class BaseModel implements Serializable {
      * 创建人
      */
     @JsonIgnore
+    @TableField(fill = FieldFill.INSERT)
     private String createdBy;
 
     /**
      * 创建时间
      */
     @JsonIgnore
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdTime;
 
     /**
      * 更新人
      */
     @JsonIgnore
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updatedBy;
 
     /**
      * 更新时间
      */
     @JsonIgnore
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
 

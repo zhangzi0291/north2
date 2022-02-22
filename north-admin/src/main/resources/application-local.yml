@@ -16,17 +16,17 @@ north:
   updown:
     path: ./upload
   file:
-    type: local
+    type: local # local:本地存储  oss:阿里云OSS存储
     oss:
       endpoint: "oss-cn-hangzhou.aliyuncs.com"
-      access-key-id:
-      access-key-secret:
+      access-key-id: ""
+      access-key-secret: ""
       bucket-name: "north-oss"
       prefix-key: "north2"
   email:
     host: "smtp.139.com"
     port: 25
     auth: true
-    from: 
-    user: 
-    pass: 
+    from:
+    user:
+    pass:

@@ -120,13 +120,13 @@ export default defineComponent({
   },
   methods: {
     openAdd(parentId: string) {
-      const form:any = this.$refs.form
+      const form: any = this.$refs.form
       form.open({parentId: parentId})
-      const check:any = this.check
+      const check: any = this.check
       check.roleName = undefined;
     },
     openEdit(id: string) {
-      const form:any = this.$refs.form
+      const form: any = this.$refs.form
       form.open({id: id})
       // setTimeout(() => {
       //   this.check.roleName = this.$refs.form.getData().roleName;

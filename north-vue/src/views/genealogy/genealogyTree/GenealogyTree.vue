@@ -2,15 +2,14 @@
 
 </style>
 <template>
-<div  style="width:100%;height:100%">
-  <div ref="chart" style="width:100%;height:100%"></div>
-  <show-person ref="showPerson" :okCallback="okCallback"></show-person>
-</div>
+  <div style="width:100%;height:100%">
+    <div ref="chart" style="width:100%;height:100%"></div>
+    <show-person ref="showPerson" :okCallback="okCallback"></show-person>
+  </div>
 
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
 import showPerson from './ShowPerson.vue';
 import GenealogyApi from '@/api/GenealogyApi';
 import {defineComponent} from "vue";
@@ -41,7 +40,7 @@ export default defineComponent({
         // this.personData = res.data.data
       });
     },
-    okCallback(){
+    okCallback() {
       this.getGenealogyTreeData("1")
     },
     initGenealogyTree() {
@@ -98,7 +97,7 @@ export default defineComponent({
               color: 'source',
               shadowColor: 'rgba(0,0,0,0.5)',
               shadowBlur: 10,
-              curveness:0.3,
+              curveness: 0.3,
             },
             emphasis: {
               focus: 'adjacency',
@@ -125,7 +124,7 @@ export default defineComponent({
       this.chart.on('click', function (params: any) {
         let dataType = params.dataType
         if (dataType == 'node') {
-          const showPerson:any = $this.$refs.showPerson
+          const showPerson: any = $this.$refs.showPerson
           showPerson.open(params.data);
         }
       })

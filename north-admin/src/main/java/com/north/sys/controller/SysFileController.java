@@ -2,15 +2,21 @@ package com.north.sys.controller;
 
 
 import cn.hutool.crypto.digest.MD5;
+import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.BaseController;
 import com.north.base.Constant;
 import com.north.base.api.R;
+import com.north.file.FileControlFactory;
 import com.north.file.FileControlHandler;
+import com.north.file.dto.AliyunOssConfig;
+import com.north.file.dto.FileControlType;
+import com.north.file.dto.LocalConfig;
 import com.north.sys.dto.UploadDto;
 import com.north.sys.entity.SysFile;
 import com.north.sys.service.ISysFileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,7 +53,12 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
     private ISysFileService sysFileService;
     @Resource
     private FileControlHandler fileControlHandler;
-
+    @Resource
+    private LocalConfig localConfig;
+    @Resource
+    private AliyunOssConfig aliyunOssConfig;
+    @Value("${north.file.type}")
+    private String  fileControlType;
     /**
      * 上传文件
      *
@@ -91,6 +102,7 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
             sysFile.setFileSize(file.getSize());
             sysFile.setUploadTime(LocalDateTime.now());
             sysFile.setFilePath(fileName);
+            sysFile.setFileControl(fileControlType);
             sysFile.setMd5Value(md5);
             if (StringUtils.hasLength(moduleName)) {
                 sysFile.setModuleName(moduleName);
@@ -117,6 +129,7 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
      * @return
      * @throws UnsupportedEncodingException
      */
+    @NorthWithoutLogin
     @Operation(summary = "下载文件", description = "下载文件")
     @RequestMapping(path = "download", method = {RequestMethod.GET, RequestMethod.POST})
     public R download(String id, HttpServletResponse response) throws UnsupportedEncodingException {
@@ -127,9 +140,9 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
         Path filePath = Paths.get(file.getFilePath());
 
         response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(file.getOriginalName(), "UTF-8"));
-
+        FileControlType saveModel = StringUtils.hasLength(file.getFileControl()) ? FileControlType.getEnumByName(file.getFileControl()) : FileControlType.LOCAL;
         try {
-            InputStream inputStream = fileControlHandler.loadFileInputStream(file.getFilePath());
+            InputStream inputStream = FileControlFactory.getFileControlHandler(saveModel, saveModel.equals(FileControlType.LOCAL) ? localConfig : aliyunOssConfig).loadFileInputStream(file.getFilePath());
             if (inputStream == null) {
                 return R.failed("下载错误,文件不存在");
             }

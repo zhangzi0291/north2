@@ -31,6 +31,9 @@
           <a-form-item label="密码" name="password">
             <a-input-password v-model:value="loginData.password" autocomplete="off" type="password"/>
           </a-form-item>
+          <a-form-item label="验证码" name="genId">
+            <gen-slider @valid="valid"></gen-slider>
+          </a-form-item>
           <a-form-item :wrapper-col="{ span: 24 }">
             <div class="button-group">
               <a-button type="primary" @click="login">登录</a-button>
@@ -49,16 +52,19 @@
 
 </template>
 <script lang="ts">
-import {Options, Vue} from "vue-class-component";
 import {AxiosResponse} from "axios";
 import {NamePath} from "ant-design-vue/es/form/interface";
 import SysLoginApi, {LoginData} from "@/api/SysLoginApi";
 import {defineComponent} from "vue";
 import BaseApi from "@/api/BaseApi";
+import GenSlider from "@/components/GenSlider.vue";
 
 const MD5 = require('md5.js')
 export default defineComponent({
   name: 'ssoLogin',
+  components: {
+    GenSlider
+  },
   data() {
     return {
       url: {
@@ -76,6 +82,7 @@ export default defineComponent({
       loginRules: {
         username: [{required: true, type: 'string', trigger: 'blur', message: "用户名不可为空"}],
         password: [{required: true, type: 'string', trigger: 'blur', message: "密码不可为空"}],
+        genId: [{required: true, type: 'string', trigger: 'blur', message: "需要校验"}],
       },
     }
   },
@@ -89,15 +96,15 @@ export default defineComponent({
     }
   },
   methods: {
-    keydown(){
-      if(this.isLogin){
+    keydown() {
+      if (this.isLogin) {
         this.login()
-      }else {
+      } else {
         // this.register()
       }
     },
     login() {
-      const loginForm:any = this.$refs.loginForm
+      const loginForm: any = this.$refs.loginForm
 
       loginForm.validate().then((nameList: NamePath[]) => {
         this.tmpPwd = this.loginData.password;
@@ -126,6 +133,15 @@ export default defineComponent({
           this.loginData.password = this.tmpPwd;
         });
       })
+    },
+    valid(valid) {
+      console.log(valid)
+      if (valid) {
+        this.isValid = true
+        this.loginData.genId = valid
+      } else {
+        this.isValid = false
+      }
     },
   },
   created() {

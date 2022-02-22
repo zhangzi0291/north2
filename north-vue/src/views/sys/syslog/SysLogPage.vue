@@ -39,17 +39,17 @@
         <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
                  :scroll="{ x: 900, y: 500 }" :pagination="page" @change="tableChange"
                  bordered>
-<!--          <template #operation="{ record }">-->
-<!--            <a-space>-->
-<!--              <a-tooltip title="删除">-->
-<!--                <a-button shape="circle" type="dashed" @click="del(record.id)">-->
-<!--                  <template #icon>-->
-<!--                    <DeleteOutlined/>-->
-<!--                  </template>-->
-<!--                </a-button>-->
-<!--              </a-tooltip>-->
-<!--            </a-space>-->
-<!--          </template>-->
+          <!--          <template #operation="{ record }">-->
+          <!--            <a-space>-->
+          <!--              <a-tooltip title="删除">-->
+          <!--                <a-button shape="circle" type="dashed" @click="del(record.id)">-->
+          <!--                  <template #icon>-->
+          <!--                    <DeleteOutlined/>-->
+          <!--                  </template>-->
+          <!--                </a-button>-->
+          <!--              </a-tooltip>-->
+          <!--            </a-space>-->
+          <!--          </template>-->
         </a-table>
       </template>
 
@@ -63,13 +63,12 @@ import SysLogApi from '@/api/SysLogApi'
 import {AxiosResponse} from "axios";
 import SysDictApi from "@/api/SysDictApi";
 import {defineComponent, reactive, ref} from "vue";
-import SysRoleApi from "@/api/SysRoleApi";
 
 
 export default defineComponent({
   name: 'SysLog',
   data() {
-    let logTypes: never[] = [];
+    let logTypes = [];
     SysDictApi.getSelect('日志类型').then((res: AxiosResponse) => {
       logTypes = res.data.data
     });
@@ -79,23 +78,25 @@ export default defineComponent({
         {name: "", icon: "HomeOutlined", href: "/home"},
         {name: "角色管理", icon: "KeyOutlined", href: "/sysrole/list"}
       ],
-      logTypes:[],
+      logTypes: [],
       //表格字段
       columns: [
         {title: '用户名', key: 'nickname ', dataIndex: 'nickname',},
         {title: 'IP', key: 'ipAddr ', dataIndex: 'ipAddr',},
         {title: '模块名称', key: 'moduleName ', dataIndex: 'moduleName',},
         {title: '操作名称', key: 'operationName ', dataIndex: 'operationName',},
-        {title: '日志类型', key: 'logType  ', dataIndex: 'logType',
+        {
+          title: '日志类型', key: 'logType  ', dataIndex: 'logType',
           customRender: function (record: any) {
-            for (let logType  of logTypes) {
+            for (let logType of logTypes) {
               let type = (<any>logType)
-              if(type.value == record.record.logType){
+              if (type.value == record.record.logType) {
                 return type.lable
               }
             }
             return "未知"
-          }},
+          }
+        },
         {title: '操作时间', key: 'createdTime', dataIndex: 'createdTime',},
         {title: '类名', key: 'className ', dataIndex: 'className',},
         {title: '方法名', key: 'methodName ', dataIndex: 'methodName',},
@@ -105,7 +106,7 @@ export default defineComponent({
     }
   },
   methods: {
-    loadLogType(){
+    loadLogType() {
       SysDictApi.getSelect('日志类型').then((res: AxiosResponse) => {
         this.logTypes = res.data.data
       });
@@ -116,39 +117,39 @@ export default defineComponent({
     this.load()
     this.loadLogType()
   },
-  setup(){
+  setup() {
     //表格加载状态
     let loading = ref(false)
     //分页
-    let page = reactive({ current:1,total:0 })
+    let page = reactive({current: 1, total: 0})
     //排序
-    let sort = reactive({ field:null,order:null})
+    let sort = reactive({field: null, order: null})
     //查询数据
-    let search = reactive({ })
+    let search = reactive({})
     //表格数据
     let data = ref([])
 
-    const load = function (param?:any) {
+    const load = function (param?: any) {
       loading.value = true
-      if(!!param && !!param.current ){
+      if (!!param && !!param.current) {
         page.current = param.current
       }
-      SysLogApi.list(search,page,sort).then(res => {
-        data.value.length=0
+      SysLogApi.list(search, page, sort).then(res => {
+        data.value.length = 0
         data.value = data.value.concat(res.data.data.records)
         page.current = res.data.data.current
         page.total = res.data.data.total
         loading.value = false
       })
     }
-    const tableChange = function (pageParam:any, filters:any, sorter:any){
+    const tableChange = function (pageParam: any, filters: any, sorter: any) {
       page.current = pageParam.current
       page.total = pageParam.total
       sort.field = sorter.field
       sort.order = sorter.order
       load()
     }
-    const tablePageOption = {loading,data,page,search,load,tableChange}
+    const tablePageOption = {loading, data, page, search, load, tableChange}
 
     return {
       ...tablePageOption

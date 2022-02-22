@@ -19,9 +19,9 @@ public enum ApiErrorCode implements IErrorCode {
      */
     FORBIDDEN(403, "无权限访问"),
     /**
-     * 请求方式不支持
+     * 不支持的请求方式
      */
-    MethodNotAllowed(405, "请求方式不支持"),
+    MethodNotAllowed(405, "不支持的请求方式"),
     /**
      * 字段校验失败
      */

@@ -1,7 +1,7 @@
 package com.north.genealogy.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.north.base.BaseModel;
+import com.north.base.LogicDeleteBaseModel;
 
 /**
  * <p>
@@ -12,7 +12,7 @@ import com.north.base.BaseModel;
  * @since 2021-04-14
  */
 @TableName("genealogy_parent_tree")
-public class GenealogyParentTree extends BaseModel {
+public class GenealogyParentTree extends LogicDeleteBaseModel {
 
     private static final long serialVersionUID = 1L;
 

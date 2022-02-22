@@ -97,4 +97,4 @@ const methods = {
     }
 }
 
-export default {computed,methods}
+export default {computed, methods}

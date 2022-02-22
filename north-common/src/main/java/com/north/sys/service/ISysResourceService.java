@@ -20,7 +20,7 @@ public interface ISysResourceService extends IService<SysResource> {
      * 获取用户对应的资源
      *
      * @param userId       用户ID
-     * @param resourceType 资源类型，null所有，1菜单，2资源
+     * @param resourceType 资源类型， 1菜单，2资源, 3接口, 4内嵌外链, 5外链
      * @param pid          根目录ID
      * @return
      */

@@ -33,7 +33,7 @@ public class LocalFileControlHandler implements FileControlHandler {
 
     @Override
     public void saveFile(InputStream input, String filePath) {
-        Path savePath = Paths.get(this.config.getUploadPath(), filePath);
+        Path savePath = Paths.get(this.config.getUploadPath(), getDatePathStr(), filePath);
         try {
             if (Files.notExists(savePath.getParent())) {
                 Files.createDirectories(savePath.getParent());
@@ -55,7 +55,7 @@ public class LocalFileControlHandler implements FileControlHandler {
 
     @Override
     public InputStream loadFileInputStream(String filePath) {
-        Path file = Paths.get(this.config.getUploadPath(), filePath);
+        Path file = Paths.get(this.config.getUploadPath(), getDatePathStr(), filePath);
         if(Files.notExists(file)){
             return null;
         }

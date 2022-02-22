@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <iframe id="iframe" :src="url" frameborder="0" width='100%' height='100%' onload="SetCwinHeight()" ></iframe>
+    <iframe id="iframe" :src="url" frameborder="0" width='100%' height='100%' onload="SetCwinHeight()"></iframe>
   </div>
 </template>
 
@@ -21,9 +21,7 @@ export default defineComponent({
       required: true
     }
   },
-  methods: {
-
-  },
+  methods: {},
   mounted() {
   },
 })

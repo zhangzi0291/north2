@@ -29,7 +29,7 @@ import java.util.Map;
  * @Author zxn
  * @Date 2018-10-11 12:26
  */
-public abstract class BaseController<U extends BaseModel, T extends IService<U>> {
+public abstract class BaseController<U extends IBaseModel, T extends IService<U>> {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 

@@ -1,4 +1,4 @@
-import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 
 // const About = () => import(/* webpackChunkName: "About" */ '@/views/About.vue')
 const Index = () => import(/* webpackChunkName: "Index" */ '@/views/Index.vue')
@@ -17,6 +17,8 @@ const SysRole = () => import(/* webpackChunkName: "SysRole" */ '@/views/sys/sysr
 const SysDict = () => import(/* webpackChunkName: "SysDict" */ '@/views/sys/sysdict/SysDictPage.vue')
 const SysArea = () => import(/* webpackChunkName: "SysArea" */ '@/views/sys/sysarea/SysAreaPage.vue')
 const SysLog = () => import(/* webpackChunkName: "SysLog" */ '@/views/sys/syslog/SysLogPage.vue')
+const JsonTable = () => import(/* webpackChunkName: "JsonTable" */ '@/views/sys/jsontable/JsonTable.vue')
+const JsonTableData = () => import(/* webpackChunkName: "JsonTableData" */ '@/views/sys/jsontable/JsonTableData.vue')
 
 /**
  * 家族
@@ -30,8 +32,21 @@ const GenealogyTreeGraph = () => import(/* webpackChunkName: "GenealogyTreeGraph
 const pyRegister = () => import(/* webpackChunkName: "pyRegister" */ '@/views/pytool/RegisterPage.vue')
 const pyChangePwd = () => import(/* webpackChunkName: "pyChangePwd" */ '@/views/pytool/ChangePwdPage.vue')
 const pyApp = () => import(/* webpackChunkName: "pyApp" */ '@/views/pytool/app/AppPage.vue')
-const pyHomePage = () => import(/* webpackChunkName: "pyApp" */ '@/views/pytool/homepage/HomePage.vue')
+const pyHomePage = () => import(/* webpackChunkName: "pyHomePage" */ '@/views/pytool/homepage/HomePage.vue')
 
+/**
+ * 博客后台
+ */
+const weblog = () => import(/* webpackChunkName: "weblog" */ '@/views/blog/WeblogPage.vue')
+const updateWeblog = () => import(/* webpackChunkName: "updateWeblog" */ '@/views/blog/UpdateWeblogPage.vue')
+
+/**
+ * 对外博客页面
+ */
+const publicWeblogPage = () => import(/* webpackChunkName: "publicWeblogPage" */ '@/views/blog/PublicWeblogPage.vue')
+const publicWeblogHomePage = () => import(/* webpackChunkName: "PublicWeblogHomePage" */ '@/views/blog/PublicWeblogHomePage.vue')
+const publicWeblogDetailPage = () => import(/* webpackChunkName: "PublicWeblogDetailPage" */ '@/views/blog/PublicWeblogDetailPage.vue')
+const publicWeblogUpdatePage = () => import(/* webpackChunkName: "publicWeblogUpdatePage" */ '@/views/blog/PublicWeblogUpdatePage.vue')
 
 const test = () => import(/* webpackChunkName: "IframePanel" */ '@/views/test.vue')
 
@@ -107,6 +122,26 @@ const routes = [
                 path: "/pytool/homepage",
                 name: "py工具首页图标和说明",
                 component: pyHomePage
+            },
+            {
+                path: "/sys/jsontable",
+                name: "数据表元数据",
+                component: JsonTable
+            },
+            {
+                path: "/sys/jsontabledata/:id",
+                name: "数据表",
+                component: JsonTableData
+            },
+            {
+                path: "/blog/weblog",
+                name: "博客后台",
+                component: weblog
+            },
+            {
+                path: "/blog/updateWeblog",
+                name: "编辑博客",
+                component: updateWeblog
             }
 
         ]
@@ -135,7 +170,31 @@ const routes = [
         path: '/pytool/changepwd',
         name: 'pytool-changepwd',
         component: pyChangePwd,
-    }
+    },
+    {
+        path: '/weblog',
+        name: 'webloghome',
+        component: publicWeblogPage,
+        children: [
+            {
+                path: ':userId',
+                name: 'publicWeblogHomePage',
+                component: publicWeblogHomePage,
+            },
+            {
+                path: ':userId/:weblogId',
+                name: 'publicWeblogDetailPage',
+                component: publicWeblogDetailPage,
+            },
+            {
+                path: 'update',
+                name: 'publicWeblogUpdate',
+                component: publicWeblogUpdatePage,
+            }
+
+        ]
+    },
+
 ]
 
 const router = createRouter({

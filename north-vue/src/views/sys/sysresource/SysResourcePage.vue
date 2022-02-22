@@ -83,7 +83,7 @@ import SysDictApi from "@/api/SysDictApi";
     FormModal, MenuModal
   },
   data() {
-    let resourceTypes: never[] = [];
+    let resourceTypes = [];
     SysDictApi.getSelect('资源类型').then((res: AxiosResponse) => {
       resourceTypes = res.data.data
     });
@@ -185,13 +185,12 @@ import SysDictApi from "@/api/SysDictApi";
         id: data.parentId,
       }
     },
-    formInit(){
+    formInit() {
       let data = this.$refs.form.getData()
-      if(!!data.parentId && data.parentId != -1){
-        SysResourceApi.getResource(data.parentId).then((res: AxiosResponse)=>{
+      if (!!data.parentId && data.parentId != -1) {
+        SysResourceApi.getResource(data.parentId).then((res: AxiosResponse) => {
           let d = res.data.data;
           console.log(d)
-          this.check.resourceName = d.resourceName;
           this.parent = {
             resourceName: d.resourceName,
             id: d.id,

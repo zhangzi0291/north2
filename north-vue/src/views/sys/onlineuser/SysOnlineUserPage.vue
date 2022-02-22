@@ -39,7 +39,6 @@
   </div>
 </template>
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
 import SysUserOnlineApi from "@/api/SysUserOnlineApi";
 import {createVNode, defineComponent, reactive, ref} from "vue";
 import SysDictApi from "@/api/SysDictApi";
@@ -48,10 +47,9 @@ import {AxiosResponse} from "axios";
 
 export default defineComponent({
   name: 'SysOnlineUser',
-  components: {
-  },
+  components: {},
   data() {
-    let loginDevices: never[] = [];
+    let loginDevices = [];
     SysDictApi.getSelect('登录设备').then((res: AxiosResponse) => {
       loginDevices = res.data.data
     });
@@ -65,11 +63,12 @@ export default defineComponent({
       columns: [
         {title: '登录名', key: 'username', dataIndex: 'username'},
         {title: '用户名', key: 'nickname', dataIndex: 'nickname', ellipsis: "true"},
-        {title: '登录设备', key: 'loginDevice', dataIndex: 'loginDevice', ellipsis: "true",
+        {
+          title: '登录设备', key: 'loginDevice', dataIndex: 'loginDevice', ellipsis: "true",
           customRender: function (record: any) {
-            for (let dict  of loginDevices) {
+            for (let dict of loginDevices) {
               let type = (<any>dict)
-              if(type.value == record.record.loginDevice){
+              if (type.value == record.record.loginDevice) {
                 return type.lable
               }
             }

@@ -1,7 +1,7 @@
 package com.north.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.north.base.BaseModel;
+import com.north.base.LogicDeleteBaseModel;
 
 import java.io.Serializable;
 import java.util.StringJoiner;
@@ -15,7 +15,7 @@ import java.util.StringJoiner;
  * @since 2021-02-22
  */
 @TableName("sys_dict")
-public class SysDict extends BaseModel implements Serializable {
+public class SysDict extends LogicDeleteBaseModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

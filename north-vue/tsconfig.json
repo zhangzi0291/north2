@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -19,7 +19,7 @@
     "paths": {
       "@/*": [
         "src/*"
-      ]
+      ],
     },
     "lib": [
       "esnext",
@@ -28,6 +28,7 @@
       "scripthost"
     ]
   },
+  "noImplicitThis": true,
   "noImplicitAny": false,
   "include": [
     "src/**/*.ts",

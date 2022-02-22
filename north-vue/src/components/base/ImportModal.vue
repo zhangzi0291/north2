@@ -2,11 +2,12 @@
 
 </style>
 <template>
-  <a-modal :onCancel="cancel" :onOk="ok" :title="title" :visible="visible">
-    <a-form ref="form" v-bind="layout" :model="data" >
-      <a-form-item >
-        <a-upload :before-upload="beforeUpload" :file-list="fileList" @change="handleChange" :customRequest="customRequest">
-          <a-button >
+  <a-modal :onCancel="cancel" :onOk="ok" :title="title?title:'数据导入'" :visible="visible">
+    <a-form ref="form" v-bind="layout" :model="data">
+      <a-form-item>
+        <a-upload :before-upload="beforeUpload" :file-list="fileList" @change="handleChange"
+                  :customRequest="customRequest">
+          <a-button>
             <upload-outlined></upload-outlined>
             上传
           </a-button>
@@ -19,7 +20,6 @@
 
 import {Options, Vue} from 'vue-class-component';
 import {AxiosResponse} from 'axios';
-import {ModalField} from "@/components/base/FormModal.vue";
 
 @Options({
   name: 'ImportModal',
@@ -28,7 +28,7 @@ import {ModalField} from "@/components/base/FormModal.vue";
       visible: false,
       data: {},
       fileList: [],
-      file:[],
+      file: [],
       layout: {
         labelCol: {span: 8},
         wrapperCol: {span: 14},

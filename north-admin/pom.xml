@@ -102,6 +102,11 @@
             <version>1.4.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>cloud.tianai.captcha</groupId>
+            <artifactId>tianai-captcha-springboot-starter</artifactId>
+            <version>${tianai-captcha.version}</version>
+        </dependency>
 
     </dependencies>
 
@@ -120,6 +125,13 @@
                     <exclude>ftl/</exclude>
                     <exclude>protobuf/</exclude>
                 </excludes>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/xml/*.xml</include>
+                </includes>
             </resource>
         </resources>
     </build>

@@ -101,4 +101,17 @@
         <!--redis支持-->
 
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/xml/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
 </project>

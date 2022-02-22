@@ -38,7 +38,6 @@
 import InfoBlock from "@/views/home/InfoBlock.vue";
 import ProgressBlock from "@/views/home/ProgressBlock.vue";
 import {defineComponent} from "vue";
-import BaseApi from "@/api/BaseApi";
 import {HomeInfo} from "@/proto/Protobuf";
 
 export default defineComponent({
@@ -61,7 +60,7 @@ export default defineComponent({
       todayUser: <number><unknown>undefined,
       hardwareInterval: <any>{},
       reconnectInterval: {},
-      socket:<any>{},
+      socket: <any>{},
     }
   },
   computed: {

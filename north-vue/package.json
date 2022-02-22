@@ -19,6 +19,7 @@
     "echarts": "^5.2.0",
     "google-protobuf": "^3.18.0",
     "lodash": "^4.17.21",
+	"md-editor-v3": "^1.9.2",
     "protobufjs": "^6.11.2",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",

@@ -20,7 +20,7 @@
 <template>
 
   <a-layout style="height:100%" @keyup.enter="keydown">
-<!--    <a-layout-header class="title">{{ title }}</a-layout-header>-->
+    <!--    <a-layout-header class="title">{{ title }}</a-layout-header>-->
     <a-layout-content class="content">
       <a-card :title="'注册'" style="width: 450px">
         <template #extra>
@@ -65,8 +65,7 @@
 import {Options, Vue} from "vue-class-component";
 import {AxiosResponse} from "axios";
 import {NamePath} from "ant-design-vue/es/form/interface";
-import SysLoginApi, {LoginData, RegisterData} from "@/api/SysLoginApi";
-import BaseApi from "@/api/BaseApi";
+import SysLoginApi, {RegisterData} from "@/api/SysLoginApi";
 
 @Options({
   name: 'register',
@@ -75,7 +74,7 @@ import BaseApi from "@/api/BaseApi";
       url: {
         login: "/sysLogin/login"
       },
-      visible : false,
+      visible: false,
       appText: window.appText,
       isLogin: false,
       loginData: {},
@@ -119,9 +118,9 @@ import BaseApi from "@/api/BaseApi";
     }
   },
   methods: {
-    keydown(){
-      if(this.isLogin){
-      }else {
+    keydown() {
+      if (this.isLogin) {
+      } else {
         this.register()
       }
     },
@@ -131,11 +130,11 @@ import BaseApi from "@/api/BaseApi";
         SysLoginApi.pyToolRegister(data).then((res: AxiosResponse) => {
           this.isLogin = true
           this.$message.success("注册成功")
-          this.registerData={}
+          this.registerData = {}
         })
       })
     },
-    open(){
+    open() {
       this.visible = true
     },
     cancel() {

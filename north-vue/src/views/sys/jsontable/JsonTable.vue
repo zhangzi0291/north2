@@ -1,0 +1,222 @@
+<style lang="less">
+
+</style>
+<template>
+  <div>
+    <base-page :breadcrumbs="breadcrumbs">
+      <template #content>
+        <a-page-header sub-title="数据表元数据" title="">
+          <template #extra>
+            <a-button type="primary" @click="openAdd()">新增</a-button>
+            <a-button type="primary" @click="load({current:1})">查询</a-button>
+          </template>
+        </a-page-header>
+        <a-row>
+          <b>检索条件</b>
+        </a-row>
+        <a-row>
+          <a-form layout="inline">
+            <a-form-item label="用户名">
+              <a-input v-model:value="search.nickname" allowClear/>
+            </a-form-item>
+          </a-form>
+        </a-row>
+        <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
+                 :scroll="{ x: 900, y: 500 }" :pagination="page" @change="tableChange"
+                 bordered style="width: 100%">
+          <template #operation="{ record }">
+            <a-space>
+              <a-tooltip title="编辑">
+                <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
+                  <template #icon>
+                    <EditOutlined/>
+                  </template>
+                </a-button>
+              </a-tooltip>
+              <a-tooltip title="元数据">
+                <a-button shape="circle" type="dashed" @click="openMetaEdit(record.id)">
+                  <template #icon>
+                    <TableOutlined/>
+                  </template>
+                </a-button>
+              </a-tooltip>
+              <a-tooltip title="删除">
+                <a-button shape="circle" type="dashed" @click="del(record.id)">
+                  <template #icon>
+                    <DeleteOutlined/>
+                  </template>
+                </a-button>
+              </a-tooltip>
+            </a-space>
+          </template>
+        </a-table>
+      </template>
+    </base-page>
+
+    <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
+                :okCallback="load"
+                :title="'用户'">
+    </form-modal>
+
+    <a-modal :onCancel="onCancel" :onOk="onOk" :title="'编辑元数据'" :visible="visible">
+      <a-form ref="metaform" :model="mateData">
+        <a-form-item v-for="(mate,index) in mateData" :key="mate.id">
+          <a-space>
+            <a-input v-show="false" v-model:value="mate.id" placeholder="id" style="width:230px"/>
+            <a-input v-model:value="mate.columnName" placeholder="字段名称" style="width:150px"/>
+            <a-select v-model:value="mate.columnType" placeholder="字段类型" style="width:100px">
+              <template v-for="select in columnType">
+                <a-select-option :value="select.value">
+                  {{ select.lable }}
+                </a-select-option>
+              </template>
+            </a-select>
+            <a-input v-model:value="mate.orderNum" placeholder="序号" style="width:100px"/>
+            <a-button type="text" @click="mateData.splice(index, 1);">
+              <MinusCircleOutlined :style="{fontSize: '24px'}"/>
+            </a-button>
+          </a-space>
+        </a-form-item>
+      </a-form>
+      <a-button type="text" @click="mateData.push({})">
+        <PlusCircleOutlined :style="{fontSize: '24px'}"/>
+      </a-button>
+
+    </a-modal>
+
+  </div>
+</template>
+<script lang="ts">
+import {createVNode, defineComponent, reactive, ref} from "vue";
+import JsonTableAPi from "@/api/JsonTable";
+import FormModal, {ModalField} from "@/components/base/FormModal.vue";
+import SysDictApi from "@/api/SysDictApi";
+import {AxiosResponse} from "axios";
+
+
+export default defineComponent({
+  name: 'JsonTable',
+  components: {
+    FormModal
+  },
+  data() {
+    return {
+      //接口url
+      url: {
+        get: "/jsonTable/get",
+        add: "/jsonTable/add",
+        edit: "/jsonTable/edit",
+      },
+      //面包屑
+      breadcrumbs: [
+        {name: "", icon: "HomeOutlined", href: "/home"},
+        {name: "数据表元数据管理", icon: "UserOutlined", href: "/sys/jsontable"}
+      ],
+      //查询数据
+      search: {},
+      //表格数据
+      data: [],
+      //form中的字段
+      formColumns: [
+        new ModalField().init('表名', 'tableName', 'String'),
+      ],
+      //表格字段
+      columns: [
+        {title: 'ID', key: 'id', dataIndex: 'id'},
+        {title: '表名', key: 'tableName', dataIndex: 'tableName', ellipsis: "true"},
+        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "200px"},
+      ],
+      visible: false,
+      mateData: [],
+      tableId: "",
+      columnType: [],
+    }
+  },
+  methods: {
+    loadDict() {
+      SysDictApi.getSelect('元数据数据类型').then((res: AxiosResponse) => {
+        this.columnType = res.data.data
+      });
+    },
+    openAdd(parentId: string) {
+      const form: any = this.$refs.form
+      form.open({parentId: parentId})
+    },
+    openEdit(id: string) {
+      const form: any = this.$refs.form
+      form.open({id: id})
+    },
+    openMetaEdit(tableId: string) {
+      this.visible = true
+      this.tableId = tableId
+      JsonTableAPi.getMate(tableId).then(res => {
+        this.mateData = res.data.data
+      })
+    },
+    del(id: string) {
+      this.$modal.confirm({
+        title: '删除',
+        icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
+        content: '确定要删除吗？',
+        onOk: () => {
+          return JsonTableAPi.del([id]).then(res => {
+            this.load()
+          })
+        },
+      });
+    },
+    onOk() {
+      JsonTableAPi.addMate(this.tableId, this.mateData).then(res => {
+        this.visible = false
+      })
+    },
+    onCancel() {
+      this.visible = false
+    },
+
+  },
+  created() {
+    this.load()
+    this.loadDict()
+  },
+  setup() {
+    //表格加载状态
+    let loading = ref(false)
+    //分页
+    let page = reactive({current: 1, total: 0})
+    //排序
+    let sort = reactive({field: null, order: null})
+    //查询数据
+    let search = reactive({})
+    //表格数据
+    let data = ref([])
+
+    const load = function (param?: any) {
+      loading.value = true
+      if (!!param && !!param.current) {
+        page.current = param.current
+      }
+      JsonTableAPi.list(search, page, sort).then(res => {
+        data.value.length = 0
+        data.value = data.value.concat(res.data.data.records)
+        page.current = res.data.data.current
+        page.total = res.data.data.total
+        loading.value = false
+      })
+    }
+    const tableChange = function (pageParam: any, filters: any, sorter: any) {
+      page.current = pageParam.current
+      page.total = pageParam.total
+      sort.field = sorter.field
+      sort.order = sorter.order
+      load()
+    }
+    const tablePageOption = {loading, data, page, search, load, tableChange}
+
+    return {
+      ...tablePageOption
+    }
+  }
+})
+
+</script>
