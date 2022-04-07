@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class NotificationWebSocketHandler extends TextWebSocketHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(NotificationWebSocketHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(NotificationWebSocketHandler.class);
 
     //Map来存储WebSocketSession，key用USER_ID 即在线用户列表
     private static final Map<String, WebSocketSession> users = new HashMap<String, WebSocketSession>();
@@ -84,7 +84,7 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
             builder.setMessage("这是一个websocket通知的消息内容");
 
             Protobuf.NotificationMessage notificationMessage = builder.build();
-            System.out.println(notificationMessage.toString());
+            System.out.println(notificationMessage);
             System.out.println(notificationMessage.toByteArray());
             sendMessageToUser(userInfo.getUserId(), new TextMessage(notificationMessage.toString()));
             sendMessageToUser(userInfo.getUserId(), new BinaryMessage(notificationMessage.toByteArray()));

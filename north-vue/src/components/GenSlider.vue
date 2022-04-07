@@ -14,7 +14,7 @@
           <div class="bg-img-div">
             <img id="bg-img" :src="bgImg" alt/>
           </div>
-          <div class="slider-img-div" :style="moveBtnStyle">
+          <div ref="sliderImgDiv" class="slider-img-div" :style="moveBtnStyle">
             <img id="slider-img" :src="sliderImg" alt/>
           </div>
         </div>
@@ -44,8 +44,6 @@ export default defineComponent({
     return {
       isValid: false,
       visible: false,
-      start: 0,
-      end: 206,
       bgImgWidth: 260,
       movePercent: 0,
       moveX: 0,
@@ -53,11 +51,15 @@ export default defineComponent({
       imgDivStyle: {},
       bgImg: "",
       sliderImg: "",
+      startSlidingTime:0,
+      entSlidingTime:0,
+      trackArr:[]
     }
   },
   methods: {
     openModal() {
       this.visible = true;
+      this.trackArr = []
       this.refreshCaptcha()
     },
     hideModal() {
@@ -68,21 +70,19 @@ export default defineComponent({
         this.id = res.data.id;
         this.bgImg = res.data.captcha.backgroundImage;
         this.sliderImg = res.data.captcha.sliderImage;
+        this.trackArr = []
       })
     },
     down(event) {
-      this.start = event.pageX;
-
+      this.startX = event.pageX;
+      this.startY = event.pageY;
+      this.startSlidingTime = new Date();
       window.addEventListener("mousemove", this.move);
       window.addEventListener("mouseup", this.up);
     },
     move(event) {
-      let moveX = event.pageX - this.start;
-      if (moveX < 0) {
-        moveX = 0;
-      } else if (moveX > this.end) {
-        moveX = this.end;
-      }
+      let moveX = event.pageX - this.startX;
+      let moveY = event.pageY - this.startY;
       this.moveX = moveX
       this.moveBtnStyle = {
         transform: "translate(" + this.moveX + "px, 0px)"
@@ -91,9 +91,12 @@ export default defineComponent({
         transform: "translate(" + this.moveX + "px, 0px)"
       }
       this.movePercent = moveX / this.bgImgWidth;
+      this.trackArr.push({x: moveX, y:moveY, t: (new Date().getTime() - this.startSlidingTime.getTime())});
+
     },
     up(event) {
       console.log(this.movePercent, this.bgImgWidth);
+      this.entSlidingTime = new Date()
       this.moveX = 0
       this.moveBtnStyle = {
         transform: "translate(" + this.moveX + "px, 0px)"
@@ -106,7 +109,16 @@ export default defineComponent({
       this.valid();
     },
     valid() {
-      SysLoginApi.check(this.id, this.movePercent).then(res => {
+      let data = {
+        bgImageWidth: this.bgImgWidth,
+        bgImageHeight: this.$refs.sliderImgDiv.offsetHeight,
+        sliderImageWidth: this.$refs.sliderImgDiv.offsetWidth,
+        sliderImageHeight: this.$refs.sliderImgDiv.offsetHeight,
+        startSlidingTime: this.startSlidingTime,
+        entSlidingTime: this.entSlidingTime,
+        trackList: this.trackArr
+      };
+      SysLoginApi.check(data).then(res => {
         if (eval(res.data.data)) {
           this.hideModal()
           this.$emit("valid", this.id)
@@ -174,7 +186,7 @@ export default defineComponent({
 }
 
 .refresh-btn, .close-btn, .slider-move-track, .slider-move-btn {
-  background: ~"url(/images/sprite.1.2.4.png) no-repeat";
+  background:  url('~@/assets/images/sprite.1.2.4.png') no-repeat;
 }
 
 .refresh-btn, .close-btn {

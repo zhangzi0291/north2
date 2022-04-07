@@ -19,7 +19,7 @@ public class SysUserRedisCacheService extends BaseRedisCacheService<SysUser> {
         this.sysUserService = sysUserService;
     }
 
-    private ISysUserService sysUserService;
+    private final ISysUserService sysUserService;
 
     @Override
     protected List<SysUser> getAllList() {

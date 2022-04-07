@@ -6,8 +6,8 @@ public enum ModuleNameEnum {
     SYSTEM("系统", 2),
     ;
 
-    private String name;
-    private Integer value;
+    private final String name;
+    private final Integer value;
 
     ModuleNameEnum(String name, Integer value) {
         this.name = name;

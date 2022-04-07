@@ -52,9 +52,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public Boolean checkRoleName(String roleName) {
         List<SysRole> list = this.lambdaQuery().eq(SysRole::getRoleName, roleName).select(SysRole::getId).list();
-        if (list.size() > 0) {
-            return false;
-        }
-        return true;
+        return list.size() <= 0;
     }
 }

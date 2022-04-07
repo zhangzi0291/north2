@@ -18,9 +18,9 @@ import java.io.InputStream;
  */
 public class AliyunOssFileControlHandler implements FileControlHandler {
 
-    private AliyunOssConfig config;
+    private final AliyunOssConfig config;
 
-    private OSS ossClient;
+    private final OSS ossClient;
 
     public AliyunOssFileControlHandler(AliyunOssConfig config) {
         this.config = config;

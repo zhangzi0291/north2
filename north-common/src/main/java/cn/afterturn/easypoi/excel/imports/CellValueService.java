@@ -41,7 +41,7 @@ public class CellValueService {
 
     private List<String> handlerList = null;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 获取单元格内的值

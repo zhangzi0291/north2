@@ -27,9 +27,6 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
         qw.eq(SysDict::getDictName, dictName);
         qw.eq(SysDict::getDictKey, dictKey);
         List<SysDict> list = this.list(qw);
-        if (list.size() > 0) {
-            return false;
-        }
-        return true;
+        return list.size() <= 0;
     }
 }

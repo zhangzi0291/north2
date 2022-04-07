@@ -19,7 +19,7 @@ import java.nio.file.Paths;
  */
 public class LocalFileControlHandler implements FileControlHandler {
 
-    private LocalConfig config;
+    private final LocalConfig config;
 
     public LocalFileControlHandler(LocalConfig config) {
         this.config = config;

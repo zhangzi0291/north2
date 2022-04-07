@@ -102,11 +102,13 @@
             <version>1.4.7</version>
         </dependency>
 
+        <!--    滑块验证    -->
         <dependency>
             <groupId>cloud.tianai.captcha</groupId>
             <artifactId>tianai-captcha-springboot-starter</artifactId>
             <version>${tianai-captcha.version}</version>
         </dependency>
+        <!--    滑块验证    -->
 
     </dependencies>
 

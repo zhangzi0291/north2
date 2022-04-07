@@ -111,9 +111,9 @@ public class MybatisPlusGenerator {
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
-        strategy.setTablePrefix(new String[]{""});// 此处可以修改为您的表前缀
+        strategy.setTablePrefix("");// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{tableName}); // 需要生成的表
+        strategy.setInclude(tableName); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
 //        //自定义实体父类
 //         strategy.setSuperEntityClass("com.north.base.BaseModel");
@@ -282,7 +282,7 @@ public class MybatisPlusGenerator {
         //自定义实体父类
         strategy.setSuperEntityClass("com.north.base.LogicDeleteBaseModel");
         // 自定义实体，公共字段
-        strategy.setSuperEntityColumns(new String[]{"is_deleted", "revision", "created_by", "created_time", "updated_by", "update_time"});
+        strategy.setSuperEntityColumns("is_deleted", "revision", "created_by", "created_time", "updated_by", "update_time");
 
         // 【实体】是否生成字段常量（默认 false）
         // public static final String ID = "test_id";

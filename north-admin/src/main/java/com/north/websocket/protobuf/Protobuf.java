@@ -554,8 +554,7 @@ public final class Protobuf {
             .equals(other.getProcess())) return false;
         if (!getLoadAverage()
             .equals(other.getLoadAverage())) return false;
-        if (!unknownFields.equals(other.unknownFields)) return false;
-        return true;
+        return unknownFields.equals(other.unknownFields);
       }
 
       @java.lang.Override
@@ -1357,8 +1356,7 @@ public final class Protobuf {
             .equals(other.getUsed())) return false;
         if (!getTotal()
             .equals(other.getTotal())) return false;
-        if (!unknownFields.equals(other.unknownFields)) return false;
-        return true;
+        return unknownFields.equals(other.unknownFields);
       }
 
       @java.lang.Override
@@ -2140,8 +2138,7 @@ public final class Protobuf {
             .equals(other.getTotal())) return false;
         if (!getName()
             .equals(other.getName())) return false;
-        if (!unknownFields.equals(other.unknownFields)) return false;
-        return true;
+        return unknownFields.equals(other.unknownFields);
       }
 
       @java.lang.Override
@@ -2963,8 +2960,7 @@ public final class Protobuf {
       }
       if (!getDiskList()
           .equals(other.getDiskList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
+      return unknownFields.equals(other.unknownFields);
     }
 
     @java.lang.Override
@@ -4340,8 +4336,7 @@ public final class Protobuf {
           .equals(other.getTitle())) return false;
       if (!getMessage()
           .equals(other.getMessage())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
+      return unknownFields.equals(other.unknownFields);
     }
 
     @java.lang.Override
@@ -4924,7 +4919,7 @@ public final class Protobuf {
       getDescriptor() {
     return descriptor;
   }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
+  private static final com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     java.lang.String[] descriptorData = {

@@ -36,7 +36,7 @@
         <sa-token.version>1.28.0</sa-token.version>
         <hutool.version>5.7.14</hutool.version>
         <easypoi.version>4.4.0</easypoi.version>
-        <tianai-captcha.version>1.2.3</tianai-captcha.version>
+        <tianai-captcha.version>1.2.7</tianai-captcha.version>
 
     </properties>
 

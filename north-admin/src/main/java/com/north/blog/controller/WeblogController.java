@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -126,10 +127,10 @@ public class WeblogController extends BaseController<Weblog, IWeblogService> {
 
     public static void main(String[] args) throws Exception {
         System.out.println(1);
-        System.out.println(URLEncoder.encode(URLEncoder.encode("+","utf8")));
+        System.out.println(URLEncoder.encode(URLEncoder.encode("+", StandardCharsets.UTF_8)));
         System.out.println(2);
-        System.out.println(URLDecoder.decode(URLDecoder.decode("+","utf8")));
+        System.out.println(URLDecoder.decode(URLDecoder.decode("+", StandardCharsets.UTF_8)));
         System.out.println(3);
-        System.out.println(URLDecoder.decode("+","utf8"));
+        System.out.println(URLDecoder.decode("+", StandardCharsets.UTF_8));
     }
 }

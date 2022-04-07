@@ -62,9 +62,6 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
     @Override
     public Boolean checkResourceName(String roleName) {
         List<SysResource> list = this.lambdaQuery().eq(SysResource::getResourceName, roleName).select(SysResource::getId).list();
-        if (list.size() > 0) {
-            return false;
-        }
-        return true;
+        return list.size() <= 0;
     }
 }

@@ -76,7 +76,6 @@ import {Moment} from 'moment';
 import SysDictApi from "@/api/SysDictApi";
 import UploadImage from "@/components/UploadImage.vue";
 
-let dictApi = new SysDictApi();
 
 export class ModalField {
 

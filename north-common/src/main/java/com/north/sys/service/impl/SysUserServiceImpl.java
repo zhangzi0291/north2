@@ -83,10 +83,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public Boolean checkGen(String genId) {
-        if(!Boolean.TRUE.equals(redissonClient.getBucket(Constant.REDIS_PREFIX+genId).get())){
+        if(!Boolean.TRUE.equals(redissonClient.getBucket(Constant.NORTH_GEN_REDIS_PREFIX +genId).get())){
             throw LoginFailedException.newInstance(LoginFailedException.LoginFailedEnum.GEN_ERROR);
         }
-        redissonClient.getBucket(Constant.REDIS_PREFIX+genId).deleteAsync();
+        redissonClient.getBucket(Constant.NORTH_GEN_REDIS_PREFIX +genId).deleteAsync();
         return Boolean.TRUE;
     }
 
@@ -137,19 +137,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public Boolean checkUsername(String username) {
         List<SysUser> list = this.lambdaQuery().eq(SysUser::getUsername, username).select(SysUser::getId).list();
-        if (list.size() > 0) {
-            return false;
-        }
-        return true;
+        return list.size() <= 0;
     }
 
     @Override
     public Boolean checkNickname(String nickname) {
         List<SysUser> list = this.lambdaQuery().eq(SysUser::getNickname, nickname).select(SysUser::getId).list();
-        if (list.size() > 0) {
-            return false;
-        }
-        return true;
+        return list.size() <= 0;
     }
 
     @Override

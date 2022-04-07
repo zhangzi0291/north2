@@ -115,7 +115,6 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
                 throw new InsertFailedException("保存图片失败");
             }
         }
-        ;
         //两次MD5编码
         bean.setPassword(MD5.create().digestHex(bean.getPassword(), StandardCharsets.UTF_8));
         bean.setPassword(PasswordUtil.encodePassword(bean.getPassword()));

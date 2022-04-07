@@ -36,10 +36,7 @@ public class PytoolAppServiceImpl extends ServiceImpl<PytoolAppMapper, PytoolApp
     @Override
     public Boolean checkSoftName(String softName) {
         List<PytoolApp> list = this.lambdaQuery().eq(PytoolApp::getSoftName, softName).select(PytoolApp::getId).list();
-        if (list.size() > 0) {
-            return false;
-        }
-        return true;
+        return list.size() <= 0;
     }
 
     @Override

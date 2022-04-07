@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class HardwareInfoWebSocketHandler extends TextWebSocketHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(HardwareInfoWebSocketHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(HardwareInfoWebSocketHandler.class);
 
     //Map来存储WebSocketSession，key用USER_ID 即在线用户列表
     public static final Map<String, WebSocketSession> users = new HashMap<String, WebSocketSession>();

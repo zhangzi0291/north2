@@ -124,14 +124,11 @@ export default class SysLoginApi {
         })
     }
 
-    public static check(id: string, movePercent: string): Promise<AxiosResponse> {
+    public static check(data: any): Promise<AxiosResponse> {
         return axios({
             method: 'post',
             url: url.check,
-            data: Qs.stringify(({
-                id: id,
-                percentage: movePercent
-            }))
+            data: data
         })
     }
 }

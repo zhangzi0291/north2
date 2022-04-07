@@ -52,7 +52,7 @@ public class NorthCheckPermissionsInterceptor implements HandlerInterceptor {
         } else {
             HandlerMethod method = (HandlerMethod) handler;
             //有NorthWithoutLogin不需要登陆
-            if (method.hasMethodAnnotation(NorthWithoutLogin.class) || method.getBeanType().isAnnotationPresent(NorthWithoutLogin.class)) {
+            if ( !method.hasMethodAnnotation(NorthNeedLogin.class) && (method.hasMethodAnnotation(NorthWithoutLogin.class) || method.getBeanType().isAnnotationPresent(NorthWithoutLogin.class))) {
                 return true;
             }
             //检查是否登陆
@@ -77,7 +77,7 @@ public class NorthCheckPermissionsInterceptor implements HandlerInterceptor {
                 if (resource == null) {
                     return true;
                 }
-                StpUtil.checkPermissionOr(new String[]{resource.getResourceName()});
+                StpUtil.checkPermissionOr(resource.getResourceName());
                 return true;
             }
         }

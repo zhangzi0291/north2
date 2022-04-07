@@ -15,7 +15,7 @@ public class LoginFailedException extends NorthBaseException {
     /**
      * 异常类型
      */
-    private LoginFailedEnum type;
+    private final LoginFailedEnum type;
 
     /**
      * 获取异常类型
@@ -38,8 +38,8 @@ public class LoginFailedException extends NorthBaseException {
         EXPIRED_ERROR("2", "用户过期"),
         LOCKING_ERROR("3", "用户锁定"),
         GEN_ERROR("4", "验证码校验失败");
-        private String type;
-        private String message;
+        private final String type;
+        private final String message;
 
         LoginFailedEnum(String type, String message) {
             this.type = type;

@@ -8,8 +8,8 @@ public enum LogTypeEnum {
     SYSTEM("系统", 4),
     ;
 
-    private String name;
-    private Integer value;
+    private final String name;
+    private final Integer value;
 
     LogTypeEnum(String name, Integer value) {
         this.name = name;

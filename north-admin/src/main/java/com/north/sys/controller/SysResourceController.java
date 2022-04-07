@@ -81,7 +81,7 @@ public class SysResourceController extends BaseController<SysResource, ISysResou
     public R getMenuTree(String pid) {
         String userId = StpUtil.getLoginIdAsString();
         List<TreeDto<SysResource>> list;
-        List<Integer> resourceType = Arrays.asList(new Integer[]{1, 4, 5});
+        List<Integer> resourceType = Arrays.asList(1, 4, 5);
         if (userId.equals("1")) {
             list = sysResourceService.getSysResourceTreeList(null, resourceType, pid);
         } else {

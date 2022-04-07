@@ -6,13 +6,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.north.aop.cachedata.NorthCache;
 import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.aop.validator.ValidateParam;
 import com.north.aop.validator.ValidateParams;
 import com.north.aop.validator.ValidatorEnum;
 import com.north.base.BaseController;
+import com.north.base.Constant;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
+import com.north.base.enump.CacheKeyEnum;
 import com.north.sys.dto.SelectFieldDto;
 import com.north.sys.entity.SysDict;
 import com.north.sys.service.ISysDictService;
@@ -20,6 +23,7 @@ import com.north.utils.ExcelUtil;
 import com.north.utils.LambdaUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.redisson.api.RedissonClient;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +54,8 @@ public class SysDictController extends BaseController<SysDict, ISysDictService> 
 
     @Resource
     private ISysDictService sysDictService;
+    @Resource
+    private RedissonClient redissonClient;
 
     @Override
     protected QueryWrapper<SysDict> setListWrapper(SysDict bean, Map<String, String> map) {
@@ -69,7 +76,8 @@ public class SysDictController extends BaseController<SysDict, ISysDictService> 
      * @param dictName
      * @return
      */
-    @NorthWithoutLogin  
+    @NorthCache(key = Constant.NORTH_CACHE_REDIS_PREFIX + Constant.CacheKey.DICT)
+    @NorthWithoutLogin
     @Operation(summary = "获取下拉框列表", description = "通过字典名称获取下拉框列表")
     @RequestMapping(path = "getSelectFieldList", method = RequestMethod.GET)
     public R getSelectFieldList(String dictName) {
@@ -133,7 +141,7 @@ public class SysDictController extends BaseController<SysDict, ISysDictService> 
             String suffix = ExcelUtil.getSuffix(list.size());
             String downloadFileName = fileName + suffix;
             byte[] bytes = ExcelUtil.export(fileName, fileName, entity, list);
-            response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(downloadFileName, "UTF-8"));
+            response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(downloadFileName, StandardCharsets.UTF_8));
             response.getOutputStream().write(bytes);
         } catch (IOException e) {
             logger.error("导出异常", e);

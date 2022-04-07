@@ -1,6 +1,7 @@
 package com.north.sys.controller;
 
 import cloud.tianai.captcha.slider.SliderCaptchaApplication;
+import cloud.tianai.captcha.template.slider.validator.SliderCaptchaTrack;
 import cloud.tianai.captcha.vo.CaptchaResponse;
 import cloud.tianai.captcha.vo.SliderCaptchaVO;
 import cn.dev33.satoken.stp.StpUtil;
@@ -8,6 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.north.aop.permissions.NorthNeedLogin;
 import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.aop.validator.ValidateParam;
 import com.north.aop.validator.ValidateParams;
@@ -46,6 +48,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2020-12-30
  */
 @Tag(name = "sys-login-controller 登陆相关")
+@NorthWithoutLogin
 @RestController
 @RequestMapping("sysLogin")
 public class SysLoginController {
@@ -72,7 +75,6 @@ public class SysLoginController {
      * @param roleIds
      * @return
      */
-    @NorthWithoutLogin
     @Transactional
     @Operation(summary = "注册", description = "注册")
     @RequestMapping(path = "register", method = RequestMethod.POST)
@@ -119,7 +121,6 @@ public class SysLoginController {
      * @param password 密码为明文密码md5编码之后的值
      * @return
      */
-    @NorthWithoutLogin
     @Operation(summary = "登陆", description = "登陆")
     @RequestMapping(path = "login", method = RequestMethod.POST)
     @ValidateParams(
@@ -153,7 +154,6 @@ public class SysLoginController {
      * @param target
      * @return
      */
-    @NorthWithoutLogin
     @RequestMapping(path = "getVerificationCodeWithEmail", method = RequestMethod.GET)
     public R getVerificationCodeWithEmail(String target) {
         QueryWrapper<SysUser> qw = new QueryWrapper<>();
@@ -163,7 +163,7 @@ public class SysLoginController {
             return R.failed("用户不存在");
         }
         String VerificationCode = sysUserService.createVerificationCode(sysUser.getId(), 15);
-        msgService.get(StrUtil.lowerFirst(EmailMsgService.class.getSimpleName())).sendMsg(Arrays.asList(new String[]{target}), "North验证码", VerificationCode);
+        msgService.get(StrUtil.lowerFirst(EmailMsgService.class.getSimpleName())).sendMsg(Arrays.asList(target), "North验证码", VerificationCode);
         return R.ok(VerificationCode);
     }
 
@@ -174,7 +174,6 @@ public class SysLoginController {
      * @param verificationCode
      * @return
      */
-    @NorthWithoutLogin
     @RequestMapping(path = "loginByVerificationCodeWithEmail", method = RequestMethod.POST)
     public R loginByVerificationCodeWithEmail(String target, String verificationCode) {
         QueryWrapper<SysUser> qw = new QueryWrapper<>();
@@ -209,6 +208,7 @@ public class SysLoginController {
      *
      * @return
      */
+    @NorthNeedLogin
     @Operation(summary = "注销", description = "退出登陆")
     @RequestMapping(path = "logout", method = {RequestMethod.GET, RequestMethod.POST})
     public R logout(String deviceType) {
@@ -216,23 +216,21 @@ public class SysLoginController {
         return R.ok();
     }
 
-    @NorthWithoutLogin
     @Operation(summary = "滑块验证码", description = "滑块验证码")
     @RequestMapping(path = "gen", method = {RequestMethod.GET, RequestMethod.POST})
     public CaptchaResponse<SliderCaptchaVO> gen(HttpServletRequest request) {
         CaptchaResponse<SliderCaptchaVO> response = sliderCaptchaApplication.generateSliderCaptcha();
+        request.getSession().setAttribute("genId",response.getId());
         return response;
     }
 
-    @NorthWithoutLogin
     @Operation(summary = "滑块验证", description = "滑块验证")
     @RequestMapping(path = "check", method = {RequestMethod.GET, RequestMethod.POST})
-    public R check(@RequestParam("id") String id,
-                                @RequestParam("percentage") Float percentage,
-                                HttpServletRequest request) {
-        Boolean flag = sliderCaptchaApplication.matching(id, percentage);
+    public R check(HttpServletRequest request,@RequestBody SliderCaptchaTrack sliderCaptchaTrack) {
+        String id = request.getSession().getAttribute("genId").toString();
+        Boolean flag = sliderCaptchaApplication.matching(id, sliderCaptchaTrack);
         if(flag){
-            redissonClient.getBucket(Constant.REDIS_PREFIX+id).set(true,5, TimeUnit.MINUTES);
+            redissonClient.getBucket(Constant.NORTH_GEN_REDIS_PREFIX +id).set(true,5, TimeUnit.MINUTES);
         }
         return R.ok(flag.toString());
     }

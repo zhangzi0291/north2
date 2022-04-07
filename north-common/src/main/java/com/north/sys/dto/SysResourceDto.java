@@ -28,7 +28,6 @@ public class SysResourceDto extends SysResource {
     @Override
     public String toString() {
         return super.toString() + new StringJoiner(", ", SysResourceDto.class.getSimpleName() + "[", "]")
-                .add("parentName='" + parentName + "'")
-                .toString();
+                .add("parentName='" + parentName + "'");
     }
 }

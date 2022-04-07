@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class Constant {
 
-    public static final String REDIS_PREFIX = "north:gen:";
+    public static final String NORTH_GEN_REDIS_PREFIX = "north:gen:";
+
+    public static final String NORTH_CACHE_REDIS_PREFIX = "north:cache:";
 
     public static final String SATOKEN_REDIS_PERMISSION_KEY = "north.satoken.permission.";
 
@@ -79,4 +81,8 @@ public class Constant {
 
     public static String PY_HOMEPAGE_LOGO_NAME = "LOGO";
     public static String PY_HOMEPAGE_CONTENT_NAME = "CONTENT";
+
+    public static class CacheKey{
+        public static final String DICT="dict";
+    }
 }

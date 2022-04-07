@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -88,8 +89,8 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
         //校验文件md5，如果md5相同是同一个文件不需要重复保存
         String md5 = MD5.create().digestHex(file.getInputStream());
         SysFile sysFile = sysFileService.getSysFileByMD5(md5);
-        //文件不存在或者不校验MD5重复的话就保存，否则直接返回已知的文件ID
-        if (sysFile == null || Boolean.FALSE.equals(checkmd5)) {
+        //文件不存在或者存储方式不同或者不校验MD5重复的话就保存，否则直接返回已知的文件ID
+        if (sysFile == null || fileControlType.equals(sysFile.getFileControl()) || Boolean.FALSE.equals(checkmd5)) {
             //保存文件
             String uuid = UUID.randomUUID().toString();
             String originalFilename = file.getOriginalFilename();
@@ -139,7 +140,7 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
         }
         Path filePath = Paths.get(file.getFilePath());
 
-        response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(file.getOriginalName(), "UTF-8"));
+        response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(file.getOriginalName(), StandardCharsets.UTF_8));
         FileControlType saveModel = StringUtils.hasLength(file.getFileControl()) ? FileControlType.getEnumByName(file.getFileControl()) : FileControlType.LOCAL;
         try {
             InputStream inputStream = FileControlFactory.getFileControlHandler(saveModel, saveModel.equals(FileControlType.LOCAL) ? localConfig : aliyunOssConfig).loadFileInputStream(file.getFilePath());

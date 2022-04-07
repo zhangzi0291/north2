@@ -257,10 +257,6 @@ public class RandomUtil {
     public static Boolean boolNum(String str) {
         Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(str);
-        if (!isNum.matches()) {
-            return false;
-        } else {
-            return true;
-        }
+        return isNum.matches();
     }
 }
