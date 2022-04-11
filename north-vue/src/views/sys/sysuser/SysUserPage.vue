@@ -46,50 +46,52 @@
               </a-col>
             </a-row>
           </template>
-          <template #iconUrl="{ record }">
-            <a-avatar :src="record.iconUrl" size="large" style="background-color: #66ccff">
-              <template v-if="1==1">{{ record.nickname }}</template>
-            </a-avatar>
-          </template>
-          <template #operation="{ record }">
-            <a-space>
-              <a-tooltip title="编辑">
-                <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
-                  <template #icon>
-                    <EditOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="分配角色">
-                <a-button shape="circle" type="dashed" @click="openMenuModal2(record )">
-                  <template #icon>
-                    <AlignLeftOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip :title="record.status == 0?'启用':'停用'">
-                <a-button shape="circle" type="dashed" @click="changeUserStatus(record.id, record)">
-                  <template #icon>
-                    <CheckOutlined v-if="record.status==0"/>
-                    <CloseOutlined v-else/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="重置密码">
-                <a-button shape="circle" type="dashed" @click="resetPassword(record.id )">
-                  <template #icon>
-                    <LockOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="删除">
-                <a-button shape="circle" type="dashed" @click="del(record.id)">
-                  <template #icon>
-                    <DeleteOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-            </a-space>
+          <template #bodyCell="{ text, record, index, column }">
+            <template v-if="column.dataIndex === 'iconUrl'">
+              <a-avatar :src="record.iconUrl" size="large" style="background-color: #66ccff">
+                <template v-if="1==1">{{ record.nickname }}</template>
+              </a-avatar>
+            </template>
+            <template v-else-if="column.dataIndex === 'operation'">
+              <a-space>
+                <a-tooltip title="编辑">
+                  <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
+                    <template #icon>
+                      <EditOutlined/>
+                    </template>
+                  </a-button>
+                </a-tooltip>
+                <a-tooltip title="分配角色">
+                  <a-button shape="circle" type="dashed" @click="openMenuModal2(record )">
+                    <template #icon>
+                      <AlignLeftOutlined/>
+                    </template>
+                  </a-button>
+                </a-tooltip>
+                <a-tooltip :title="record.status == 0?'启用':'停用'">
+                  <a-button shape="circle" type="dashed" @click="changeUserStatus(record.id, record)">
+                    <template #icon>
+                      <CheckOutlined v-if="record.status==0"/>
+                      <CloseOutlined v-else/>
+                    </template>
+                  </a-button>
+                </a-tooltip>
+                <a-tooltip title="重置密码">
+                  <a-button shape="circle" type="dashed" @click="resetPassword(record.id )">
+                    <template #icon>
+                      <LockOutlined/>
+                    </template>
+                  </a-button>
+                </a-tooltip>
+                <a-tooltip title="删除">
+                  <a-button shape="circle" type="dashed" @click="del(record.id)">
+                    <template #icon>
+                      <DeleteOutlined/>
+                    </template>
+                  </a-button>
+                </a-tooltip>
+              </a-space>
+            </template>
           </template>
         </a-table>
       </template>
@@ -153,8 +155,8 @@ export default defineComponent({
         {title: '状态', key: 'status', dataIndex: 'status'},
         // {title: '过期时间', key: 'expiredTime', dataIndex: 'expiredTime', width: "180px"},
         {title: '最后登录', key: 'lastLoginTime', dataIndex: 'lastLoginTime', width: "180px", sorter: true},
-        {title: '头像', key: 'iconUrl', dataIndex: 'iconUrl', slots: {customRender: 'iconUrl'}},
-        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "210px"},
+        {title: '头像', key: 'iconUrl', dataIndex: 'iconUrl'},
+        {title: '操作', dataIndex: 'operation',fixed: 'right', width: "210px"},
       ],
       //form中的字段
       formColumns: [

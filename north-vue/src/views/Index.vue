@@ -5,6 +5,7 @@
   right: 0;
   position: absolute;
   min-height: 100%;
+  max-height: 100%;
   min-width: 720px;
 }
 
@@ -134,7 +135,7 @@
       </a-layout-header>
 
       <a-layout-content
-          :style="{  'overflow-x':'auto',margin: '24px 16px', padding: '24px', background: '#fff' }"
+          :style="{  'overflow-x':'auto',padding: '24px', background: '#fff' }"
       >
 
         <router-view/>

@@ -21,7 +21,7 @@ const JsonTable = () => import(/* webpackChunkName: "JsonTable" */ '@/views/sys/
 const JsonTableData = () => import(/* webpackChunkName: "JsonTableData" */ '@/views/sys/jsontable/JsonTableData.vue')
 
 /**
- * 家族
+ * this.endX
  */
 const GenealogyTree = () => import(/* webpackChunkName: "GenealogyTree" */ '@/views/genealogy/genealogyTree/GenealogyTreePage.vue')
 const GenealogyTreeGraph = () => import(/* webpackChunkName: "GenealogyTreeGraph" */ '@/views/genealogy/genealogyTree/GenealogyTree.vue')

@@ -39,11 +39,11 @@
         </a-form-item>
         <!--  日期时间  -->
         <a-form-item v-else-if="canEdit(item.key) && item.type == 'DateTime'" :label="item.title" :name="item.key">
-          <a-date-picker :defaultValue="data[item.key]" show-time @ok="onDateTimeOk($event,item)"/>
+          <a-date-picker v-model:value="data[item.key]" valueFormat="YYYY-MM-DD HH:mm:ss" show-time  />
         </a-form-item>
         <!--  日期  -->
         <a-form-item v-else-if="canEdit(item.key) && item.type == 'Date'" :label="item.title" :name="item.key">
-          <a-date-picker @ok="onDateTimeOk($event,item)"/>
+          <a-date-picker v-model:value="data[item.key]" />
         </a-form-item>
         <!--  上传文件  -->
         <a-form-item v-else-if="canEdit(item.key) && item.type == 'File'" :label="item.title" :name="item.key">
@@ -72,10 +72,11 @@
 
 import {Options, Vue} from 'vue-class-component';
 import {AxiosResponse} from 'axios';
-import {Moment} from 'moment';
+import { Dayjs } from 'dayjs';
 import SysDictApi from "@/api/SysDictApi";
 import UploadImage from "@/components/UploadImage.vue";
-
+import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
+import {defineComponent} from "vue";
 
 export class ModalField {
 
@@ -148,7 +149,7 @@ export class Ext {
   fileSize: number = 2;
 }
 
-@Options({
+export default defineComponent({
   name: 'FormModal',
   components: {UploadImage},
   data() {
@@ -251,7 +252,7 @@ export class Ext {
           if (this.columns[columnsKey].type == 'Image') {
             let key = this.columns[columnsKey].key
             let value = this.data[this.columns[columnsKey].key]
-            this.fileList[key] = [{url: window.BASE_URL + '/sysFile/download?id=' + value}]
+            this.fileList[key] = [{url: value}]
           }
         }
         this.url = this.editUrl
@@ -298,7 +299,7 @@ export class Ext {
     onDateTimeChange() {
 
     },
-    onDateTimeOk(date: Moment, item: ModalField) {
+    onDateTimeOk(date: Dayjs, item: ModalField) {
       this.data[item.key] = date.toDate().Format('yyyy-MM-dd hh:mm:ss')
     },
     imageChange(fileList, key) {
@@ -309,11 +310,11 @@ export class Ext {
   created() {
 
   },
-
+  setup() {
+    return {
+      locale,
+    };
+  },
 })
-
-
-export default class FormModal extends Vue {
-}
 
 </script>

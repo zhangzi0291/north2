@@ -2,7 +2,7 @@
 
 </style>
 <template>
-  <div>
+  <div style="width: 100%;height:calc( 100% - 64px);">
     <slot name="breadcrumb">
       <a-page-header>
         <template #title>
@@ -17,7 +17,7 @@
         </template>
       </a-page-header>
     </slot>
-    <a-card>
+    <a-card style="width: 100%;height: 100%;" :bodyStyle="{height:'100%'}">
       <slot name="content">
       </slot>
     </a-card>

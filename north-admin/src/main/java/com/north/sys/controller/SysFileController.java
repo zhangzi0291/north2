@@ -1,6 +1,7 @@
 package com.north.sys.controller;
 
 
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.BaseController;
@@ -60,6 +61,7 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
     private AliyunOssConfig aliyunOssConfig;
     @Value("${north.file.type}")
     private String  fileControlType;
+
     /**
      * 上传文件
      *
@@ -73,7 +75,6 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
     public R<UploadDto> upload(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file, String moduleName, String relationId) throws IOException {
         return uploadWithMd5Check(request, file, moduleName, relationId, true);
     }
-
 
     /**
      * 上传文件
@@ -133,12 +134,12 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
     @NorthWithoutLogin
     @Operation(summary = "下载文件", description = "下载文件")
     @RequestMapping(path = "download", method = {RequestMethod.GET, RequestMethod.POST})
-    public R download(String id, HttpServletResponse response) throws UnsupportedEncodingException {
+    public R download(String id,HttpServletRequest request, HttpServletResponse response) {
         SysFile file = this.get(id).getData();
         if (file == null) {
             return R.failed("文件不存在");
         }
-        Path filePath = Paths.get(file.getFilePath());
+
 
         response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(file.getOriginalName(), StandardCharsets.UTF_8));
         FileControlType saveModel = StringUtils.hasLength(file.getFileControl()) ? FileControlType.getEnumByName(file.getFileControl()) : FileControlType.LOCAL;
@@ -146,6 +147,11 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
             InputStream inputStream = FileControlFactory.getFileControlHandler(saveModel, saveModel.equals(FileControlType.LOCAL) ? localConfig : aliyunOssConfig).loadFileInputStream(file.getFilePath());
             if (inputStream == null) {
                 return R.failed("下载错误,文件不存在");
+            }
+            String imageType = "jpg,gif,png,bmp,jpeg";
+            String fileExt = file.getFileName().substring(file.getFileName().lastIndexOf(".") + 1).toLowerCase();
+            if (imageType.contains(fileExt.trim().toLowerCase())) {
+                response.addHeader("Content-Type", "image/jpg");
             }
             OutputStream outputStream = response.getOutputStream();
             byte[] bytes = new byte[1024 * 1024];

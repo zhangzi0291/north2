@@ -4,13 +4,12 @@
 <template>
   <div style="width:100%;height:100%">
     <div ref="chart" style="width:100%;height:100%"></div>
-    <show-person ref="showPerson" :okCallback="okCallback"></show-person>
+<!--    <show-person ref="showPerson" :okCallback="okCallback"></show-person>-->
   </div>
 
 </template>
 
 <script lang="ts">
-import showPerson from './ShowPerson.vue';
 import GenealogyApi from '@/api/GenealogyApi';
 import {defineComponent} from "vue";
 
@@ -19,7 +18,6 @@ const echarts = require('echarts');
 export default defineComponent({
   name: "GenealogyTree",
   components: {
-    showPerson
   },
   data() {
     return {

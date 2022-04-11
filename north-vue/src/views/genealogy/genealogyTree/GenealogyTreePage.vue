@@ -1,28 +1,122 @@
 <style lang="less">
+.study-pane {
+  height: 100%;
+}
 
+.data-source-pane {
+  padding: 5px;
+  min-width: 250px;
+  overflow-y: auto;
+  user-select: none;
+}
+
+.flow-pane {
+  position: relative;
+  padding: 5px;
+  min-width: 400px;
+  height: 100%;
+  min-height: 400px;
+  flex-grow: 1;
+}
+
+.flow-container {
+  width: 100%;
+  height: 100%;
+}
+
+.flow-container-toolbar-top {
+  position: absolute;
+  left: 40px;
+  top: 40px;
+}
+
+.flow-container-toolbar-right {
+  position: absolute;
+  right: 40px;
+  top: 40px;
+}
+
+@keyframes running-line {
+  to {
+    stroke-dashoffset: -1000
+  }
+}
+
+.ant-collapse-borderless {
+  background-color: #fff
+}
 </style>
 <template>
   <base-page :breadcrumbs="breadcrumbs">
     <template #content>
-      <div>
-        <!--        <a-row>-->
-        <!--          <a-col :offset="16" :span="2">-->
-        <!--            <a-button type="primary" @click="getGenealogyTreeData(1)">刷新</a-button>-->
-        <!--          </a-col>-->
-        <!--          <a-col :span="2">-->
-        <!--            <a-button type="primary" @click="openPeson">新增</a-button>-->
-        <!--          </a-col>-->
 
-        <!--        </a-row>-->
-        <!--        <a-row>-->
-        <!--          <a-col :span="24" style="height:500px">-->
-        <!--            <genealogy-tree ref="genealogyTree"/>-->
-        <!--          </a-col>-->
-        <!--        </a-row>-->
+      <div ref="containerPane" style="height: 100%;width: 100%">
+        <div id="container" ref="container" class="flow-container" @drop="drop"></div>
+      </div>
+      <div class="flow-container-toolbar-top">
+        <a-space>
+          <a-tooltip placement="bottom">
+            <template #title>
+              <span>撤销</span>
+            </template>
+            <a-button size="small" @click="undo">
+              <UndoOutlined/>
+            </a-button>
+          </a-tooltip>
+          <a-tooltip placement="bottom">
+            <template #title>
+              <span>反撤销</span>
+            </template>
+            <a-button size="small" @click="redo">
+              <RedoOutlined/>
+            </a-button>
+          </a-tooltip>
 
-        <!--        <show-person ref="showPerson" :okCallback="okCallback"></show-person>-->
-        <a-button @click="undo">撤销</a-button>
-        <div ref="container" style="width: 100%;height: 500px"></div>
+        </a-space>
+      </div>
+      <div class="flow-container-toolbar-right">
+        <a-space direction="vertical">
+          <a-tooltip placement="left">
+            <template #title>
+              <span>清空</span>
+            </template>
+            <a-button size="small" @click="clear">
+              <DeleteOutlined/>
+            </a-button>
+          </a-tooltip>
+          <a-tooltip placement="left">
+            <template #title>
+              <span>居中</span>
+            </template>
+            <a-button size="small" @click="center">
+              <PicCenterOutlined/>
+            </a-button>
+          </a-tooltip>
+          <a-tooltip placement="left">
+            <template #title>
+              <span>运行</span>
+            </template>
+            <a-button size="small" @click="run">
+              <PlayCircleOutlined/>
+            </a-button>
+          </a-tooltip>
+          <a-tooltip placement="left">
+            <template #title>
+              <span>保存</span>
+            </template>
+            <a-button size="small" @click="save">
+              <SaveOutlined/>
+            </a-button>
+          </a-tooltip>
+          <a-tooltip placement="left">
+            <template #title>
+              <span>还原</span>
+            </template>
+            <a-button size="small" @click="restore">
+              <RollbackOutlined/>
+            </a-button>
+          </a-tooltip>
+        </a-space>
       </div>
     </template>
   </base-page>
@@ -30,11 +124,9 @@
 </template>
 
 <script lang="ts">
-import showPerson from './ShowPerson.vue';
 import GenealogyTree from './GenealogyTree.vue';
-import {defineComponent} from "vue";
+import {createVNode, defineComponent} from "vue";
 import {Edge, Graph, Node, NodeView} from "@antv/x6";
-import {MyShape} from "./MyShape";
 import dagre from 'dagrejs'
 
 const echarts = require('echarts');
@@ -42,7 +134,7 @@ const echarts = require('echarts');
 export default defineComponent({
   name: "GenealogyTreePage",
   components: {
-    showPerson, GenealogyTree
+    GenealogyTree
   },
   data() {
     return {
@@ -50,484 +142,284 @@ export default defineComponent({
         {name: "", icon: "HomeOutlined", href: "/home"},
         {name: "家族关系", icon: "", href: "/genealogy/tree"},
       ],
-      genealogyTree: {},
-      chart: {},
       graph: {} as Graph,
+      node: {} as Node,
+      container: {} as HTMLDivElement,
     }
   },
   computed: {},
   methods: {
-    getGenealogyTreeData(id: string) {
-      const genealogyTree: any = this.$refs.genealogyTree
-      genealogyTree.getGenealogyTreeData(id)
+    save() {
+      const json = this.graph.toJSON({diff: true})
+      this.$modal.confirm({
+        title: '保存',
+        icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
+        content: '确定要保存吗？',
+        onOk: () => {
+          this.$modal.success({
+            title: '保存成功',
+            content: '已保存当前视图',
+          })
+          window.localStorage.setItem("x6-graph", JSON.stringify(json))
+          return
+        },
+      });
+
     },
-    openPeson() {
-      const showPerson: any = this.$refs.showPerson
-      showPerson.open(null, true)
+    clear() {
+      this.graph.removeCells(this.graph.getCells())
     },
-    okCallback() {
-      this.getGenealogyTreeData("1")
+    center() {
+      this.graph.centerContent()
+    },
+    restore() {
+      const json = JSON.parse(window.localStorage.getItem("x6-graph") + "")
+      this.$modal.confirm({
+        title: '还原',
+        icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
+        content: '确定要还原吗？',
+        onOk: () => {
+          this.graph.fromJSON(json)
+          this.center()
+          return
+        },
+      });
+    },
+    keyBindFn() {
+      // delete
+      this.graph.bindKey(['delete'], () => {
+        const cells = this.graph.getSelectedCells()
+        if (cells.length) {
+          this.graph.removeCells(cells)
+        }
+        return false
+      })
+
+      // copy
+      this.graph.bindKey(['meta+c', 'ctrl+c'], () => {
+        const cells = this.graph.getSelectedCells()
+        if (cells.length) {
+          this.graph.copy(cells)
+        }
+        return false
+      })
+
+      // cut
+      this.graph.bindKey(['meta+x', 'ctrl+x'], () => {
+        const cells = this.graph.getSelectedCells()
+        if (cells.length) {
+          this.graph.cut(cells)
+        }
+        return false
+      })
+
+      // paste
+      this.graph.bindKey(['meta+v', 'ctrl+v'], () => {
+        if (!this.graph.isClipboardEmpty()) {
+          const cells = this.graph.paste({offset: 32})
+          this.graph.cleanSelection()
+          this.graph.select(cells)
+        }
+        return false
+      })
+
+      // undo
+      this.graph.bindKey(['meta+z', 'ctrl+z'], () => {
+        this.undo()
+        return false
+      })
+      // redo
+      this.graph.bindKey(['meta+y', 'ctrl+y'], () => {
+        this.redo()
+        return false
+      })
     },
     undo() {
-      this.graph.undo()
-    },
-    update(view: NodeView) {
-      const cell = view.cell
-      if (cell instanceof MyShape) {
-        cell.getInPorts().forEach((port) => {
-          console.log(port.id)
-          const portNode = view.findPortElem(port.id!, 'portBody')
-          view.unhighlight(portNode, {
-            highlighter: MyShape.magnetAvailabilityHighlighter,
-          })
-        })
+      if (this.graph.history.canUndo()) {
+        this.graph.history.undo()
       }
     },
-    layout() {
-      const dir: string = "BT"
-      const nodes = this.graph.getNodes()
-      const edges = this.graph.getEdges()
-      const g = new dagre.graphlib.Graph()
-      g.setGraph({rankdir: dir, nodesep: 16, ranksep: 16})
-      g.setDefaultEdgeLabel(() => ({}))
-
-      const width = 260
-      const height = 90
-      nodes.forEach((node) => {
-        g.setNode(node.id, {width, height})
-      })
-
-      edges.forEach((edge) => {
-        const source = edge.getSource() as Edge.TerminalCellData
-        const target = edge.getTarget() as Edge.TerminalCellData
-        g.setEdge(source.cell, target.cell)
-      })
-
-      dagre.layout(g)
-
-      this.graph.freeze()
-
-      g.nodes().forEach((id) => {
-        const node = this.graph.getCellById(id)
-        if (node instanceof Node) {
-          const pos = g.node(id)
-          node.position(pos.x, pos.y)
-        }
-      })
-
-      edges.forEach((edge) => {
-        const source = edge.getSourceNode()!
-        const target = edge.getTargetNode()!
-        const sourceBBox = source.getBBox()
-        const targetBBox = target.getBBox()
-
-        console.log(sourceBBox, targetBBox)
-
-        if ((dir === 'LR' || dir === 'RL') && sourceBBox.y !== targetBBox.y) {
-          const gap =
-              dir === 'LR'
-                  ? targetBBox.x - sourceBBox.x - sourceBBox.width
-                  : -sourceBBox.x + targetBBox.x + targetBBox.width
-          const fix = dir === 'LR' ? sourceBBox.width : 0
-          const x = sourceBBox.x + fix + gap / 2
-          edge.setVertices([
-            {x, y: sourceBBox.center.y},
-            {x, y: targetBBox.center.y},
-          ])
-        } else if (
-            (dir === 'TB' || dir === 'BT') &&
-            sourceBBox.x !== targetBBox.x
-        ) {
-          const gap =
-              dir === 'TB'
-                  ? targetBBox.y - sourceBBox.y - sourceBBox.height
-                  : -sourceBBox.y + targetBBox.y + targetBBox.height
-          const fix = dir === 'TB' ? sourceBBox.height : 0
-          const y = sourceBBox.y + fix + gap / 2
-          edge.setVertices([
-            {x: sourceBBox.center.x, y},
-            {x: targetBBox.center.x, y},
-          ])
-        } else {
-          edge.setVertices([])
-        }
-      })
-
-      this.graph.unfreeze()
+    redo() {
+      if (this.graph.history.canRedo()) {
+        this.graph.history.redo()
+      }
     },
     init() {
       const container = this.$refs.container as HTMLDivElement
+      this.container = container as HTMLDivElement
       this.graph = new Graph({
         container: container,
         history: true,
+        keyboard: true,
+        clipboard: true,
         snapline: true,
         panning: {
           enabled: true,
-          modifiers: ['ctrl'],
+          eventTypes: ['leftMouseDown']
         },
-        highlighting: {
-          magnetAvailable: MyShape.magnetAvailabilityHighlighter,
-          magnetAdsorbed: {
-            name: 'stroke',
-            args: {
-              attrs: {
-                fill: '#fff',
-                stroke: '#31d0c6',
-              },
-            },
-          },
+        // autoResize: this.$refs.containerPane as HTMLDivElement,
+        mousewheel: {
+          enabled: true,
+          factor: 1.1,
+          maxScale: 3,
+          minScale: 0.3
+        },
+        selecting: {
+          enabled: true,
+          multiple: true,
+          rubberEdge: true,
+          rubberNode: true,
+          modifiers: 'shift',
+          rubberband: true
         },
         connecting: {
           snap: true,
           allowBlank: false,
           allowLoop: false,
           highlight: true,
-          router: {
-            name: 'er',
-            args: {
-              direction: 'V',
-            },
-          },
-          validateConnection({sourceView, targetView, targetMagnet}) {
-            if (!targetMagnet) {
-              return false
-            }
-            if (targetMagnet.getAttribute('port-group') !== 'in') {
-              return false
-            }
-            if (targetView) {
-              const node = targetView.cell
-              // if (node instanceof MyShape) {
-              //   const portId = targetMagnet.getAttribute('port')
-              //   const usedInPorts = node.getUsedInPorts(graph)
-              //   if (usedInPorts.find((port) => port && port.id === portId)) {
-              //     return false
-              //   }
-              // }
-            }
+          connector: 'algo-connector',
+          connectionPoint: 'anchor',
+          anchor: 'center',
+          validateMagnet({magnet}) {
+            // return magnet.getAttribute('port-group') !== 'top'
+
+            // 限制连线配置
             return true
+          },
+          createEdge() {
+            return graph.createEdge({
+              shape: 'dag-edge',
+              attrs: {
+                line: {
+                  strokeDasharray: '5 5',
+                  targetMarker: {
+                    name: 'block',
+                    width: 12,
+                    height: 8
+                  }
+                }
+              },
+              zIndex: -1
+            })
+
           },
         },
         background: {
-          color: '#fffbe6', // 设置画布背景颜色
+          color: '#ffffff', // 设置画布背景颜色
         },
         grid: {
           size: 10,      // 网格大小 10px
           visible: true, // 渲染网格背景
         },
-        // mousewheel: {
-        //   enabled: true,
-        //   modifiers: ['ctrl'],
-        // },
       });
+
       const graph: Graph = this.graph as Graph
-      const data = {
-        // 节点
-        nodes: [
-          {
-            id: 'node1', // String，可选，节点的唯一标识
-            x: 40,       // Number，必选，节点位置的 x 值
-            y: 40,       // Number，必选，节点位置的 y 值
-            width: 80,   // Number，可选，节点大小的 width 值
-            height: 40,  // Number，可选，节点大小的 height 值
-            attrs: {
-              body: {
-                fill: '#2ECC71', // 背景颜色
-                stroke: 'none',  // 边框颜色
-              },
-              label: {
-                text: 'rect',    // 文本
-                fill: '#333',    // 文字颜色
-                fontSize: 18,    // 文字大小
-              },
-            },
-            ports: {
-              groups: {
-                in: {
-                  position: 'top',    // 链接桩位置
-                  attrs: {
-                    circle: {
-                      r: 6,
-                      magnet: true,
-                      stroke: '#31d0c6',
-                      strokeWidth: 2,
-                      fill: '#fff',
-                    },
-                  },
-                },
-                out: {
-                  position: 'bottom',   // 链接桩位置
-                  attrs: {
-                    circle: {
-                      r: 6,
-                      magnet: true,
-                      stroke: '#3122c6',
-                      strokeWidth: 2,
-                      fill: '#fff',
-                    },
-                  },
-                },
-              },
-              items: [
-                {
-                  id: 'port1',
-                  group: 'in',
-                },
-                {
-                  id: 'port2',
-                  group: 'out',
-                }
-              ],
-            }
-          },
-          {
-            id: 'node2', // String，节点的唯一标识
-            x: 160,      // Number，必选，节点位置的 x 值
-            y: 180,      // Number，必选，节点位置的 y 值
-            width: 80,   // Number，可选，节点大小的 width 值
-            height: 40,  // Number，可选，节点大小的 height 值
-            label: 'world', // String，节点标签
-            ports: {
-              group: {
-                in: {
-                  position: 'top',
-                  attrs: {
-                    circle: {
-                      r: 6,
-                      magnet: true,
-                      stroke: '#31d0c6',
-                      strokeWidth: 2,
-                      fill: '#fff',
-                    },
-                  },
-                },
-                out: {
-                  position: 'bottom',
-                  attrs: {
-                    circle: {
-                      r: 6,
-                      magnet: true,
-                      stroke: '#31d0c6',
-                      strokeWidth: 2,
-                      fill: '#fff',
-                    },
-                  },
-                }
-              }, // 链接桩组定义
-              items: [
-                {
-                  id: 'port1',
-                  group: "in",
-                  attrs: {
-                    text: {text: 'in1'},
-                  },
-                },
-                {
-                  id: 'port2',
-                  group: "out",
-                  attrs: {
-                    text: {text: 'out1'},
-                  },
-                },
-              ], // 链接桩
-            }
-          },
-          {
-            id: 'node3', // String，节点的唯一标识
-            x: 260,      // Number，必选，节点位置的 x 值
-            y: 280,      // Number，必选，节点位置的 y 值
-            width: 80,   // Number，可选，节点大小的 width 值
-            height: 40,  // Number，可选，节点大小的 height 值
-            label: 'world123', // String，节点标签
-            ports: {
-              group: {
-                in: {
-                  position: 'top',
-                  attrs: {
-                    circle: {
-                      r: 6,
-                      magnet: true,
-                      stroke: '#31d0c6',
-                      strokeWidth: 2,
-                      fill: '#fff',
-                    },
-                  },
-                },
-                out: {
-                  position: 'bottom',
-                  attrs: {
-                    circle: {
-                      r: 6,
-                      magnet: true,
-                      stroke: '#31d0c6',
-                      strokeWidth: 2,
-                      fill: '#fff',
-                    },
-                  },
-                }
-              }, // 链接桩组定义
-              items: [
-                {
-                  id: 'port1',
-                  group: "in",
-                  attrs: {
-                    text: {text: 'in1'},
-                  },
-                },
-                {
-                  id: 'port2',
-                  group: "out",
-                  attrs: {
-                    text: {text: 'out1'},
-                  },
-                },
-              ], // 链接桩
-            }
-          },
-        ],
-        // 边
-        edges: [
-          {
-            source: 'node1', // String，必须，起始节点 id
-            target: 'node2', // String，必须，目标节点 id
 
-          },
-          {
-            source: 'node2', // String，必须，起始节点 id
-            target: 'node3', // String，必须，目标节点 id
-
-          },
-        ],
-      };
-
-      // this.graph.fromJSON(data)
-      this.graph.on('edge:mouseenter', ({edge}) => {
-        edge.addTools([
-          'target-arrowhead',
-          {
-            name: 'button-remove',
-            args: {
-              distance: -50,
-            },
-          },
-        ])
+      graph.on('edge:contextmenu', ({e, x, y, edge, view}) => {
+        this.showContextMenu = true
+        this.$nextTick(() => {
+          const p = graph.localToPage(x, y)
+          const contextMenu: any = this.$refs.contextMenu
+          contextMenu.initFn(p.x, p.y, {type: 'edge', item: edge})
+        })
       })
-      graph.on('edge:mouseleave', ({edge}) => {
-        edge.removeTools()
+
+      graph.on('node:contextmenu', ({e, x, y, node, view}) => {
+        this.showContextMenu = true
+        this.$nextTick(() => {
+          this.node = node
+          const p = graph.localToPage(x, y)
+          const contextMenu: any = this.$refs.contextMenu
+          contextMenu.initFn(p.x, p.y, {type: 'node', item: node})
+        })
       })
-      this.graph.on('edge:removed', ({edge, options}) => {
-        console.log("removed")
-        if (!options.ui) {
-          return
+
+      graph.on('edge:connected', ({edge}) => {
+        const source = graph.getCellById((edge.source as any).cell)
+        const target = graph.getCellById((edge.target as any).cell)
+        // 只允许输入
+        if (target.data.type == 'input') {
+          return graph.removeEdge(edge.id)
         }
 
-        const target = edge.getTargetCell()
-        if (target instanceof MyShape) {
-          target.updateInPorts(graph)
+        // 只允许输出
+        if (source.data.type == 'output') {
+          return graph.removeEdge(edge.id)
         }
-      })
-      graph.on('edge:connected', ({previousView, currentView}) => {
-        if (previousView) {
-          this.update(previousView as NodeView)
-        }
-        if (currentView) {
-          this.update(currentView as NodeView)
-        }
-        this.layout()
-      })
-      graph.on('edge:click', ({edge}) => {
-        console.log(edge.getData())
-      })
-      // this.graph.on('cell:click', ({ e, x, y, cell, view }) => {
-      //   this.graph.getCells().forEach(c =>{
-      //     c.removeTool("boundary")
-      //   })
-      //   cell.addTools([
-      //     { name: 'boundary' },
-      //   ])
-      // })
-      // this.graph.on('edge:contextmenu', ({ e, x, y, edge, view }) => {
-      //   console.log(e,x,y,edge,view)
-      // })
 
-    }
+        // 如果线源头的一端链接桩只允许输入
+        if (/in/.test((edge.source as any).port)) {
+          return graph.removeEdge(edge.id)
+        }
+
+        // 目标一端链接桩只允许输出
+        if (/out/.test((edge.target as any).port)) {
+          return graph.removeEdge(edge.id)
+        }
+
+        if (source.data.type == 'condition') {
+          console.log(source)
+          console.log(target)
+          console.log(edge)
+          if (target.data.t === edge.id || target.data.f === edge.id) {
+            return graph.removeEdge(edge.id)
+          }
+          // this.$refs.dialogCondition.visible = true
+          // this.$refs.dialogCondition.init(source.data, edge)
+        }
+
+        source.addChild(target)
+
+        edge.attr({
+          line: {
+            strokeDasharray: ''
+          }
+        })
+      })
+
+      graph.on('node:change:data', ({node}) => {
+        const edges = graph.getIncomingEdges(node)
+        const {status} = node.getData()
+        edges?.forEach((edge) => {
+          if (status === 'running') {
+            edge.attr('line/strokeDasharray', 5)
+            edge.attr('line/style/animation', 'running-line 30s infinite linear')
+          } else {
+            edge.attr('line/strokeDasharray', '')
+            edge.attr('line/style/animation', '')
+          }
+
+        })
+
+      })
+
+      window.addEventListener("resize", () => {
+
+        this.resizeContainer()
+        // this.graph.resize(
+        //     flowPane.clientWidth - 20  ,
+        //     flowPane.clientHeight - 20
+        // );
+        // // 所有节点 适配
+        // this.devs.forEach((item:any) => {
+        //   // 注册时就是用的 设备id
+        //   const node = this.graph.getCellById(item._id);
+        //   if (node) {
+        //     // 拿到 当前节点等 宽高 坐标 的Rem 信息
+        //     const { widthRem, heightRem, xRem, yRem } = node.getData();
+        //     // 设置节点的宽高
+        //     node.resize(widthRem * currentFontSize, heightRem * currentFontSize);
+        //     // 设置节点的位置
+        //     node.position(xRem * currentFontSize, yRem * currentFontSize);
+        //   }
+        // });
+      });
+
+    },
   },
   mounted() {
-    // this.getGenealogyTreeData("1");
     this.init()
-    MyShape.config({
-      attrs: {
-        root: {
-          magnet: false,
-        },
-        body: {
-          fill: '#f5f5f5',
-          stroke: '#d9d9d9',
-          strokeWidth: 1,
-        },
-      },
-      ports: {
-        items: [
-          {
-            group: 'out',
-          },
-        ],
-        groups: {
-          in: {
-            position: {
-              name: 'bottom',
-            },
-            attrs: {
-              portBody: {
-                magnet: 'passive',
-                r: 6,
-                stroke: '#ffa940',
-                fill: '#fff',
-                strokeWidth: 2,
-              },
-            },
-          },
-          out: {
-            position: {
-              name: 'top',
-            },
-            attrs: {
-              portBody: {
-                magnet: true,
-                r: 6,
-                fill: '#fff',
-                stroke: '#3199FF',
-                strokeWidth: 2,
-              },
-            },
-          },
-        },
-      },
-      portMarkup: [
-        {
-          tagName: 'circle',
-          selector: 'portBody',
-        },
-      ],
-    })
-    const parent = new MyShape({id: '1'}).init().resize(120, 40).updateInPorts(this.graph as Graph)
-    parent.addChild(new MyShape({id: '2'}).init().resize(120, 40).updateInPorts(this.graph as Graph))
-    parent.addChild(new MyShape({id: '3'}).init().resize(120, 40).updateInPorts(this.graph as Graph))
-    this.graph.addNode(parent)
-    this.graph.addEdge({
-      source: '3', // String，必须，起始节点 id
-      target: '1', // String，必须，目标节点 id
-    })
-    this.graph.addEdge({
-      source: '2', // String，必须，起始节点 id
-      target: '1', // String，必须，目标节点 id
-      data: {
-        name: "a"
-      }
-    })
-    // this.graph.fromJSON(newModel)
-    this.graph.cleanHistory()
-    this.layout()
+
   }
 
 })

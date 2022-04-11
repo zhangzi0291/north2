@@ -63,8 +63,8 @@ import MenuModal from "@/views/sys/sysrole/MenuModal.vue";
 import {defineComponent, reactive, ref} from "vue";
 import WeblogApi from "@/api/WeblogApi";
 import BlogCell from "@/views/blog/BlogCell.vue";
-import {Moment} from "moment";
 import debounce from "lodash/debounce"
+import { Dayjs } from 'dayjs';
 
 export default defineComponent({
   name: 'PublicWeblogHomePage',
@@ -125,7 +125,7 @@ export default defineComponent({
       this.page.current = this.page.current + 1
       this.load()
     },
-    onDateTimeChange(dates: Array<Moment>) {
+    onDateTimeChange(dates: Array<Dayjs>) {
       if (dates.length > 0) {
         this.search['startDate'] = dates[0].toDate().Format('yyyy-MM-dd hh:mm:ss')
         this.search['endDate'] = dates[1].toDate().Format('yyyy-MM-dd hh:mm:ss')
