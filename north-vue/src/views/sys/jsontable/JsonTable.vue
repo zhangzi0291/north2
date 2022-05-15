@@ -89,7 +89,7 @@
 <script lang="ts">
 import {createVNode, defineComponent, reactive, ref} from "vue";
 import JsonTableAPi from "@/api/JsonTable";
-import FormModal, {ModalField} from "@/components/base/FormModal.vue";
+import FormModal, {InputType, ModalField} from "@/components/base/FormModal.vue";
 import SysDictApi from "@/api/SysDictApi";
 import {AxiosResponse} from "axios";
 
@@ -118,7 +118,7 @@ export default defineComponent({
       data: [],
       //form中的字段
       formColumns: [
-        new ModalField().init('表名', 'tableName', 'String'),
+        ModalField.init('表名', 'tableName', InputType.String),
       ],
       //表格字段
       columns: [

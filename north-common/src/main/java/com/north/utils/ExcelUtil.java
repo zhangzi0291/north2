@@ -11,7 +11,7 @@ import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.afterturn.easypoi.handler.inter.IExcelVerifyHandler;
 import cn.afterturn.easypoi.handler.inter.IWriter;
-import com.north.base.exception.NorthImportException;
+import com.north.base.exception.impl.ImportExceptionEnum;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +100,7 @@ public class ExcelUtil {
             importResult = ExcelImportUtil.importExcelMore(inputStream, Map.class, importParams);
         } catch (Exception e) {
             logger.error("导入异常", e);
-            throw new NorthImportException();
+            ImportExceptionEnum.IMPORT_ERROR.assertTrue(false);
         }
         return importResult.getList();
     }
@@ -123,11 +123,9 @@ public class ExcelUtil {
             importResult = ExcelImportUtil.importExcelMore(inputStream, Map.class, importParams);
         } catch (Exception e) {
             logger.error("导入异常", e);
-            throw new NorthImportException();
+            ImportExceptionEnum.IMPORT_ERROR.assertTrue(false);
         }
-        if (importResult.isVerifyFail()) {
-            throw new NorthImportException("导入异常,输出错误Excel", importResult);
-        }
+        ImportExceptionEnum.IMPORT_ERROR.assertFalse(importResult.isVerifyFail(),"导入异常,输出错误Excel",importResult);
         return importResult.getList();
     }
 

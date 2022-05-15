@@ -105,7 +105,7 @@
         <a-button type="primary" @click="openMenuModal(data)">分配角色</a-button>
       </template>
     </form-modal>
-    <menu-modal ref="menuModal"></menu-modal>
+    <menu-modal ref="menuModal" :okCallback="roleIdsOk"></menu-modal>
     <menu-modal ref="menuModal2" :okCallback="menuModalOkCallback"></menu-modal>
 
     <import-modal ref="importModal" :title="'用户导入'" :url="url.import"></import-modal>
@@ -114,7 +114,7 @@
   </div>
 </template>
 <script lang="ts">
-import FormModal, {Ext, ModalField, SelectField} from "@/components/base/FormModal.vue";
+import FormModal, {Ext, InputType, ModalField, SelectField} from "@/components/base/FormModal.vue";
 import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
@@ -160,16 +160,16 @@ export default defineComponent({
       ],
       //form中的字段
       formColumns: [
-        new ModalField().init('登录名', 'username', 'String'),
-        new ModalField().init('用户名', 'nickname', 'String'),
-        new ModalField().init('密码', 'password', 'Password', false),
-        new ModalField().init('手机号', 'phone', 'String'),
-        new ModalField().init('Email', 'email', 'String'),
-        new ModalField().initSelect('状态', 'status', new Ext(), [new SelectField("启用", 1), new SelectField("禁用", 0)], "启用状态"),
-        new ModalField().init('过期时间', 'expiredTime', 'DateTime'),
-        new ModalField().init('ICON', 'iconUrl', 'Image', true, new Ext()),
-        new ModalField().init('描述', 'describe', 'String'),
-        new ModalField().init('角色', 'roleIds', 'Slot', false),
+        ModalField.init('登录名', 'username', InputType.String),
+        ModalField.init('用户名', 'nickname', InputType.String),
+        ModalField.init('密码', 'password', InputType.Password, <Ext>{edit:false} ),
+        ModalField.init('手机号', 'phone', InputType.String),
+        ModalField.init('Email', 'email', InputType.String),
+        ModalField.init('状态', 'status', InputType.Select, <Ext>{ selectParameter:{array:[SelectField.init("启用", 1), SelectField.init("禁用", 0)],dictName:"启用状态"}} ),
+        ModalField.init('过期时间', 'expiredTime', InputType.DateTime),
+        ModalField.init('ICON', 'iconUrl', InputType.Image),
+        ModalField.init('描述', 'describe', InputType.Textarea),
+        ModalField.init('角色', 'roleIds', InputType.Slot),
       ],
       //fomr校验规则
       rules: {
@@ -228,10 +228,7 @@ export default defineComponent({
     }
   },
   methods: {
-
     openAdd(parentId: string) {
-      console.log(this.data)
-      console.log(this.loading)
       const form: any = this.$refs.form
       form.open({parentId: parentId})
       const check: any = this.check
@@ -265,6 +262,10 @@ export default defineComponent({
         const menuModal2: any = this.$refs.menuModal2
         menuModal2.open(data)
       })
+    },
+    roleIdsOk() {
+      const form: any = this.$refs.form
+      form.validate()
     },
     menuModalOkCallback(data: any) {
       console.log(data)

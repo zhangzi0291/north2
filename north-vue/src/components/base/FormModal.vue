@@ -32,7 +32,7 @@
           <a-select v-model:value="data[item.key]">
             <template v-for="select in item.array">
               <a-select-option :value="select.value">
-                {{ select.lable }}
+                {{ select.label }}
               </a-select-option>
             </template>
           </a-select>
@@ -78,18 +78,62 @@ import UploadImage from "@/components/UploadImage.vue";
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
 import {defineComponent} from "vue";
 
+export class SelectField {
+
+  public label: string | undefined;
+  public value: any;
+
+  constructor(label: string, value: any) {
+    this.label = label;
+    this.value = value;
+  }
+
+  public static init(label: string, value: any) {
+    const selectField = new SelectField(label,value)
+    return selectField
+  }
+
+}
+
+export class Ext {
+  name: string = "files";
+  edit: boolean = true;
+  selectParameter: SelectParameter;
+  fileNum: number = 1;
+  fileSize: number = 2;
+}
+
+export enum InputType {
+  String = "String",
+  Select = "Select",
+  Number = "Number",
+  Password = "Password",
+  DateTime = "DateTime",
+  Date = "Date",
+  File = "File",
+  Image = "Image",
+  Textarea = "Textarea",
+  Slot = "Slot",
+}
+
+class SelectParameter{
+  array: SelectField[] = [];
+  dictName:string;
+}
+
 export class ModalField {
+
 
   public key: string = '';
   public title: string = '';
-  public type: "String" | "Select" | "Number" | "Slot" | "Password" | "DateTime" | 'File' | 'Image' | 'Textarea' | undefined;
+  public type: InputType;
   public slot: string | undefined;
   public edit: Boolean | undefined = true;
   public array: Array<Object> | undefined;
   public url: string | undefined;
-  public ext: Ext | undefined = new Ext();
+  public ext: Ext = new Ext();
 
-  public init(title: string, key: string, type: "String" | "Number" | "Slot" | "Password" | "DateTime" | 'File' | 'Image' | 'Textarea' | undefined, edit?: Boolean, ext?: Ext) {
+  public init(title: string, key: string, type: InputType, edit?: Boolean, ext?: Ext) {
     this.key = key;
     this.title = title;
     this.type = type;
@@ -103,18 +147,38 @@ export class ModalField {
     return this
   }
 
-  public initNumber(title: string, key: string, ext?: Ext) {
-    this.key = key;
-    this.title = title;
-    this.type = "Number";
-    this.ext = ext;
-    return this
+  public static init(title: string, key: string, type: InputType, ext?: Ext) {
+    const modalField = new ModalField()
+    modalField.key = key;
+    modalField.title = title;
+    modalField.type = type;
+    modalField.slot = key;
+    console.log(ext == undefined)
+    if (ext == undefined) {
+      ext = new Ext();
+    }
+    if (ext.edit != undefined) {
+      modalField.edit = ext.edit;
+    }
+    if (ext.edit != undefined) {
+      modalField.edit = ext.edit;
+    }
+    if (ext.selectParameter != undefined) {
+      if(ext.selectParameter.array){
+        modalField.array = ext.selectParameter.array
+      }
+      if(ext.selectParameter.dictName){
+        modalField.getSelect(ext.selectParameter.dictName);
+      }
+    }
+
+    return modalField
   }
 
   public initSelect(title: string, key: string, ext: Ext, array: SelectField[] | undefined, dictName?: string) {
     this.key = key;
     this.title = title;
-    this.type = "Select";
+    this.type = InputType.Select;
     this.array = array;
     this.ext = ext;
     if (dictName) {
@@ -131,23 +195,7 @@ export class ModalField {
 
 }
 
-export class SelectField {
 
-  public lable: string | undefined;
-  public value: any;
-
-  constructor(lable: string, value: any) {
-    this.lable = lable;
-    this.value = value;
-  }
-
-}
-
-export class Ext {
-  name: string = "files";
-  fileNum: number = 1;
-  fileSize: number = 2;
-}
 
 export default defineComponent({
   name: 'FormModal',
@@ -305,7 +353,9 @@ export default defineComponent({
     imageChange(fileList, key) {
       this.fileList[key] = fileList
     },
-
+    validate(){
+      this.$refs.form.validate()
+    }
   },
   created() {
 

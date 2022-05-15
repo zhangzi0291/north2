@@ -63,7 +63,7 @@ var install = function install(app: App) {
             const hash = window.location.hash.substring(1, window.location.hash.length)
             console.log(href, hash)
             if (SSO_URL) {
-                axios.get(SSO_URL + "/sso-server/getSsoAuthUrl?redirect=" + href + "&hash=" + hash).then(res => {
+                axios.get(SSO_URL + "sso-server/getSsoAuthUrl?redirect=" + href + "&hash=" + hash).then(res => {
                     const url = res.data.data
                     window.location.href = url
                 })

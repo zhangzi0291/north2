@@ -53,7 +53,7 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import WeblogApi from "@/api/WeblogApi";
-import {Ext, ModalField} from "@/components/base/FormModal.vue";
+import {Ext, InputType, ModalField} from "@/components/base/FormModal.vue";
 import BlogDetail from "@/views/blog/BlogDetail.vue";
 
 
@@ -79,11 +79,11 @@ export default defineComponent({
       ],
       //form中的字段
       formColumns: [
-        new ModalField().init('博客标题', 'weblogTitile', 'String'),
-        new ModalField().init('标题图片', 'weblogTitleImage', 'Image'),
-        new ModalField().init('文章文本', 'weblogText', 'Textarea'),
-        new ModalField().initSelect('类型', 'type', new Ext(), [], '博客类型'),
-        new ModalField().initSelect('状态', 'status', new Ext(), [], '博客状态'),
+        ModalField.init('博客标题', 'weblogTitile', InputType.String),
+        ModalField.init('标题图片', 'weblogTitleImage', InputType.Image),
+        ModalField.init('文章文本', 'weblogText', InputType.Textarea),
+        ModalField.init('类型', 'type', InputType.Select, <Ext>{selectParameter:{dictName:'博客类型'}}),
+        ModalField.init('状态', 'status', InputType.Select, <Ext>{selectParameter:{dictName:'博客状态'}} ),
       ],
       //fomr校验规则
       rules: {

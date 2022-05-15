@@ -7,6 +7,7 @@ import router from './router'
 import Antd from '@/plugins/antd';
 import axios from '@/plugins/axios';
 import north from '@/plugins/north/north';
+import x6 from '@/plugins/antv-x6';
 
 import mixin from '@/base/mixin';
 
@@ -22,6 +23,7 @@ window.vm = app
 
 app.use(router)
     .use(Antd)
+    .use(x6)
     .use(axios)
     .use(north)
     .mount('#app')

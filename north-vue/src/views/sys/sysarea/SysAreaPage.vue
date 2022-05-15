@@ -68,7 +68,7 @@
   </div>
 </template>
 <script lang="ts">
-import FormModal, {Ext, ModalField} from "@/components/base/FormModal.vue";
+import FormModal, {Ext, InputType, ModalField} from "@/components/base/FormModal.vue";
 import MenuModal from "@/views/sys/sysrole/MenuModal.vue";
 import {createVNode, defineComponent, reactive, ref} from "vue";
 import SysAreaApi from "@/api/SysAreaApi";
@@ -120,11 +120,11 @@ export default defineComponent({
       ],
       //form中的字段
       formColumns: [
-        new ModalField().init('区域码', 'id', 'String'),
-        new ModalField().init('区域名称', 'areaName', 'String'),
-        new ModalField().initSelect('区域级别', 'areaLevel', new Ext(), [], '区域级别'),
-        new ModalField().init('城乡分类代码', 'townCode', 'Number'),
-        new ModalField().init('排序', 'areaOrder', 'Number'),
+        ModalField.init('区域码', 'id', InputType.String),
+        ModalField.init('区域名称', 'areaName', InputType.String),
+        ModalField.init('区域级别', 'areaLevel', InputType.Select, <Ext>{selectParameter:{dictName:'区域级别'}} ),
+        ModalField.init('城乡分类代码', 'townCode', InputType.Number),
+        ModalField.init('排序', 'areaOrder', InputType.Number),
       ],
       //fomr校验规则
       rules: {

@@ -36,6 +36,12 @@
   top: 40px;
 }
 
+.flow-container-mini-map {
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+}
+
 @keyframes running-line {
   to {
     stroke-dashoffset: -1000
@@ -47,94 +53,94 @@
 }
 </style>
 <template>
-  <base-page :breadcrumbs="breadcrumbs">
-    <template #content>
 
-      <div ref="containerPane" style="height: 100%;width: 100%">
-        <div id="container" ref="container" class="flow-container" @drop="drop"></div>
-      </div>
-      <div class="flow-container-toolbar-top">
-        <a-space>
-          <a-tooltip placement="bottom">
-            <template #title>
-              <span>撤销</span>
-            </template>
-            <a-button size="small" @click="undo">
-              <UndoOutlined/>
-            </a-button>
-          </a-tooltip>
-          <a-tooltip placement="bottom">
-            <template #title>
-              <span>反撤销</span>
-            </template>
-            <a-button size="small" @click="redo">
-              <RedoOutlined/>
-            </a-button>
-          </a-tooltip>
+      <div ref="containerPane" style="display:flex; height: 100%;width: 100%">
+          <div id="container" ref="container" class="flow-container" style="flex: 1" @drop="drop"></div>
+        <div ref="minimap" class="flow-container-mini-map">
+        </div>
+        <div class="flow-container-toolbar-top">
+          <a-space>
+            <a-tooltip placement="bottom">
+              <template #title>
+                <span>撤销</span>
+              </template>
+              <a-button size="small" @click="undo">
+                <UndoOutlined/>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip placement="bottom">
+              <template #title>
+                <span>反撤销</span>
+              </template>
+              <a-button size="small" @click="redo">
+                <RedoOutlined/>
+              </a-button>
+            </a-tooltip>
 
-        </a-space>
+          </a-space>
+        </div>
+        <div class="flow-container-toolbar-right">
+          <a-space direction="vertical">
+            <a-tooltip placement="left">
+              <template #title>
+                <span>清空</span>
+              </template>
+              <a-button size="small" @click="clear">
+                <DeleteOutlined/>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip placement="left">
+              <template #title>
+                <span>居中</span>
+              </template>
+              <a-button size="small" @click="center">
+                <PicCenterOutlined/>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip placement="left">
+              <template #title>
+                <span>运行</span>
+              </template>
+              <a-button size="small" @click="run">
+                <PlayCircleOutlined/>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip placement="left">
+              <template #title>
+                <span>保存</span>
+              </template>
+              <a-button size="small" @click="save">
+                <SaveOutlined/>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip placement="left">
+              <template #title>
+                <span>还原</span>
+              </template>
+              <a-button size="small" @click="restore">
+                <RollbackOutlined/>
+              </a-button>
+            </a-tooltip>
+          </a-space>
+        </div>
       </div>
-      <div class="flow-container-toolbar-right">
-        <a-space direction="vertical">
-          <a-tooltip placement="left">
-            <template #title>
-              <span>清空</span>
-            </template>
-            <a-button size="small" @click="clear">
-              <DeleteOutlined/>
-            </a-button>
-          </a-tooltip>
-          <a-tooltip placement="left">
-            <template #title>
-              <span>居中</span>
-            </template>
-            <a-button size="small" @click="center">
-              <PicCenterOutlined/>
-            </a-button>
-          </a-tooltip>
-          <a-tooltip placement="left">
-            <template #title>
-              <span>运行</span>
-            </template>
-            <a-button size="small" @click="run">
-              <PlayCircleOutlined/>
-            </a-button>
-          </a-tooltip>
-          <a-tooltip placement="left">
-            <template #title>
-              <span>保存</span>
-            </template>
-            <a-button size="small" @click="save">
-              <SaveOutlined/>
-            </a-button>
-          </a-tooltip>
-          <a-tooltip placement="left">
-            <template #title>
-              <span>还原</span>
-            </template>
-            <a-button size="small" @click="restore">
-              <RollbackOutlined/>
-            </a-button>
-          </a-tooltip>
-        </a-space>
-      </div>
-    </template>
-  </base-page>
+
+      <context-menu ref="contextMenu" @callback="contextMenuCallback"></context-menu>
+
 
 </template>
 
 <script lang="ts">
 import GenealogyTree from './GenealogyTree.vue';
 import {createVNode, defineComponent} from "vue";
-import {Edge, Graph, Node, NodeView} from "@antv/x6";
-import dagre from 'dagrejs'
-
-const echarts = require('echarts');
+import {Edge, Graph, Node, NodeView, ObjectExt} from "@antv/x6";
+import NodeCell from "@/components/genealogy/nodeTheme/NodeCell.vue";
+import ContextMenu from "@/components/genealogy/ContextMenu.vue";
 
 export default defineComponent({
   name: "GenealogyTreePage",
   components: {
-    GenealogyTree
+    GenealogyTree, NodeCell,ContextMenu
   },
   data() {
     return {
@@ -149,6 +155,9 @@ export default defineComponent({
   },
   computed: {},
   methods: {
+    run() {
+
+    },
     save() {
       const json = this.graph.toJSON({diff: true})
       this.$modal.confirm({
@@ -244,20 +253,29 @@ export default defineComponent({
         this.graph.history.redo()
       }
     },
-    init() {
+    contextMenuCallback(type){
+      console.log(type)
+    },
+    init: function () {
       const container = this.$refs.container as HTMLDivElement
+      const minimap = this.$refs.minimap as HTMLDivElement
       this.container = container as HTMLDivElement
       this.graph = new Graph({
         container: container,
+        autoResize: true,
         history: true,
         keyboard: true,
         clipboard: true,
         snapline: true,
+        sorting: 'approx',
         panning: {
           enabled: true,
           eventTypes: ['leftMouseDown']
         },
-        // autoResize: this.$refs.containerPane as HTMLDivElement,
+        minimap: {
+          enabled: true,
+          container: minimap,
+        },
         mousewheel: {
           enabled: true,
           factor: 1.1,
@@ -277,7 +295,7 @@ export default defineComponent({
           allowBlank: false,
           allowLoop: false,
           highlight: true,
-          connector: 'algo-connector',
+          // connector: 'algo-connector',
           connectionPoint: 'anchor',
           anchor: 'center',
           validateMagnet({magnet}) {
@@ -315,23 +333,92 @@ export default defineComponent({
 
       const graph: Graph = this.graph as Graph
 
+      graph.on('blank:contextmenu', ({e, x, y}) => {
+        console.log(x,y)
+        const p = graph.localToClient(x,y)
+        if(this.$route.path == "/genealogy/tree"){
+          this.$refs.contextMenu.initFn(p.x-220,p.y-150)
+        }else{
+          this.$refs.contextMenu.initFn(p.x,p.y)
+        }
+      })
+
       graph.on('edge:contextmenu', ({e, x, y, edge, view}) => {
-        this.showContextMenu = true
-        this.$nextTick(() => {
-          const p = graph.localToPage(x, y)
-          const contextMenu: any = this.$refs.contextMenu
-          contextMenu.initFn(p.x, p.y, {type: 'edge', item: edge})
-        })
+        if (edge.getTools() == undefined) {
+          edge.addTools(
+              [
+                {
+                  name: 'button-remove',
+                  args: {distance: '50%'},
+                },
+              ],
+          )
+          return
+        }
+        const items = edge.getTools().items
+        if (items.length == 0) {
+          edge.addTools(
+              [
+                {
+                  name: 'button-remove',
+                  args: {distance: '50%'},
+                },
+              ],
+          )
+        } else {
+          edge.removeTool('button-remove')
+        }
+
       })
 
       graph.on('node:contextmenu', ({e, x, y, node, view}) => {
-        this.showContextMenu = true
-        this.$nextTick(() => {
-          this.node = node
-          const p = graph.localToPage(x, y)
-          const contextMenu: any = this.$refs.contextMenu
-          contextMenu.initFn(p.x, p.y, {type: 'node', item: node})
+        var that = this
+
+        node.addTools({
+          name: 'button',
+          args: {
+            markup: [
+              {
+                tagName: 'circle',
+                selector: 'button',
+                attrs: {
+                  r: 14,
+                  stroke: '#fe854f',
+                  'stroke-width': 3,
+                  fill: 'white',
+                  cursor: 'pointer',
+                },
+              },
+              {
+                tagName: 'text',
+                textContent: 'Btn A',
+                selector: 'icon',
+                attrs: {
+                  fill: '#fe854f',
+                  'font-size': 8,
+                  'text-anchor': 'middle',
+                  'pointer-events': 'none',
+                  y: '0.3em',
+                },
+              },
+            ],
+            x: 0,
+            y: 0,
+            offset: {x: 18, y: 18},
+            onClick({view}) {
+              console.log(view)
+              console.log(this)
+              that.save()
+            },
+          },
         })
+        // this.showContextMenu = true
+        // this.$nextTick(() => {
+        //   this.node = node
+        //   const p = graph.localToPage(x, y)
+        //   const contextMenu: any = this.$refs.contextMenu
+        //   contextMenu.initFn(p.x, p.y, {type: 'node', item: node})
+        // })
       })
 
       graph.on('edge:connected', ({edge}) => {
@@ -364,9 +451,8 @@ export default defineComponent({
           if (target.data.t === edge.id || target.data.f === edge.id) {
             return graph.removeEdge(edge.id)
           }
-          // this.$refs.dialogCondition.visible = true
-          // this.$refs.dialogCondition.init(source.data, edge)
         }
+
 
         source.addChild(target)
 
@@ -388,34 +474,119 @@ export default defineComponent({
             edge.attr('line/strokeDasharray', '')
             edge.attr('line/style/animation', '')
           }
-
         })
-
       })
 
-      window.addEventListener("resize", () => {
+      this.graph.addNode({
+        x: 280,
+        y: 100,
+        width: 100,
+        height: 40,
+        label: 'Rect',
+        ports: {
+          groups: {
+            top: {
+              position: 'top',
+              attrs: {
+                circle: {
+                  r: 4,
+                  magnet: true,
+                  stroke: '#C2C8D5',
+                  strokeWidth: 1,
+                  fill: '#fff',
+                },
+              },
+            },
+            bottom: {
+              position: 'bottom',
+              attrs: {
+                circle: {
+                  r: 4,
+                  magnet: true,
+                  stroke: '#C2C8D5',
+                  strokeWidth: 1,
+                  fill: '#fff',
+                },
+              },
+            },
+          },
+        },
+      })
 
-        this.resizeContainer()
-        // this.graph.resize(
-        //     flowPane.clientWidth - 20  ,
-        //     flowPane.clientHeight - 20
-        // );
-        // // 所有节点 适配
-        // this.devs.forEach((item:any) => {
-        //   // 注册时就是用的 设备id
-        //   const node = this.graph.getCellById(item._id);
-        //   if (node) {
-        //     // 拿到 当前节点等 宽高 坐标 的Rem 信息
-        //     const { widthRem, heightRem, xRem, yRem } = node.getData();
-        //     // 设置节点的宽高
-        //     node.resize(widthRem * currentFontSize, heightRem * currentFontSize);
-        //     // 设置节点的位置
-        //     node.position(xRem * currentFontSize, yRem * currentFontSize);
-        //   }
-        // });
-      });
+      const source = this.graph.addNode({
+        x: 32,
+        y: 32,
+        width: 100,
+        height: 40,
+        label: 'Hello',
+      })
+
+      const target = this.graph.addNode({
+        shape: 'circle',
+        x: 160,
+        y: 180,
+        width: 60,
+        height: 60,
+        label: 'World',
+      })
+
+
+
+      const source2 = this.graph.addNode({
+        shape: 'PersonCell',
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 40,
+        label: 'Hello2',
+      })
+      const target2 = this.graph.addNode({
+        shape: 'circle',
+        x: 180,
+        y: 200,
+        width: 60,
+        height: 60,
+        label: 'World2',
+        ports: {
+          groups: {
+            top: {
+              position: 'top',
+              attrs: {
+                circle: {
+                  r: 4,
+                  magnet: true,
+                  stroke: '#C2C8D5',
+                  strokeWidth: 1,
+                  fill: '#fff',
+                },
+              },
+            },
+            bottom: {
+              position: 'bottom',
+              attrs: {
+                circle: {
+                  r: 4,
+                  magnet: true,
+                  stroke: '#C2C8D5',
+                  strokeWidth: 1,
+                  fill: '#fff',
+                },
+              },
+            },
+          },
+        },
+      })
+
+      this.graph.addEdge({
+        source,
+        target,
+      })
+
 
     },
+  },
+  created() {
+    this.$emit("breadcrumbs",this.breadcrumbs)
   },
   mounted() {
     this.init()

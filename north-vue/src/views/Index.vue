@@ -137,8 +137,24 @@
       <a-layout-content
           :style="{  'overflow-x':'auto',padding: '24px', background: '#fff' }"
       >
+        <div style="width: 100%;height:calc( 100% - 64px);">
+          <a-page-header>
+            <template #title>
+              <a-breadcrumb>
+                <a-breadcrumb-item v-for="breadcrumb in breadcrumbs" :href="breadcrumb.href" :key="breadcrumb.name">
+                  <a :href="'#'+breadcrumb.href">
+                    <component :is="$icons[breadcrumb.icon]"/>
+                    <span>{{ breadcrumb.name }}</span>
+                  </a>
+                </a-breadcrumb-item>
+              </a-breadcrumb>
+            </template>
+          </a-page-header>
+          <a-card style="width: 100%;height: 100%;" :bodyStyle="{height:'100%'}">
+            <router-view @breadcrumbs="setBreadcrumbs"/>
+          </a-card>
 
-        <router-view/>
+        </div>
 
       </a-layout-content>
 
@@ -175,11 +191,15 @@ export default defineComponent({
       collapsed: false,
       menus: [],
       reconnectInterval: {},
+      breadcrumbs:[],
     }
   },
   computed: {},
 
   methods: {
+    setBreadcrumbs(breadcrumbs) {
+      this.breadcrumbs = breadcrumbs
+    },
     clickMenu(item: any) {
       if (item.item.title == 4) {
         this.$router.push({

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.north.base.Constant;
-import com.north.base.exception.LoginFailedException;
+import com.north.base.exception.impl.LoginExceptionEnum;
 import com.north.sys.entity.SysResource;
 import com.north.sys.entity.SysRole;
 import com.north.sys.entity.SysUser;
@@ -17,7 +17,6 @@ import com.north.sys.service.ISysUserService;
 import com.north.utils.PasswordUtil;
 import org.redisson.api.RBucket;
 import org.redisson.api.RKeys;
-import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -65,27 +64,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         qw.eq(SysUser::getUsername, usernaem);
         qw.eq(SysUser::getPassword, password);
         SysUser sysUser = this.getOne(qw, false);
-        RSet rset = redissonClient.getSet("");
         //用户不存在
-        if (sysUser == null) {
-            throw LoginFailedException.newInstance(LoginFailedException.LoginFailedEnum.USER_PWD_ERROR);
-        }
+        LoginExceptionEnum.USER_PWD_ERROR.assertNonNull(sysUser);
         //用户过期
-        if (sysUser.getExpiredTime() != null && LocalDateTime.now().compareTo(sysUser.getExpiredTime()) > 0) {
-            throw LoginFailedException.newInstance(LoginFailedException.LoginFailedEnum.EXPIRED_ERROR);
-        }
+        LoginExceptionEnum.EXPIRED_ERROR.assertFalse(sysUser.getExpiredTime() != null && LocalDateTime.now().compareTo(sysUser.getExpiredTime()) > 0);
         //用户锁定
-        if (sysUser.getStatus() != null && sysUser.getStatus().equals(0)) {
-            throw LoginFailedException.newInstance(LoginFailedException.LoginFailedEnum.LOCKING_ERROR);
-        }
+        LoginExceptionEnum.LOCKING_ERROR.assertFalse(sysUser.getStatus() != null && sysUser.getStatus().equals(0));
         return sysUser;
     }
 
     @Override
     public Boolean checkGen(String genId) {
-        if(!Boolean.TRUE.equals(redissonClient.getBucket(Constant.NORTH_GEN_REDIS_PREFIX +genId).get())){
-            throw LoginFailedException.newInstance(LoginFailedException.LoginFailedEnum.GEN_ERROR);
-        }
+        LoginExceptionEnum.GEN_ERROR.assertTrue(Boolean.TRUE.equals(redissonClient.getBucket(Constant.NORTH_GEN_REDIS_PREFIX +genId).get()));
+
         redissonClient.getBucket(Constant.NORTH_GEN_REDIS_PREFIX +genId).deleteAsync();
         return Boolean.TRUE;
     }

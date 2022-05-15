@@ -5,8 +5,12 @@ module.exports = {
             patterns: []
         }
     },
+    configureWebpack: {
+        // devtool
+        devtool: 'cheap-module-eval-source-map'
+    },
     lintOnSave: false,
     productionSourceMap: false,
     publicPath: './',
-
+    runtimeCompiler: true
 }

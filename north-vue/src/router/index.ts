@@ -172,6 +172,11 @@ const routes = [
         component: pyChangePwd,
     },
     {
+        path: '/genealogy/tree2',
+        name: '族谱2',
+        component: GenealogyTree,
+    },
+    {
         path: '/weblog',
         name: 'webloghome',
         component: publicWeblogPage,

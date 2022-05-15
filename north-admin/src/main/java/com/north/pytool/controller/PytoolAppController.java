@@ -9,8 +9,7 @@ import com.north.base.BaseController;
 import com.north.base.Constant;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
-import com.north.base.exception.curd.InsertFailedException;
-import com.north.base.exception.curd.UpdateFailedException;
+import com.north.base.exception.impl.CurlExceptionEnum;
 import com.north.pytool.entity.HomePageEntity;
 import com.north.pytool.entity.PytoolApp;
 import com.north.pytool.service.IPytoolAppService;
@@ -66,7 +65,7 @@ public class PytoolAppController extends BaseController<PytoolApp, IPytoolAppSer
                 bean.setFileId(dto.getFileId());
                 bean.setVersionUpdateTime(LocalDateTime.now());
             } catch (IOException e) {
-                throw new InsertFailedException("保存图片失败");
+                CurlExceptionEnum.INSERT_FAILED.assertTrue(false,"保存图片失败");
             }
         }
         return super.addJson(bean);
@@ -91,7 +90,7 @@ public class PytoolAppController extends BaseController<PytoolApp, IPytoolAppSer
                 bean.setFileId(dto.getFileId());
                 bean.setVersionUpdateTime(LocalDateTime.now());
             } catch (IOException e) {
-                throw new InsertFailedException("保存图片失败");
+                CurlExceptionEnum.INSERT_FAILED.assertTrue(false,"保存图片失败");
             }
         }
 
@@ -224,7 +223,7 @@ public class PytoolAppController extends BaseController<PytoolApp, IPytoolAppSer
                 UploadDto dto = sysFileController.saveFile(request, file);
                 Files.write(logoFilePath, dto.getFileId().getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
-                throw new UpdateFailedException("保存图片失败");
+                CurlExceptionEnum.UPDATE_FAILED.assertTrue(false,"保存图片失败");
             }
         }
         if (StringUtils.hasLength(content)) {

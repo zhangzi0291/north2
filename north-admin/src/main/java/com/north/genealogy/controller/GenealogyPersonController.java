@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.north.base.BaseController;
 import com.north.base.Constant;
 import com.north.base.api.R;
-import com.north.base.exception.NorthBaseException;
+import com.north.base.exception.impl.CurlExceptionEnum;
 import com.north.genealogy.dto.RelationshipInfo;
 import com.north.genealogy.entity.GenealogyPerson;
 import com.north.genealogy.entity.GenealogyPersonTimeline;
@@ -50,7 +50,8 @@ public class GenealogyPersonController extends BaseController<GenealogyPerson, I
             try {
                 genealogyPersonTimelineList = JSONArray.parseArray(personTimelineJsonStr, GenealogyPersonTimeline.class);
             } catch (Exception e) {
-                throw new NorthBaseException("时间线参数错误");
+                CurlExceptionEnum.GENERAL_FAILED.assertTrue(false,"时间线参数错误");
+
             }
         }
         personService.addGenealogyPerson(files, relationshipInfo, person, genealogyPersonTimelineList);
@@ -88,7 +89,7 @@ public class GenealogyPersonController extends BaseController<GenealogyPerson, I
             try {
                 genealogyPersonTimelineList = JSONArray.parseArray(personTimelineJsonStr, GenealogyPersonTimeline.class);
             } catch (Exception e) {
-                throw new NorthBaseException("时间线参数错误");
+                CurlExceptionEnum.GENERAL_FAILED.assertTrue(false,"时间线参数错误");
             }
         }
         personService.editGenealogyPerson(files, fileIds, relationshipInfo, person, genealogyPersonTimelineList);

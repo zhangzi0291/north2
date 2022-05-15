@@ -58,7 +58,7 @@
   </div>
 </template>
 <script lang="ts">
-import FormModal, {Ext, ModalField} from "@/components/base/FormModal.vue";
+import FormModal, {Ext, InputType, ModalField} from "@/components/base/FormModal.vue";
 import MenuModal from "@/views/sys/sysrole/MenuModal.vue";
 import {createVNode, defineComponent, reactive, ref} from "vue";
 import SysDictApi from "@/api/SysDictApi";
@@ -92,13 +92,13 @@ export default defineComponent({
       ],
       //form中的字段
       formColumns: [
-        new ModalField().init('字典名称', 'dictName', 'String'),
-        new ModalField().init('字典Lable', 'dictKey', 'String'),
-        new ModalField().init('字典Value', 'dictValue', 'String'),
-        new ModalField().initSelect('值类型', 'valueType', new Ext(), [], '字典值类型'),
-        new ModalField().init('排序', 'dictOrder', 'Number'),
-        new ModalField().init('扩展字段', 'dictExt', 'Textarea'),
-        new ModalField().init('描述', 'describe', 'Textarea'),
+        ModalField.init('字典名称', 'dictName', InputType.String),
+        ModalField.init('字典Lable', 'dictKey', InputType.String),
+        ModalField.init('字典Value', 'dictValue', InputType.String),
+        ModalField.init('值类型', 'valueType',InputType.Select, <Ext>{selectParameter:{dictName:'字典值类型'}}),
+        ModalField.init('排序', 'dictOrder', InputType.Number),
+        ModalField.init('扩展字段', 'dictExt', InputType.Textarea),
+        ModalField.init('描述', 'describe', InputType.Textarea),
       ],
       //fomr校验规则
       rules: {

@@ -67,7 +67,7 @@
 </template>
 <script lang="ts">
 import SysRoleApi from '@/api/SysRoleApi'
-import FormModal, {ModalField} from "@/components/base/FormModal.vue";
+import FormModal, {InputType, ModalField} from "@/components/base/FormModal.vue";
 import MenuModal from "@/views/sys/sysresource/MenuModal.vue";
 import {createVNode, defineComponent, reactive, ref} from "vue";
 import Qs from "qs";
@@ -101,9 +101,9 @@ export default defineComponent({
       ],
       //form中的字段
       formColumns: [
-        new ModalField().init('角色名称', 'roleName', 'String'),
-        new ModalField().init('角色描述', 'describe', 'String'),
-        new ModalField().init('下属资源', 'resources', 'Slot', false),
+        ModalField.init('角色名称', 'roleName', InputType.String),
+        ModalField.init('角色描述', 'describe', InputType.String),
+        ModalField.init('下属资源', 'resources', InputType.Slot),
       ],
       //fomr校验规则
       rules: {

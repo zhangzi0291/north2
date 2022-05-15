@@ -14,8 +14,7 @@ import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.BaseController;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
-import com.north.base.exception.curd.InsertFailedException;
-import com.north.base.exception.curd.UpdateFailedException;
+import com.north.base.exception.impl.CurlExceptionEnum;
 import com.north.excel.verify.SysUserExcelVerifyHandler;
 import com.north.redis.cache.SysUserRedisCacheService;
 import com.north.sys.dto.UploadDto;
@@ -112,7 +111,7 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
                 UploadDto dto = sysFileController.saveFile(request, files.get(0));
                 bean.setIconUrl(dto.getDownloadUrl());
             } catch (IOException e) {
-                throw new InsertFailedException("保存图片失败");
+                CurlExceptionEnum.INSERT_FAILED.assertTrue(false,"保存图片失败");
             }
         }
         //两次MD5编码
@@ -149,7 +148,7 @@ public class SysUserController extends BaseController<SysUser, ISysUserService> 
                 UploadDto dto = sysFileController.saveFile(request, files.get(0));
                 bean.setIconUrl(dto.getDownloadUrl());
             } catch (IOException e) {
-                throw new UpdateFailedException("保存图片失败");
+                CurlExceptionEnum.UPDATE_FAILED.assertTrue(false,"保存图片失败");
             }
         }
         //编辑用户信息

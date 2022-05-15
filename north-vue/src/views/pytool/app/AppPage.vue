@@ -96,7 +96,7 @@
 </template>
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import FormModal, {Ext, ModalField} from "@/components/base/FormModal.vue";
+import FormModal, {Ext, InputType, ModalField} from "@/components/base/FormModal.vue";
 import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
@@ -146,9 +146,9 @@ import PytoolAppApi from "@/api/PytoolAppApi";
       ],
       //form中的字段
       formColumns: [
-        new ModalField().init('应用名称', 'softName', 'String', false),
-        new ModalField().init('应用版本', 'softVersion', 'String'),
-        new ModalField().init('版本文件', 'file', 'File', true, new Ext()),
+       ModalField.init('应用名称', 'softName', InputType.String, <Ext>{edit:false}),
+       ModalField.init('应用版本', 'softVersion', InputType.String),
+       ModalField.init('版本文件', 'file', InputType.File),
       ],
       //fomr校验规则
       rules: {

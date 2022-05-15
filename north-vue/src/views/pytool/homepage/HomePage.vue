@@ -62,7 +62,7 @@
   </div>
 </template>
 <script lang="ts">
-import FormModal, {Ext, ModalField} from "@/components/base/FormModal.vue";
+import FormModal, {Ext, InputType, ModalField} from "@/components/base/FormModal.vue";
 import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
@@ -97,9 +97,9 @@ export default defineComponent({
       ],
       //form中的字段
       formColumns: [
-        new ModalField().init('应用名称', 'homeName', 'String', false),
-        new ModalField().init('LOGO', 'logo', 'File', true, new Ext()),
-        new ModalField().init('描述', 'content', 'Textarea'),
+        ModalField.init('应用名称', 'homeName', InputType.String,  <Ext>{edit:false}),
+        ModalField.init('LOGO', 'logo', InputType.File),
+        ModalField.init('描述', 'content', InputType.Textarea),
       ],
       //fomr校验规则
       rules: {

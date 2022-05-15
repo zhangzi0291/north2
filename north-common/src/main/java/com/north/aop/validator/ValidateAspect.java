@@ -1,7 +1,7 @@
 package com.north.aop.validator;
 
 import com.alibaba.fastjson.JSONObject;
-import com.north.base.exception.ValidatorException;
+import com.north.base.exception.impl.ValidatorExceptionEnum;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -63,9 +63,7 @@ public class ValidateAspect {
      */
     private void validate(String[] parameterNames, Object[] arguments, ValidateParam validateParam) {
         String message = doCheck(validateParam, parameterNames, arguments);
-        if (message != null) {
-            throw new ValidatorException(message);
-        }
+        ValidatorExceptionEnum.VALIDATOR_ERROR.assertFalse(message == null,message);
     }
 
     /**

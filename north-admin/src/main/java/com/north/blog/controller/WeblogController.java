@@ -1,9 +1,6 @@
 package com.north.blog.controller;
 
 
-import cloud.tianai.captcha.template.slider.ResourceStore;
-import cloud.tianai.captcha.template.slider.provider.ClassPathResourceProvider;
-import cloud.tianai.captcha.template.slider.provider.URLResourceProvider;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,7 +9,7 @@ import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.base.BaseController;
 import com.north.base.api.R;
 import com.north.base.converter.LocalDateTimeConverter;
-import com.north.base.exception.curd.UpdateFailedException;
+import com.north.base.exception.impl.CurlExceptionEnum;
 import com.north.blog.entity.Weblog;
 import com.north.blog.service.IWeblogService;
 import com.north.sys.controller.SysFileController;
@@ -26,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -76,7 +72,7 @@ public class WeblogController extends BaseController<Weblog, IWeblogService> {
                 UploadDto dto = sysFileController.saveFile(request, file);
                 bean.setWeblogTitleImage(dto.getFileId());
             } catch (IOException e) {
-                throw new UpdateFailedException("保存图片失败");
+                CurlExceptionEnum.UPDATE_FAILED.assertTrue(false,"保存图片失败");
             }
         }
         String userId = StpUtil.getLoginIdAsString();
@@ -93,7 +89,7 @@ public class WeblogController extends BaseController<Weblog, IWeblogService> {
                 UploadDto dto = sysFileController.saveFile(request, file);
                 bean.setWeblogTitleImage(dto.getFileId());
             } catch (IOException e) {
-                throw new UpdateFailedException("保存图片失败");
+                CurlExceptionEnum.UPDATE_FAILED.assertTrue(false,"保存图片失败");
             }
         }
         String userId = StpUtil.getLoginIdAsString();

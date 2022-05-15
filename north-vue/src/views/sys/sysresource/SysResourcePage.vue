@@ -72,7 +72,7 @@ import {Options, Vue} from 'vue-class-component';
 import {createVNode} from 'vue';
 
 import SysResourceApi from '@/api/SysResourceApi'
-import FormModal, {Ext, ModalField, SelectField} from '@/components/base/FormModal.vue'
+import FormModal, {Ext, InputType, ModalField, SelectField} from '@/components/base/FormModal.vue'
 import MenuModal from "@/views/sys/sysresource/MenuModal.vue";
 import {AxiosResponse} from "axios";
 import SysDictApi from "@/api/SysDictApi";
@@ -126,13 +126,13 @@ import SysDictApi from "@/api/SysDictApi";
       ],
       //form中的字段
       formColumns: [
-        new ModalField().init('资源名称', 'resourceName', 'String'),
-        new ModalField().init('资源ICON', 'resourceIcon', 'String'),
-        new ModalField().initSelect('资源类型', 'resourceType', new Ext(), [new SelectField("菜单", "1"), new SelectField("资源", "2")], "资源类型"),
-        new ModalField().init('资源路径', 'resourceUrl', 'String'),
-        new ModalField().init('父资源ID', 'parentId', "Slot"),
-        new ModalField().init('排序', 'resourceOrder', 'Number'),
-        new ModalField().init('描述', 'describe', 'String'),
+        ModalField.init('资源名称', 'resourceName', InputType.String),
+        ModalField.init('资源ICON', 'resourceIcon', InputType.String),
+        ModalField.init('资源类型', 'resourceType', InputType.Select,<Ext>{selectParameter:{array:[new SelectField("菜单", "1"), new SelectField("资源", "2")],dictName:'资源类型'}}),
+        ModalField.init('资源路径', 'resourceUrl', InputType.String),
+        ModalField.init('父资源ID', 'parentId', InputType.Slot),
+        ModalField.init('排序', 'resourceOrder', InputType.Number),
+        ModalField.init('描述', 'describe', InputType.String),
       ],
       //fomr校验规则
       rules: {

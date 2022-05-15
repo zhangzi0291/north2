@@ -9,8 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
-import com.north.base.exception.curd.DeleteFailedException;
-import com.north.base.exception.curd.UpdateFailedException;
+import com.north.base.exception.impl.CurlExceptionEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,9 +94,9 @@ public abstract class BaseController<U extends IBaseModel, T extends IService<U>
     @RequestMapping(path = "add", method = {RequestMethod.POST})
     public R addJson(U bean) {
         Boolean flag = service.save(bean);
-        if (!flag) {
-            return R.failed("添加失败");
-        }
+
+        CurlExceptionEnum.INSERT_FAILED.assertTrue(flag);
+
         return R.ok();
     }
 
@@ -112,9 +111,9 @@ public abstract class BaseController<U extends IBaseModel, T extends IService<U>
     @RequestMapping(path = "edit", method = {RequestMethod.POST})
     public R editJson(U bean) {
         Boolean flag = service.updateById(bean);
-        if (!flag) {
-            throw new UpdateFailedException();
-        }
+
+        CurlExceptionEnum.UPDATE_FAILED.assertTrue(flag);
+
         return R.ok();
     }
 
@@ -145,9 +144,9 @@ public abstract class BaseController<U extends IBaseModel, T extends IService<U>
     @RequestMapping(path = "del", method = {RequestMethod.POST})
     public R delJson(@RequestParam("ids") List<String> ids) {
         Boolean flag = service.removeByIds(ids);
-        if (!flag) {
-            throw new DeleteFailedException();
-        }
+
+        CurlExceptionEnum.DELETE_FAILED.assertTrue(flag);
+
         return R.ok();
     }
 

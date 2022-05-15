@@ -9,7 +9,7 @@ import com.north.aop.validator.ValidateParams;
 import com.north.aop.validator.ValidatorEnum;
 import com.north.base.BaseController;
 import com.north.base.api.R;
-import com.north.base.exception.NorthBaseException;
+import com.north.base.exception.impl.CurlExceptionEnum;
 import com.north.genealogy.dto.GenealogyPersonDto;
 import com.north.genealogy.dto.Link;
 import com.north.genealogy.entity.Genealogy;
@@ -76,7 +76,7 @@ public class GenealogyController extends BaseController<Genealogy, IGenealogySer
         }
 
         if (personIdSet.isEmpty()) {
-            throw new NorthBaseException("族谱一个人也没有");
+            CurlExceptionEnum.GENERAL_FAILED.assertTrue(false,"族谱一个人也没有");
         }
         List<GenealogyPerson> persons = personService.listByIds(personIdSet);
 

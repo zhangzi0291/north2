@@ -11,12 +11,6 @@
       <a-row>
         <a-button block @click="callBack('setConfig')">配置参数</a-button>
       </a-row>
-      <a-row v-if="hasAssessment">
-        <a-button block @click="callBack('assessment')" :disabled="!assessmentEnable">模型评估</a-button>
-      </a-row>
-      <a-row v-if="hasAssessment">
-        <a-button block @click="callBack('downloadModel')" :disabled="!assessmentEnable">模型下载</a-button>
-      </a-row>
     </template>
     <a-row>
       <a-button block @click="callBack('remove')">删除</a-button>
@@ -32,8 +26,6 @@ export default defineComponent({
   data() {
     return {
       item: {},
-      hasAssessment: false,
-      assessmentEnable: false,
       x: 0,
       y: 0
     }
@@ -41,18 +33,6 @@ export default defineComponent({
   props: {},
   methods: {
     initFn(x: number, y: number, item: any) {
-      if (item.type != 'edge') {
-        if (item.item.data.type == 'ML' || item.item.data.type == 'RL') {
-          this.hasAssessment = true
-        } else {
-          this.hasAssessment = false
-        }
-        if (item.item.data.status == 'success') {
-          this.assessmentEnable = true
-        } else {
-          this.assessmentEnable = false
-        }
-      }
       this.x = x
       this.y = y
       if (item) {
