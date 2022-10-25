@@ -3,11 +3,8 @@
 </style>
 <template>
   <div>
-    <base-page :breadcrumbs="breadcrumbs">
-      <template #content>
-        <update-weblog></update-weblog>
-      </template>
-    </base-page>
+
+    <update-weblog></update-weblog>
 
 
   </div>

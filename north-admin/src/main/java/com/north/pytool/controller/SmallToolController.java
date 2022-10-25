@@ -147,10 +147,9 @@ public class SmallToolController {
         List<String> permissions = sysUserService.getPermissionLis(sysUser.getId());
 
         //登录,保持30天
-        sysUserService.login(sysUser, DeviceTypeEnum.PY_SMALL_TOOL.getValue(), 2592000L);
+        sysUserService.login(sysUser, DeviceTypeEnum.PY_SMALL_TOOL.getValue());
 
         Map<String, Object> result = new HashMap<>();
-        sysUser.setPassword(null);
         result.put("user", sysUser);
         result.put("tokenInfo", StpUtil.getTokenInfo());
         result.put("roles", roles);
@@ -180,10 +179,9 @@ public class SmallToolController {
         List<String> permissions = sysUserService.getPermissionLis(sysUser.getId());
 
         //登录,保持30天
-        sysUserService.login(sysUser, DeviceTypeEnum.PY_SMALL_TOOL.getValue(), 2592000L);
+        sysUserService.login(sysUser, DeviceTypeEnum.PY_SMALL_TOOL.getValue());
 
         Map<String, Object> result = new HashMap<>();
-        sysUser.setPassword(null);
         result.put("user", sysUser);
         result.put("tokenInfo", StpUtil.getTokenInfo());
         result.put("roles", roles);

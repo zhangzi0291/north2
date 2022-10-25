@@ -21,20 +21,16 @@
   padding: 5px;
 }
 
-.blog-other {
-  padding: 5px;
-}
-
 .weblog-box {
   background-color: #f0f2f5;
 }
 </style>
 <template>
-  <a-list item-layout="vertical" :loading="loading" style="width:70%;margin-top: 10px" :data-source="data">
+  <a-list :data-source="data" :loading="loading" item-layout="vertical" style="width:70%;margin-top: 10px">
     <template #header>
-      <a-form layout="inline">
+      <a-form :layout="'inline'">
         <a-form-item label="标题搜索">
-          <a-input v-model:value="search.weblogTitle" @change="searchData" @pressEnter="searchData" allowClear/>
+          <a-input v-model="search.weblogTitle" allowClear @change="searchData" @pressEnter="searchData"/>
         </a-form-item>
         <a-form-item label="发布时间">
           <a-range-picker :defaultValue="search.publicDateTime" show-time
@@ -58,18 +54,16 @@
   </a-list>
 </template>
 <script lang="ts">
-import FormModal from "@/components/base/FormModal.vue";
-import MenuModal from "@/views/sys/sysrole/MenuModal.vue";
 import {defineComponent, reactive, ref} from "vue";
-import WeblogApi from "@/api/WeblogApi";
 import BlogCell from "@/views/blog/BlogCell.vue";
 import debounce from "lodash/debounce"
-import { Dayjs } from 'dayjs';
+import {Dayjs} from 'dayjs';
+import WeblogApi from "@/api/WeblogApi";
 
 export default defineComponent({
   name: 'PublicWeblogHomePage',
   components: {
-    FormModal, MenuModal, BlogCell
+    BlogCell
   },
   data() {
     return {
@@ -88,19 +82,6 @@ export default defineComponent({
       ],
       search: {},
       areaLevels: [],
-      //表格字段
-      columns: [
-        {title: '博客标题', key: 'weblogTitile', dataIndex: 'weblogTitile', sorter: true,},
-        {
-          title: '标题图片',
-          key: 'weblogTitleImage',
-          slots: {customRender: 'weblogTitleImage'},
-          dataIndex: 'weblogTitleImage'
-        },
-        {title: '文章文本', key: 'weblogText', dataIndex: 'weblogText', ellipsis: "true",},
-        {title: '浏览量', key: 'pageView', dataIndex: 'pageView', sorter: true,},
-        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "100px",},
-      ],
       //校验的原始值
       check: {
         roleName: "",
@@ -139,7 +120,7 @@ export default defineComponent({
       this.searchData()
     },
     searchData:
-        debounce(function (e) {
+        debounce(function () {
           this.page.current = 1
           this.loading = true
           WeblogApi.publicList(this.search, this.page, this.sort).then(res => {
@@ -173,7 +154,7 @@ export default defineComponent({
 
     const load = function (param?: any) {
       loading.value = true
-      if (!!param && !!param.current) {
+      if (param && param.current) {
         page.current = param.current
       }
       WeblogApi.publicList(search, page, sort).then(res => {

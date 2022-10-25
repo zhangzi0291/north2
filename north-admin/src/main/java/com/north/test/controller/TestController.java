@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.north.aop.permissions.NorthWithoutLogin;
 import com.north.aop.permissions.NorthWithoutPermissions;
 import com.north.base.api.R;
+import com.north.sys.entity.SysUser;
 import com.north.utils.SystemUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,6 +32,14 @@ public class TestController {
 
     @Resource
     RedisTemplate redisTemplate;
+
+    @RequestMapping(path = "test5")
+    public R test5(String name, SysUser user) {
+        System.out.println(name);
+        System.out.println(user);
+
+        return R.ok("");
+    }
 
     @Operation(summary = "删除", description = "根据id数组删除")
     @RequestMapping(path = "test/{subscriptionsId}",consumes="application/json")

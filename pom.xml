@@ -33,7 +33,7 @@
         <fastjson.version>1.2.78</fastjson.version>
         <postgresql.version>42.2.23</postgresql.version>
         <redisson.version>3.16.3</redisson.version>
-        <sa-token.version>1.28.0</sa-token.version>
+        <sa-token.version>1.30.0</sa-token.version>
         <hutool.version>5.7.14</hutool.version>
         <easypoi.version>4.4.0</easypoi.version>
         <tianai-captcha.version>1.2.7</tianai-captcha.version>

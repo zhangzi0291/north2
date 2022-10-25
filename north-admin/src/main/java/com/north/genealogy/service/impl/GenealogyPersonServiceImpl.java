@@ -174,7 +174,7 @@ public class GenealogyPersonServiceImpl extends ServiceImpl<GenealogyPersonMappe
         QueryWrapper<SysFile> qw = new QueryWrapper<>();
         qw.lambda()
                 .eq(SysFile::getRelationId, personId)
-                .eq(SysFile::getModuleName, Constant.GENEALOGY_MODULE_NAME)
+                .eq(SysFile::getModuleName, Constant.IMAGE_MODULE.GENEALOGY_MODULE_NAME)
         ;
         if (!CollectionUtils.isEmpty(fileId)) {
             qw.lambda().notIn(SysFile::getId, fileId);

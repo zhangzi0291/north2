@@ -1,15 +1,8 @@
 <style lang="less">
-.title-font {
-  font-size: 16px;
-}
-
-.number-font {
-  font-size: 22px;
-}
 </style>
 <template>
   <a-card style="width: 200px">
-    <a-statistic :title="title" :value="number">
+    <a-statistic v-model:value="number" :title="title">
       <template #prefix>
         <component :is="icon"/>
       </template>

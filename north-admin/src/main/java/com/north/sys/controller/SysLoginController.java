@@ -124,7 +124,7 @@ public class SysLoginController {
     @Operation(summary = "登陆", description = "登陆")
     @RequestMapping(path = "login", method = RequestMethod.POST)
     @ValidateParams(
-            @ValidateParam(value = ValidatorEnum.ENUM_CLASS, parameterName = "deviceType", express = "DeviceTypeEnum")
+            @ValidateParam(value = ValidatorEnum.ENUM_CLASS, parameterName = "deviceType", express = "com.north.constant.DeviceTypeEnum")
     )
     public R login(String genId,String username, String password, String deviceType) {
         //检查验证码
@@ -137,7 +137,7 @@ public class SysLoginController {
         List<String> permissions = sysUserService.getPermissionLis(sysUser.getId());
 
         //登录
-        sysUserService.login(sysUser, DeviceTypeEnum.WEB.getValue(), 2592000L);
+        sysUserService.login(sysUser, DeviceTypeEnum.WEB.getValue());
 
         Map<String, Object> result = new HashMap<>();
         sysUser.setPassword(null);

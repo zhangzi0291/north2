@@ -4,7 +4,7 @@
 
 <template>
   <a-modal :onCancel="cancel" :onOk="ok" :title="'个人信息'" :visible="visible" :width="600">
-    <a-form ref="form" v-bind="layout" :model="data" :rules="rules">
+    <a-form ref="form" :model="data" :rules="rules" v-bind="layout">
       <a-form-item label="昵称" name="nickname">
         <a-input v-model:value="data.nickname"/>
       </a-form-item>
@@ -20,8 +20,8 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import SysUserApi from "@/api/SysUserApi";
 import {AxiosResponse} from "axios";
+import SysUserApi from "@/api/sys/SysUserApi";
 
 export default defineComponent({
   name: 'ChangePassword',

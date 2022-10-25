@@ -53,79 +53,78 @@
 }
 </style>
 <template>
+  <div ref="containerPane" style="display:flex; height: 100%;width: 100%">
+    <div id="container" ref="container" class="flow-container" style="flex: 1" @drop="drop"></div>
+    <div ref="minimap" class="flow-container-mini-map">
+    </div>
+    <div class="flow-container-toolbar-top">
+      <a-space>
+        <a-tooltip placement="bottom">
+          <template #title>
+            <span>撤销</span>
+          </template>
+          <a-button :size="'small'" @click="undo">
+            <UndoOutlined/>
+          </a-button>
+        </a-tooltip>
+        <a-tooltip placement="bottom">
+          <template #title>
+            <span>反撤销</span>
+          </template>
+          <a-button :size="'small'" @click="redo">
+            <RedoOutlined/>
+          </a-button>
+        </a-tooltip>
 
-      <div ref="containerPane" style="display:flex; height: 100%;width: 100%">
-          <div id="container" ref="container" class="flow-container" style="flex: 1" @drop="drop"></div>
-        <div ref="minimap" class="flow-container-mini-map">
-        </div>
-        <div class="flow-container-toolbar-top">
-          <a-space>
-            <a-tooltip placement="bottom">
-              <template #title>
-                <span>撤销</span>
-              </template>
-              <a-button size="small" @click="undo">
-                <UndoOutlined/>
-              </a-button>
-            </a-tooltip>
-            <a-tooltip placement="bottom">
-              <template #title>
-                <span>反撤销</span>
-              </template>
-              <a-button size="small" @click="redo">
-                <RedoOutlined/>
-              </a-button>
-            </a-tooltip>
+      </a-space>
+    </div>
+    <div class="flow-container-toolbar-right">
+      <a-space direction="vertical">
+        <a-tooltip placement="left">
+          <template #title>
+            <span>清空</span>
+          </template>
+          <a-button :size="'small'" @click="clear">
+            <DeleteOutlined/>
+          </a-button>
+        </a-tooltip>
+        <a-tooltip placement="left">
+          <template #title>
+            <span>居中</span>
+          </template>
+          <a-button :size="'small'" @click="center">
+            <PicCenterOutlined/>
+          </a-button>
+        </a-tooltip>
+        <a-tooltip placement="left">
+          <template #title>
+            <span>运行</span>
+          </template>
+          <a-button :size="'small'" @click="run">
+            <PlayCircleOutlined/>
+          </a-button>
+        </a-tooltip>
+        <a-tooltip placement="left">
+          <template #title>
+            <span>保存</span>
+          </template>
+          <a-button :size="'small'" @click="save">
+            <SaveOutlined/>
+          </a-button>
+        </a-tooltip>
+        <a-tooltip placement="left">
+          <template #title>
+            <span>还原</span>
+          </template>
+          <a-button :size="'small'" @click="restore">
+            <RollbackOutlined/>
+          </a-button>
+        </a-tooltip>
+      </a-space>
+    </div>
+  </div>
 
-          </a-space>
-        </div>
-        <div class="flow-container-toolbar-right">
-          <a-space direction="vertical">
-            <a-tooltip placement="left">
-              <template #title>
-                <span>清空</span>
-              </template>
-              <a-button size="small" @click="clear">
-                <DeleteOutlined/>
-              </a-button>
-            </a-tooltip>
-            <a-tooltip placement="left">
-              <template #title>
-                <span>居中</span>
-              </template>
-              <a-button size="small" @click="center">
-                <PicCenterOutlined/>
-              </a-button>
-            </a-tooltip>
-            <a-tooltip placement="left">
-              <template #title>
-                <span>运行</span>
-              </template>
-              <a-button size="small" @click="run">
-                <PlayCircleOutlined/>
-              </a-button>
-            </a-tooltip>
-            <a-tooltip placement="left">
-              <template #title>
-                <span>保存</span>
-              </template>
-              <a-button size="small" @click="save">
-                <SaveOutlined/>
-              </a-button>
-            </a-tooltip>
-            <a-tooltip placement="left">
-              <template #title>
-                <span>还原</span>
-              </template>
-              <a-button size="small" @click="restore">
-                <RollbackOutlined/>
-              </a-button>
-            </a-tooltip>
-          </a-space>
-        </div>
-      </div>
-
-      <context-menu ref="contextMenu" @callback="contextMenuCallback"></context-menu>
+  <context-menu ref="contextMenu" @callback="contextMenuCallback"></context-menu>
 
 
 </template>
@@ -133,14 +132,14 @@
 <script lang="ts">
 import GenealogyTree from './GenealogyTree.vue';
 import {createVNode, defineComponent} from "vue";
-import {Edge, Graph, Node, NodeView, ObjectExt} from "@antv/x6";
+import {Graph, Node} from "@antv/x6";
 import NodeCell from "@/components/genealogy/nodeTheme/NodeCell.vue";
 import ContextMenu from "@/components/genealogy/ContextMenu.vue";
 
 export default defineComponent({
   name: "GenealogyTreePage",
   components: {
-    GenealogyTree, NodeCell,ContextMenu
+    GenealogyTree, NodeCell, ContextMenu
   },
   data() {
     return {
@@ -253,7 +252,7 @@ export default defineComponent({
         this.graph.history.redo()
       }
     },
-    contextMenuCallback(type){
+    contextMenuCallback(type) {
       console.log(type)
     },
     init: function () {
@@ -334,12 +333,12 @@ export default defineComponent({
       const graph: Graph = this.graph as Graph
 
       graph.on('blank:contextmenu', ({e, x, y}) => {
-        console.log(x,y)
-        const p = graph.localToClient(x,y)
-        if(this.$route.path == "/genealogy/tree"){
-          this.$refs.contextMenu.initFn(p.x-220,p.y-150)
-        }else{
-          this.$refs.contextMenu.initFn(p.x,p.y)
+        console.log(x, y)
+        const p = graph.localToClient(x, y)
+        if (this.$route.path == "/genealogy/tree") {
+          this.$refs.contextMenu.initFn(p.x - 220, p.y - 150)
+        } else {
+          this.$refs.contextMenu.initFn(p.x, p.y)
         }
       })
 
@@ -372,7 +371,7 @@ export default defineComponent({
       })
 
       graph.on('node:contextmenu', ({e, x, y, node, view}) => {
-        var that = this
+        let that = this
 
         node.addTools({
           name: 'button',
@@ -531,7 +530,6 @@ export default defineComponent({
       })
 
 
-
       const source2 = this.graph.addNode({
         shape: 'PersonCell',
         x: 100,
@@ -586,7 +584,7 @@ export default defineComponent({
     },
   },
   created() {
-    this.$emit("breadcrumbs",this.breadcrumbs)
+    this.$emit("breadcrumbs", this.breadcrumbs)
   },
   mounted() {
     this.init()

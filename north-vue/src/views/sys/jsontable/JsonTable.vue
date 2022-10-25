@@ -3,55 +3,53 @@
 </style>
 <template>
   <div>
-    <base-page :breadcrumbs="breadcrumbs">
-      <template #content>
-        <a-page-header sub-title="数据表元数据" title="">
-          <template #extra>
-            <a-button type="primary" @click="openAdd()">新增</a-button>
-            <a-button type="primary" @click="load({current:1})">查询</a-button>
-          </template>
-        </a-page-header>
-        <a-row>
-          <b>检索条件</b>
-        </a-row>
-        <a-row>
-          <a-form layout="inline">
-            <a-form-item label="用户名">
-              <a-input v-model:value="search.nickname" allowClear/>
-            </a-form-item>
-          </a-form>
-        </a-row>
-        <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 500 }" :pagination="page" @change="tableChange"
-                 bordered style="width: 100%">
-          <template #operation="{ record }">
-            <a-space>
-              <a-tooltip title="编辑">
-                <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
-                  <template #icon>
-                    <EditOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="元数据">
-                <a-button shape="circle" type="dashed" @click="openMetaEdit(record.id)">
-                  <template #icon>
-                    <TableOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="删除">
-                <a-button shape="circle" type="dashed" @click="del(record.id)">
-                  <template #icon>
-                    <DeleteOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-            </a-space>
-          </template>
-        </a-table>
+    <a-page-header sub-title="数据表元数据" title="">
+      <template #extra>
+        <a-button type="primary" @click="openAdd()">新增</a-button>
+        <a-button type="primary" @click="load({current:1})">查询</a-button>
       </template>
-    </base-page>
+    </a-page-header>
+    <a-row>
+      <b>检索条件</b>
+    </a-row>
+    <a-row>
+      <a-form :layout="'inline'">
+        <a-form-item label="用户名">
+          <a-input v-model:value="search.nickname" allowClear/>
+        </a-form-item>
+      </a-form>
+    </a-row>
+    <a-table :columns="columns" :data-source="data" :loading="loading" :pagination="page"
+             :rowKey="(record)=>record.id" :scroll="tableScroll" bordered
+             style="width: 100%" @change="tableChange">
+      <template #bodyCell="{ text, record, index, column }">
+        <template v-if="column.dataIndex === 'operation'">
+          <a-space>
+            <a-tooltip title="编辑">
+              <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
+                <template #icon>
+                  <EditOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="元数据">
+              <a-button shape="circle" type="dashed" @click="openMetaEdit(record.id)">
+                <template #icon>
+                  <TableOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="删除">
+              <a-button shape="circle" type="dashed" @click="del(record.id)">
+                <template #icon>
+                  <DeleteOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+          </a-space>
+        </template>
+      </template>
+    </a-table>
 
     <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
                 :okCallback="load"
@@ -66,8 +64,8 @@
             <a-input v-model:value="mate.columnName" placeholder="字段名称" style="width:150px"/>
             <a-select v-model:value="mate.columnType" placeholder="字段类型" style="width:100px">
               <template v-for="select in columnType">
-                <a-select-option :value="select.value">
-                  {{ select.lable }}
+                <a-select-option v-model:value="select.value">
+                  {{ select.label }}
                 </a-select-option>
               </template>
             </a-select>
@@ -87,12 +85,12 @@
   </div>
 </template>
 <script lang="ts">
-import {createVNode, defineComponent, reactive, ref} from "vue";
-import JsonTableAPi from "@/api/JsonTable";
+import {createVNode, defineComponent} from "vue";
 import FormModal, {InputType, ModalField} from "@/components/base/FormModal.vue";
-import SysDictApi from "@/api/SysDictApi";
 import {AxiosResponse} from "axios";
-
+import JsonTableApi from "@/api/JsonTableApi";
+import {PageInfo} from "@/base/Page";
+import SysDictApi from "@/api/sys/SysDictApi";
 
 export default defineComponent({
   name: 'JsonTable',
@@ -124,7 +122,7 @@ export default defineComponent({
       columns: [
         {title: 'ID', key: 'id', dataIndex: 'id'},
         {title: '表名', key: 'tableName', dataIndex: 'tableName', ellipsis: "true"},
-        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "200px"},
+        {title: '操作', dataIndex: 'operation', fixed: 'right', width: "200px"},
       ],
       visible: false,
       mateData: [],
@@ -149,7 +147,7 @@ export default defineComponent({
     openMetaEdit(tableId: string) {
       this.visible = true
       this.tableId = tableId
-      JsonTableAPi.getMate(tableId).then(res => {
+      JsonTableApi.JsonTableAPi.getMate(tableId).then(res => {
         this.mateData = res.data.data
       })
     },
@@ -159,14 +157,14 @@ export default defineComponent({
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要删除吗？',
         onOk: () => {
-          return JsonTableAPi.del([id]).then(res => {
+          return JsonTableApi.JsonTableAPi.del([id]).then(res => {
             this.load()
           })
         },
       });
     },
     onOk() {
-      JsonTableAPi.addMate(this.tableId, this.mateData).then(res => {
+      JsonTableApi.JsonTableAPi.addMate(this.tableId, this.mateData).then(res => {
         this.visible = false
       })
     },
@@ -180,38 +178,7 @@ export default defineComponent({
     this.loadDict()
   },
   setup() {
-    //表格加载状态
-    let loading = ref(false)
-    //分页
-    let page = reactive({current: 1, total: 0})
-    //排序
-    let sort = reactive({field: null, order: null})
-    //查询数据
-    let search = reactive({})
-    //表格数据
-    let data = ref([])
-
-    const load = function (param?: any) {
-      loading.value = true
-      if (!!param && !!param.current) {
-        page.current = param.current
-      }
-      JsonTableAPi.list(search, page, sort).then(res => {
-        data.value.length = 0
-        data.value = data.value.concat(res.data.data.records)
-        page.current = res.data.data.current
-        page.total = res.data.data.total
-        loading.value = false
-      })
-    }
-    const tableChange = function (pageParam: any, filters: any, sorter: any) {
-      page.current = pageParam.current
-      page.total = pageParam.total
-      sort.field = sorter.field
-      sort.order = sorter.order
-      load()
-    }
-    const tablePageOption = {loading, data, page, search, load, tableChange}
+    const tablePageOption = PageInfo(JsonTableApi.JsonTableAPi)
 
     return {
       ...tablePageOption

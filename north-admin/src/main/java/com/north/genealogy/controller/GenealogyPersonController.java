@@ -62,7 +62,7 @@ public class GenealogyPersonController extends BaseController<GenealogyPerson, I
     public R getGenealogyPersonImages(String id) {
         QueryWrapper<SysFile> qw = new QueryWrapper();
         qw.lambda()
-                .eq(SysFile::getModuleName, Constant.GENEALOGY_MODULE_NAME)
+                .eq(SysFile::getModuleName, Constant.IMAGE_MODULE.GENEALOGY_MODULE_NAME)
                 .eq(SysFile::getRelationId, id);
         List<SysFile> list = sysFileService.list(qw);
         List<String> imageIds = new ArrayList<>();

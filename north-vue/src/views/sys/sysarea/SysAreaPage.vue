@@ -3,61 +3,65 @@
 </style>
 <template>
   <div>
-    <base-page :breadcrumbs="breadcrumbs">
-      <template #content>
-        <a-page-header sub-title="区域配置" title="区域">
-          <template #extra>
-            <a-button type="primary" @click="openAdd()">新增</a-button>
-            <a-button type="primary" @click="load({current:1})">查询</a-button>
-          </template>
-        </a-page-header>
-        <a-row>
-          <b>检索条件</b>
-        </a-row>
-        <a-row>
-          <a-form layout="inline">
-            <a-form-item label="区域名称">
-              <a-input v-model:value="search.areaName" allowClear/>
-            </a-form-item>
-            <a-form-item label="区域级别">
-              <a-select v-model:value="search.areaLevel" style="width:200px">
-                <template v-for="select in areaLevels">
-                  <a-select-option :value="select.value">
-                    {{ select.lable }}
-                  </a-select-option>
+    <a-page-header sub-title="区域配置" title="区域">
+      <template #extra>
+        <a-button type="primary" @click="openAdd()">新增</a-button>
+        <a-button type="primary" @click="load({current:1})">查询</a-button>
+      </template>
+    </a-page-header>
+    <a-row>
+      <b>检索条件</b>
+    </a-row>
+    <a-row>
+      <a-form :layout="'inline'">
+        <a-form-item label="区域名称">
+          <a-input v-model:value="search.areaName" allowClear/>
+        </a-form-item>
+        <a-form-item label="区域级别">
+          <a-select v-model:value="search.areaLevel" style="width:200px">
+            <template v-for="select in areaLevels">
+              <a-select-option v-model:value="select.value">
+                {{ select.label }}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="父区域码">
+          <a-input v-model:value="search.parentId" allowClear/>
+        </a-form-item>
+      </a-form>
+    </a-row>
+    <a-table :columns="columns" :data-source="data" :loading="loading" :pagination="page"
+             :rowKey="(record)=>record.id" :scroll="tableScroll" bordered
+             @change="tableChange">
+      <template #bodyCell="{ text, record, index, column }">
+        <template v-if="column.dataIndex == 'areaLevel'">
+          <span>
+            {{ getSelectLabel(areaLevels, record.areaLevel) }}
+          </span>
+        </template>
+        <template v-if="column.dataIndex === 'operation'">
+          <a-space>
+            <a-tooltip title="编辑">
+              <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
+                <template #icon>
+                  <EditOutlined/>
                 </template>
-              </a-select>
-            </a-form-item>
-            <a-form-item label="父区域码">
-              <a-input v-model:value="search.parentId" allowClear/>
-            </a-form-item>
-          </a-form>
-        </a-row>
-        <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 210 }" :pagination="page" @change="tableChange"
-                 bordered>
-          <template #operation="{ record }">
-            <a-space>
-              <a-tooltip title="编辑">
-                <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
-                  <template #icon>
-                    <EditOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="删除">
-                <a-button shape="circle" type="dashed" @click="del(record.id)">
-                  <template #icon>
-                    <DeleteOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-            </a-space>
-          </template>
-        </a-table>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="删除">
+              <a-button shape="circle" type="dashed" @click="del(record.id)">
+                <template #icon>
+                  <DeleteOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+          </a-space>
+        </template>
       </template>
 
-    </base-page>
+    </a-table>
+
     <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
                 :okCallback="load" :rules="rules" :title="'字典'">
       <template #resources="{data}">
@@ -69,23 +73,19 @@
 </template>
 <script lang="ts">
 import FormModal, {Ext, InputType, ModalField} from "@/components/base/FormModal.vue";
-import MenuModal from "@/views/sys/sysrole/MenuModal.vue";
-import {createVNode, defineComponent, reactive, ref} from "vue";
-import SysAreaApi from "@/api/SysAreaApi";
+import {createVNode, defineComponent, onMounted, ref} from "vue";
 import {AxiosResponse} from "axios";
-import SysDictApi from "@/api/SysDictApi";
+import {PageInfo} from "@/base/Page";
+import SysAreaApi from "@/api/sys/SysAreaApi";
+import SysDictApi from "@/api/sys/SysDictApi";
 
 
 export default defineComponent({
   name: 'SysArea',
   components: {
-    FormModal, MenuModal
+    FormModal
   },
   data() {
-    let areaLevels = [];
-    SysDictApi.getSelect('区域级别').then((res: AxiosResponse) => {
-      areaLevels = res.data.data
-    });
     return {
       //接口url
       url: {
@@ -98,31 +98,19 @@ export default defineComponent({
         {name: "", icon: "HomeOutlined", href: "/home"},
         {name: "字典管理", icon: "KeyOutlined", href: "/sysrole/list"}
       ],
-      areaLevels: [],
       //表格字段
       columns: [
         {title: '区域码', key: 'id', dataIndex: 'id', sorter: true,},
         {title: '区域名称', key: 'areaName', dataIndex: 'areaName',},
-        {
-          title: '区域级别', key: 'areaLevel', dataIndex: 'data.resourceType', sorter: true,
-          customRender: function (record: any) {
-            for (let areaLevel of areaLevels) {
-              let type = (<any>areaLevel)
-              if (type.value == record.record.areaLevel) {
-                return type.lable
-              }
-            }
-            return "未知"
-          }
-        },
+        {title: '区域级别', key: 'areaLevel', dataIndex: 'areaLevel', sorter: true,},
         {title: '城乡分类代码', key: 'townCode', dataIndex: 'townCode', sorter: true,},
-        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "100px",},
+        {title: '操作', dataIndex: 'operation', fixed: 'right', width: "100px",},
       ],
       //form中的字段
       formColumns: [
         ModalField.init('区域码', 'id', InputType.String),
         ModalField.init('区域名称', 'areaName', InputType.String),
-        ModalField.init('区域级别', 'areaLevel', InputType.Select, <Ext>{selectParameter:{dictName:'区域级别'}} ),
+        ModalField.init('区域级别', 'areaLevel', InputType.Select, <Ext>{selectParameter: {dictName: '区域级别'}}),
         ModalField.init('城乡分类代码', 'townCode', InputType.Number),
         ModalField.init('排序', 'areaOrder', InputType.Number),
       ],
@@ -181,40 +169,16 @@ export default defineComponent({
     this.loadAreaLevel()
   },
   setup() {
-    //表格加载状态
-    let loading = ref(false)
-    //分页
-    let page = reactive({current: 1, total: 0})
-    //排序
-    let sort = reactive({field: null, order: null})
-    //查询数据
-    let search = reactive({})
-    //表格数据
-    let data = ref([])
+    const tablePageOption = PageInfo(SysAreaApi)
 
-    const load = function (param?: any) {
-      loading.value = true
-      if (!!param && !!param.current) {
-        page.current = param.current
-      }
-      SysAreaApi.list(search, page, sort).then(res => {
-        data.value.length = 0
-        data.value = data.value.concat(res.data.data.records)
-        page.current = res.data.data.current
-        page.total = res.data.data.total
-        loading.value = false
-      })
-    }
-    const tableChange = function (pageParam: any, filters: any, sorter: any) {
-      page.current = pageParam.current
-      page.total = pageParam.total
-      sort.field = sorter.field
-      sort.order = sorter.order
-      load()
-    }
-    const tablePageOption = {loading, data, page, search, load, tableChange}
+    let areaLevels = ref([])
+    onMounted(async () => {
+      const res = await SysDictApi.getSelect('区域级别')
+      areaLevels.value = res.data.data
+    });
 
     return {
+      areaLevels,
       ...tablePageOption
     }
   }

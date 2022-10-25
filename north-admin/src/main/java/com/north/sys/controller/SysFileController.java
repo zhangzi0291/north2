@@ -179,7 +179,12 @@ public class SysFileController extends BaseController<SysFile, ISysFileService> 
      * @throws IOException
      */
     public UploadDto saveFile(HttpServletRequest request, MultipartFile file) throws IOException {
-        R<UploadDto> r = this.upload(request, file, Constant.SYS_MODULE_NAME, null);
+        R<UploadDto> r = this.upload(request, file, Constant.IMAGE_MODULE.SYS_MODULE_NAME, null);
+        return r.getData();
+    }
+
+    public UploadDto saveFile(HttpServletRequest request, MultipartFile file,String moduleName) throws IOException {
+        R<UploadDto> r = this.upload(request, file, moduleName, null);
         return r.getData();
     }
 

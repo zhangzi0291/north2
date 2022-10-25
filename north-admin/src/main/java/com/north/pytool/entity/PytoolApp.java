@@ -2,7 +2,7 @@ package com.north.pytool.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.north.base.LogicDeleteBaseModel;
+import com.north.base.DeleteLogicBaseModel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * @since 2021-07-21
  */
 @TableName("pytool_app")
-public class PytoolApp extends LogicDeleteBaseModel {
+public class PytoolApp extends DeleteLogicBaseModel {
 
     private static final long serialVersionUID = 1L;
 

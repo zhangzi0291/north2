@@ -1,9 +1,7 @@
 import {AxiosResponse} from "axios"
 import Qs from "qs";
+import HttpClient, {RespData} from "@/plugins/axios/HttpClient";
 
-const app = window.vm
-
-const axios = app.config.globalProperties.$axios
 
 const url = {
     getGenealogyTree: "/genealogy/getGenealogyTree",
@@ -17,10 +15,10 @@ const url = {
 }
 
 
-export default class GenealogyApi {
+class GenealogyApi {
 
-    public static getGenealogyTree(genealogyId: string): Promise<AxiosResponse> {
-        return axios({
+    public getGenealogyTree(genealogyId: string): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'get',
             url: url.getGenealogyTree,
             params: {
@@ -29,8 +27,8 @@ export default class GenealogyApi {
         })
     }
 
-    public static getGenealogyTreePersonSearch(genealogyId: string, value: string): Promise<AxiosResponse> {
-        return axios({
+    public getGenealogyTreePersonSearch(genealogyId: string, value: string): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'get',
             url: url.getGenealogyTreePersonSearch,
             params: {
@@ -40,8 +38,8 @@ export default class GenealogyApi {
         })
     }
 
-    public static getGenealogyPerson(id: string): Promise<AxiosResponse> {
-        return axios({
+    public getGenealogyPerson(id: string): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'get',
             url: url.getGenealogyPerson,
             params: {
@@ -50,24 +48,24 @@ export default class GenealogyApi {
         })
     }
 
-    public static addGenealogyPerson(data: FormData): Promise<AxiosResponse> {
-        return axios({
+    public addGenealogyPerson(data: FormData): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'post',
             url: url.addGenealogyPerson,
             data: data
         })
     }
 
-    public static editGenealogyPerson(data: FormData): Promise<AxiosResponse> {
-        return axios({
+    public editGenealogyPerson(data: FormData): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'post',
             url: url.editGenealogyPerson,
             data: data
         })
     }
 
-    public static removeGenealogyPerson(id: string): Promise<AxiosResponse> {
-        return axios({
+    public removeGenealogyPerson(id: string): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'get',
             url: url.removeGenealogyPerson,
             params: {
@@ -76,8 +74,8 @@ export default class GenealogyApi {
         })
     }
 
-    public static getGenealogyPersonImages(id: string): Promise<AxiosResponse> {
-        return axios({
+    public getGenealogyPersonImages(id: string): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'post',
             url: url.getGenealogyPersonImages,
             data: Qs.stringify({
@@ -86,8 +84,8 @@ export default class GenealogyApi {
         })
     }
 
-    public static getGenealogyPersonTimeLines(id: string): Promise<AxiosResponse> {
-        return axios({
+    public getGenealogyPersonTimeLines(id: string): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'post',
             url: url.getGenealogyPersonTimeLines,
             data: Qs.stringify({
@@ -96,3 +94,6 @@ export default class GenealogyApi {
         })
     }
 }
+
+const api = new GenealogyApi()
+export default api

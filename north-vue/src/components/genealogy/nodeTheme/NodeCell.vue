@@ -1,31 +1,27 @@
 <template>
   <div class="node ">
-123
+    123
   </div>
 </template>
 
 <script lang="ts">
 
-import {defineComponent, inject} from "vue";
+import {defineComponent} from "vue";
 
 export default defineComponent({
 
   name: 'NodeCell',
   data() {
     return {
-      node:{} as any,
+      node: {} as any,
       data: {},
-      configType:"",
+      configType: "",
       status: 'blank',
-      loading:false,
+      loading: false,
     }
   },
-  watch:{
-
-  },
-  methods: {
-
-  },
+  watch: {},
+  methods: {},
   mounted() {
     // const node = (inject('getNode') as any)()
     // this.node = node
@@ -45,7 +41,7 @@ export default defineComponent({
 })
 </script>
 <style lang="less">
-.node{
+.node {
   width: 150px;
   height: 200px;
   border-radius: 10px;

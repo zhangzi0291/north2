@@ -3,64 +3,61 @@
 </style>
 <template>
   <div>
-    <base-page :breadcrumbs="breadcrumbs">
-      <template #content>
-        <a-page-header title="应用列表">
-          <template #extra>
-            <a-button type="primary" @click="openAdd()">新增</a-button>
-            <a-button type="primary" @click="load({current:1})">查询</a-button>
-          </template>
-        </a-page-header>
-        <a-row>
-          <b>检索条件</b>
-        </a-row>
-        <a-row>
-          <a-form layout="inline">
-            <a-form-item label="应用名">
-              <a-input v-model:value="search.softName" allowClear/>
-            </a-form-item>
-
-          </a-form>
-        </a-row>
-        <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 500 }" :pagination="page" @change="tableChange"
-                 bordered style="width: 100%">
-          <template #operation="{ record }">
-            <a-space>
-              <a-tooltip title="历史">
-                <a-button shape="circle" type="dashed" @click="openHistory(record.softName)">
-                  <template #icon>
-                    <HistoryOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="编辑">
-                <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
-                  <template #icon>
-                    <EditOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="删除">
-                <a-button shape="circle" type="dashed" @click="del(record.id)">
-                  <template #icon>
-                    <DeleteOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="下载">
-                <a-button shape="circle" type="dashed" @click="download(record.fileId)" v-if="record.fileId">
-                  <template #icon>
-                    <DownloadOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-            </a-space>
-          </template>
-        </a-table>
+    <a-page-header title="应用列表">
+      <template #extra>
+        <a-button type="primary" @click="openAdd()">新增</a-button>
+        <a-button type="primary" @click="load({current:1})">查询</a-button>
       </template>
+    </a-page-header>
+    <a-row>
+      <b>检索条件</b>
+    </a-row>
+    <a-row>
+      <a-form :layout="'inline'">
+        <a-form-item label="应用名">
+          <a-input v-model:value="search.softName" allowClear/>
+        </a-form-item>
 
-    </base-page>
+      </a-form>
+    </a-row>
+    <a-table :columns="columns" :data-source="data" :loading="loading" :pagination="page"
+             :rowKey="(record)=>record.id" :scroll="tableScroll" bordered
+             style="width: 100%" @change="tableChange">
+      <template #bodyCell="{ text, record, index, column }">
+        <template v-if="column.dataIndex === 'operation'">
+          <a-space>
+            <a-tooltip title="历史">
+              <a-button shape="circle" type="dashed" @click="openHistory(record.softName)">
+                <template #icon>
+                  <HistoryOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="编辑">
+              <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
+                <template #icon>
+                  <EditOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="删除">
+              <a-button shape="circle" type="dashed" @click="del(record.id)">
+                <template #icon>
+                  <DeleteOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="下载">
+              <a-button v-if="record.fileId" shape="circle" type="dashed" @click="download(record.fileId)">
+                <template #icon>
+                  <DownloadOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+          </a-space>
+        </template>
+      </template>
+    </a-table>
 
     <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
                 :okCallback="load" :rules="rules"
@@ -69,25 +66,25 @@
         <a-button type="primary" @click="openMenuModal(data)">分配角色</a-button>
       </template>
     </form-modal>
-    <!--    <menu-modal ref="menuModal"></menu-modal>-->
-    <!--    <menu-modal ref="menuModal2" :okCallback="menuModalOkCallback"></menu-modal>-->
 
     <import-modal ref="importModal" :title="'用户导入'" :url="url.import"></import-modal>
 
     <change-password ref="cp"></change-password>
 
     <a-modal :onCancel="cancel" :onOk="ok" :title="'历史版本'" :visible="visibleHis" width="80%">
-      <a-table :columns="hisColumns" :data-source="hisData" :loading="hisLoading" :rowKey="(record)=>'his'+record.id"
-               :pagination="hisPage" @change="hisTableChange"
-               bordered style="width: 100%">
-        <template #operation="{ record }">
-          <a-tooltip title="下载">
-            <a-button shape="circle" type="dashed" @click="download(record.fileId)" v-if="record.fileId">
-              <template #icon>
-                <DownloadOutlined/>
-              </template>
-            </a-button>
-          </a-tooltip>
+      <a-table :columns="hisColumns" :data-source="hisData" :loading="hisLoading" :pagination="hisPage"
+               :rowKey="(record)=>'his'+record.id" bordered
+               style="width: 100%" @change="hisTableChange">
+        <template #bodyCell="{ text, record, index, column }">
+          <template v-if="column.dataIndex === 'operation'">
+            <a-tooltip title="下载">
+              <a-button v-if="record.fileId" shape="circle" type="dashed" @click="download(record.fileId)">
+                <template #icon>
+                  <DownloadOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+          </template>
         </template>
       </a-table>
     </a-modal>
@@ -95,19 +92,17 @@
   </div>
 </template>
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
 import FormModal, {Ext, InputType, ModalField} from "@/components/base/FormModal.vue";
 import ImportModal from "@/components/base/ImportModal.vue";
-import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
-import {createVNode} from "vue";
+import {createVNode, defineComponent} from "vue";
 import PytoolAppApi from "@/api/PytoolAppApi";
 
 
-@Options({
+export default defineComponent({
   name: 'pytoolApp',
   components: {
-    FormModal, MenuModal, ChangePassword, ImportModal
+    FormModal, ChangePassword, ImportModal
   },
   data() {
     return {
@@ -117,6 +112,7 @@ import PytoolAppApi from "@/api/PytoolAppApi";
         {title: '版本更新时间', key: 'versionUpdateTime', dataIndex: 'versionUpdateTime', width: "100px"},
         {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "100px"},
       ],
+      page: {},
       hisData: [],
       hisLoading: false,
       visibleHis: false,
@@ -142,15 +138,15 @@ import PytoolAppApi from "@/api/PytoolAppApi";
         {title: '应用名称', key: 'softName', dataIndex: 'softName'},
         {title: '应用版本', key: 'softVersion', dataIndex: 'softVersion'},
         {title: '版本更新时间', key: 'versionUpdateTime', dataIndex: 'versionUpdateTime'},
-        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "180px"},
+        {title: '操作', dataIndex: 'operation', fixed: 'right', width: "180px"},
       ],
       //form中的字段
       formColumns: [
-       ModalField.init('应用名称', 'softName', InputType.String, <Ext>{edit:false}),
-       ModalField.init('应用版本', 'softVersion', InputType.String),
-       ModalField.init('版本文件', 'file', InputType.File),
+        ModalField.init('应用名称', 'softName', InputType.String, <Ext>{edit: false}),
+        ModalField.init('应用版本', 'softVersion', InputType.String),
+        ModalField.init('版本文件', 'file', InputType.File),
       ],
-      //fomr校验规则
+      //form校验规则
       rules: {
         softName: [
           {required: true, type: 'string', trigger: 'blur', message: "应用名称不可为空"},
@@ -161,9 +157,9 @@ import PytoolAppApi from "@/api/PytoolAppApi";
               }
               let originalValue = (<any>this.check).username;
               PytoolAppApi.checkSoftName(value, originalValue).then(res => {
-                if (res.data.code == '40001') {
+                if (res.data.code == 40001) {
                   callback(res.data.msg)
-                } else if (res.data.code == '200') {
+                } else if (res.data.code == 200) {
                   callback()
                 } else {
                   callback("错误")
@@ -186,7 +182,7 @@ import PytoolAppApi from "@/api/PytoolAppApi";
   methods: {
     load(data: any) {
       this.loading = true
-      if (!!data && !!data.current) {
+      if (data && data.current) {
         this.page.current = data.current
       }
       PytoolAppApi.list(this.search, this.page, this.sort).then(res => {
@@ -247,8 +243,7 @@ import PytoolAppApi from "@/api/PytoolAppApi";
       });
     },
     download(fileId: string) {
-      let href = window.BASE_URL + "/sysFile/download?id=" + fileId
-      window.location.href = href
+      window.location.href = window.BASE_URL + "/sysFile/download?id=" + fileId
     },
     openHistory(softName: string) {
       this.visibleHis = true
@@ -268,8 +263,5 @@ import PytoolAppApi from "@/api/PytoolAppApi";
   },
 
 })
-
-export default class SysUser extends Vue {
-}
 
 </script>

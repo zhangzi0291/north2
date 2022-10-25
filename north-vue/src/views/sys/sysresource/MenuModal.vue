@@ -3,14 +3,30 @@
 </style>
 
 <template>
-  <a-modal :onCancel="cancel" :onOk="ok" :title="title" :visible="visible" :width="720">
+  <a-modal :onCancel="cancel" :onOk="ok" :title="title" :visible="visible" :width="1080">
     <a-table :childrenColumnName="'child'" :columns="columns" :data-source="resourceList" :defaultExpandAllRows="true"
              :loading="loading" :pagination="false" :rowKey="(record)=>record.id"
-             :rowSelection="rowSelection" :scroll="{ x: 900, y: 500 }">
-      <template #icon="{ text }">
+             :rowSelection="rowSelection" :scroll="tableScroll">
+      <template #bodyCell="{ text, record, index, column }">
+        <template v-if="column.dataIndex == 'data.resourceName'">
+          {{ record.data.resourceName }}
+        </template>
+        <template v-if="column.dataIndex === 'data.resourceIcon'">
           <span>
-             <component :is="$icons[text]"/>
+               <component :is="record.data.resourceIcon"/>
+            </span>
+        </template>
+        <template v-if="column.dataIndex === 'data.resourceType'">
+          <span>
+            {{ getSelectLabel(resourceTypes, record.data.resourceType) }}
           </span>
+        </template>
+        <template v-if="column.dataIndex == 'data.resourceUrl'">
+          {{ record.data.resourceUrl }}
+        </template>
+        <template v-if="column.dataIndex == 'data.describe'">
+          {{ record.data.describe }}
+        </template>
       </template>
     </a-table>
     <template #footer>
@@ -22,46 +38,23 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from "vue-class-component";
-import SysResourceApi from "@/api/SysResourceApi";
-import {AxiosResponse} from "axios";
-import SysDictApi from "@/api/SysDictApi";
+import {defineComponent, onMounted, reactive, ref} from "vue";
+import SysDictApi from "@/api/sys/SysDictApi";
+import SysResourceApi from "@/api/sys/SysResourceApi";
 
-@Options({
+export default defineComponent({
   name: 'MenuModal',
   data() {
-    let resourceTypes = [];
-    SysDictApi.getSelect('资源类型').then((res: AxiosResponse) => {
-      resourceTypes = res.data.data
-    });
     return {
       id: "",
       visible: false,
       loading: false,
       data: {},
       resourceList: [],
-      selectedRowKeys: [],
       columns: [
         {title: '资源名称', key: 'data.resourceName', dataIndex: 'data.resourceName', width: "250px", fixed: 'left'},
-        {
-          title: '资源ICON',
-          key: 'data.resourceIcon',
-          dataIndex: 'data.resourceIcon',
-          slots: {customRender: "icon"},
-          width: "80px",
-        },
-        {
-          title: '资源类型', key: 'data.resourceType', dataIndex: 'data.resourceType', width: "100px",
-          customRender: function (record: any) {
-            for (let resourceType of resourceTypes) {
-              let type = (<any>resourceType)
-              if (type.value == record.record.data.resourceType) {
-                return type.lable
-              }
-            }
-            return record.record.data.resourceType == 1 ? "菜单" : "资源"
-          }
-        },
+        {title: '资源ICON', key: 'data.resourceIcon', dataIndex: 'data.resourceIcon', width: "80px",},
+        {title: '资源类型', key: 'data.resourceType', dataIndex: 'data.resourceType', width: "100px",},
         {title: '资源路径', key: 'data.resourceUrl', dataIndex: 'data.resourceUrl', width: "200px",},
         {title: '描述', key: 'data.describe', dataIndex: 'data.describe',},
       ],
@@ -71,12 +64,6 @@ import SysDictApi from "@/api/SysDictApi";
     title: {
       type: String,
       required: true
-    },
-    type: {
-      type: String,
-      default: () => {
-        return 'checkbox'
-      }
     },
     okCallback: {
       type: Function,
@@ -123,7 +110,7 @@ import SysDictApi from "@/api/SysDictApi";
       resourceList.forEach((resource: any) => {
         if (resource.child == undefined) {
           resources.push(resource.data)
-        } else if (resource.child != undefined && resource.child.length > 0) {
+        } else if (resource.child.length > 0) {
           resources = resources.concat(this.getResourceAndChild(resource.child))
           resources.push(resource.data)
         }
@@ -148,38 +135,48 @@ import SysDictApi from "@/api/SysDictApi";
     },
 
   },
+  created() {
+
+  },
   mounted() {
     this.getAllResource()
   },
-})
+  setup() {
+    let resourceTypes = ref([])
+    onMounted(async () => {
+      const res = await SysDictApi.getSelect('资源类型')
+      resourceTypes.value = res.data.data
+    });
 
-export default class ParentIdModal extends Vue {
-  selectedRowKeys: any;
-  type: any;
+    let selectedRowKeys = reactive({});
+    const type = reactive({});
 
-  get rowSelection() {
-    let selection = {
-      type: this.type,
-      selectedRowKeys: this.selectedRowKeys,
-    }
+    const rowSelection = function rowSelection() {
+      let selection = {
+        type: type,
+        selectedRowKeys: selectedRowKeys,
+      }
 
-    if (this.type == 'radio') {
-      (selection as any).onSelect = (record: any, selected: any, selectedRows: any[], nativeEvent: any) => {
-        if (selected) {
-          this.selectedRowKeys = [record.id]
-        } else {
-          this.selectedRowKeys = []
+      if (type == 'radio') {
+        (selection as any).onSelect = (record: any, selected: any) => {
+          if (selected) {
+            selectedRowKeys = [record.id]
+          } else {
+            selectedRowKeys = []
+          }
+        }
+      } else {
+        (selection as any).onChange = (iselectedRowKeys: any) => {
+          selectedRowKeys = iselectedRowKeys
+
         }
       }
-    } else {
-      (selection as any).onChange = (selectedRowKeys: any, selectedRows: any) => {
-        this.selectedRowKeys = selectedRowKeys
-
-      }
+      return selection
     }
-    return selection
+
+    return {resourceTypes, selectedRowKeys, type, rowSelection}
   }
-}
+})
 
 </script>
 

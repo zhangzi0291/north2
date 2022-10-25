@@ -1,15 +1,8 @@
 <style lang="less">
-.title-font {
-  font-size: 16px;
-}
-
-.number-font {
-  font-size: 22px;
-}
 </style>
 <template>
   <a-card style="width: 200px">
-    <a-space align="center" direction="vertical">
+    <a-space :align="'center'" direction="vertical">
       <a-progress :percent="percent" :strokeColor="getDashboardColor(percent)" :strokeWidth="15"
                   gapPosition="left" type="dashboard">
         <template #format="percent">

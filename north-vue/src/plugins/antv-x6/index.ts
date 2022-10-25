@@ -4,14 +4,14 @@ import NodeCell from "@/components/genealogy/nodeTheme/NodeCell.vue";
 import "@antv/x6-vue-shape"
 
 
-var install = function install(app: App) {
+const install = function install(app: App) {
     Graph.registerNode("PersonCell", {
         inherit: "vue-shape",
         width: 100,
         height: 100,
         component: {
             template: `
-            <node-cell/>`,
+              <node-cell/>`,
             components: {
                 NodeCell
             }
@@ -20,7 +20,7 @@ var install = function install(app: App) {
 }
 
 
-var _default = {
+const _default = {
     version: 1,
     install: install
 };

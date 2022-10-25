@@ -5,7 +5,7 @@ import 'ant-design-vue/dist/antd.css';
 import {Component} from "@vue/runtime-core";
 
 
-var install = function install(app: App) {
+const install = function install(app: App) {
     let iconName: string[] = []
     Object.keys(icons).forEach((key) => {
         app.component(key, <Component>icons[key])
@@ -15,11 +15,12 @@ var install = function install(app: App) {
     app.config.globalProperties.$modal = Modal
     app.config.globalProperties.$message = message
     app.config.globalProperties.$notification = notification
+
     app.use(Antd)
 }
 
 
-var _default = {
+const _default = {
     version: 1,
     install: install
 };

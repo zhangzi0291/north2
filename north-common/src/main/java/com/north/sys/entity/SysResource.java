@@ -1,7 +1,7 @@
 package com.north.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.north.base.LogicDeleteBaseModel;
+import com.north.base.DeleteLogicBaseModel;
 
 import java.io.Serializable;
 import java.util.StringJoiner;
@@ -15,7 +15,7 @@ import java.util.StringJoiner;
  * @since 2020-12-29
  */
 @TableName("sys_resource")
-public class SysResource extends LogicDeleteBaseModel implements Serializable {
+public class SysResource extends DeleteLogicBaseModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

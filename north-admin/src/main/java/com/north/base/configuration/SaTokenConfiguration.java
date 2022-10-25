@@ -22,6 +22,8 @@ public class SaTokenConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new NorthCheckPermissionsInterceptor())
                 .addPathPatterns("/**")
+                .excludePathPatterns("/swagger-ui.html")
+                .excludePathPatterns("/v3/**/*")
                 .excludePathPatterns("/error")
         ;
     }

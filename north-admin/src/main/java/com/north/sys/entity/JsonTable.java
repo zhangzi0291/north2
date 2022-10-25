@@ -1,7 +1,7 @@
 package com.north.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.north.base.LogicDeleteBaseModel;
+import com.north.base.DeleteLogicBaseModel;
 
 /**
  * <p>
@@ -12,7 +12,7 @@ import com.north.base.LogicDeleteBaseModel;
  * @since 2021-12-08
  */
 @TableName("json_table")
-public class JsonTable extends LogicDeleteBaseModel {
+public class JsonTable extends DeleteLogicBaseModel {
 
     private static final long serialVersionUID = 1L;
 

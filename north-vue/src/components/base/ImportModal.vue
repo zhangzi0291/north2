@@ -3,10 +3,10 @@
 </style>
 <template>
   <a-modal :onCancel="cancel" :onOk="ok" :title="title?title:'数据导入'" :visible="visible">
-    <a-form ref="form" v-bind="layout" :model="data">
+    <a-form ref="form" :model="data" v-bind="layout">
       <a-form-item>
-        <a-upload :before-upload="beforeUpload" :file-list="fileList" @change="handleChange"
-                  :customRequest="customRequest">
+        <a-upload :before-upload="beforeUpload" :customRequest="customRequest" :file-list="fileList"
+                  @change="handleChange">
           <a-button>
             <upload-outlined></upload-outlined>
             上传
@@ -59,7 +59,7 @@ import {AxiosResponse} from 'axios';
 
       data = formData
       this.$refs.form.validate().then(() => {
-        this.$axios({
+        this.$http.request({
           method: "post",
           url: this.url,
           data: data,

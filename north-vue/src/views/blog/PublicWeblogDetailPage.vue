@@ -21,10 +21,6 @@
   padding: 5px;
 }
 
-.blog-other {
-  padding: 5px;
-}
-
 .weblog-box {
   background-color: #f0f2f5;
 }
@@ -43,7 +39,7 @@
     </div>
     <a-row style="min-height: 100%;">
       <a-col :span="24" class="blog-content">
-        <a-card class="weblog-box" style="min-height: 100%;" :bordered="false">
+        <a-card :bordered="false" class="weblog-box" style="min-height: 100%;">
           <blog-detail :item="data"></blog-detail>
         </a-card>
       </a-col>
@@ -52,9 +48,9 @@
 </template>
 <script lang="ts">
 import {defineComponent} from "vue";
-import WeblogApi from "@/api/WeblogApi";
 import {Ext, InputType, ModalField} from "@/components/base/FormModal.vue";
 import BlogDetail from "@/views/blog/BlogDetail.vue";
+import WeblogApi from "@/api/WeblogApi";
 
 
 export default defineComponent({
@@ -82,8 +78,8 @@ export default defineComponent({
         ModalField.init('博客标题', 'weblogTitile', InputType.String),
         ModalField.init('标题图片', 'weblogTitleImage', InputType.Image),
         ModalField.init('文章文本', 'weblogText', InputType.Textarea),
-        ModalField.init('类型', 'type', InputType.Select, <Ext>{selectParameter:{dictName:'博客类型'}}),
-        ModalField.init('状态', 'status', InputType.Select, <Ext>{selectParameter:{dictName:'博客状态'}} ),
+        ModalField.init('类型', 'type', InputType.Select, <Ext>{selectParameter: {dictName: '博客类型'}}),
+        ModalField.init('状态', 'status', InputType.Select, <Ext>{selectParameter: {dictName: '博客状态'}}),
       ],
       //fomr校验规则
       rules: {

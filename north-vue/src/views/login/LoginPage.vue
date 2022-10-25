@@ -27,7 +27,7 @@
         <!--          <a-button type="link" @click="changeBox">{{ changeTitle }}</a-button>-->
         <!--        </template>-->
 
-        <a-form v-if="isLogin" ref="loginForm" v-bind="layout" :model="loginData" :rules="loginRules" hideRequiredMark>
+        <a-form v-if="isLogin" ref="loginForm" :model="loginData" :rules="loginRules" hideRequiredMark v-bind="layout">
           <a-form-item label="用户名" name="username">
             <a-input v-model:value="loginData.username"/>
           </a-form-item>
@@ -44,7 +44,7 @@
           </a-form-item>
         </a-form>
 
-        <a-form v-else ref="registerForm" v-bind="layout" :model="registerData" :rules="registerRules" hideRequiredMark>
+        <a-form v-else ref="registerForm" :model="registerData" :rules="registerRules" hideRequiredMark v-bind="layout">
           <a-form-item label="用户名" name="username">
             <a-input v-model:value="registerData.username"/>
           </a-form-item>
@@ -79,10 +79,9 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {AxiosResponse} from "axios";
-import {NamePath} from "ant-design-vue/es/form/interface";
-import SysLoginApi, {LoginData, RegisterData} from "@/api/SysLoginApi";
-import BaseApi from "@/api/BaseApi";
 import GenSlider from "@/components/GenSlider.vue";
+import BaseApi from "@/api/BaseApi";
+import SysLoginApi, {LoginData, RegisterData} from "@/api/sys/SysLoginApi";
 
 const MD5 = require('md5.js')
 
@@ -148,7 +147,7 @@ export default defineComponent({
     },
     login() {
       const loginForm: any = this.$refs.loginForm
-      loginForm.validate().then((nameList: NamePath[]) => {
+      loginForm.validate().then(() => {
         let data: LoginData = <LoginData>this.loginData
         this.tmpPwd = data.password;
         data.password = new MD5().update(data.password).digest('hex');
@@ -176,9 +175,9 @@ export default defineComponent({
     },
     register() {
       const registerForm: any = this.$refs.registerForm
-      registerForm.validate().then((nameList: NamePath[]) => {
+      registerForm.validate().then(() => {
         let data: RegisterData = <RegisterData>this.registerData
-        SysLoginApi.register(data).then((res: AxiosResponse) => {
+        SysLoginApi.register(data).then(() => {
           this.isLogin = true
           this.$message.success("注册成功")
         })

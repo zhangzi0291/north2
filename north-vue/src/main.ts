@@ -4,6 +4,7 @@ import App from '@/App.vue'
 
 import router from './router'
 
+import store from '@/store';
 import Antd from '@/plugins/antd';
 import axios from '@/plugins/axios';
 import north from '@/plugins/north/north';
@@ -22,6 +23,7 @@ window.vm = app
 
 
 app.use(router)
+    .use(store)
     .use(Antd)
     .use(x6)
     .use(axios)

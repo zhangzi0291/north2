@@ -3,101 +3,105 @@
 </style>
 <template>
   <div>
-    <base-page :breadcrumbs="breadcrumbs">
-      <template #content>
-        <a-page-header sub-title="用户管理" title="用户">
-          <template #extra>
-            <!--            <template v-if="hasPermissionOr('用户列表导入')">-->
-            <a-button type="primary" @click="openImport()">导入</a-button>
-            <a-button type="primary" @click="openAdd()">新增</a-button>
-            <!--            </template>-->
-            <a-button type="primary" @click="load({current:1})">查询</a-button>
-          </template>
-        </a-page-header>
-        <a-row>
-          <b>检索条件</b>
-        </a-row>
-        <a-row>
-          <a-form layout="inline">
-            <a-form-item label="用户名">
-              <a-input v-model:value="search.nickname" allowClear/>
-            </a-form-item>
-
-          </a-form>
-        </a-row>
-        <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 500 }" :pagination="page" @change="tableChange"
-                 bordered style="width: 100%">
-          <template #expandedRowRender="{ record }">
-            <a-row>
-              <a-col :span="12">
-                手机号：{{ record.phone }}
-              </a-col>
-              <a-col :span="12">
-                邮箱：{{ record.email }}
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="12">
-                过期时间：{{ record.expiredTime }}
-              </a-col>
-              <a-col :span="12">
-                描述：{{ record.describe }}
-              </a-col>
-            </a-row>
-          </template>
-          <template #bodyCell="{ text, record, index, column }">
-            <template v-if="column.dataIndex === 'iconUrl'">
-              <a-avatar :src="record.iconUrl" size="large" style="background-color: #66ccff">
-                <template v-if="1==1">{{ record.nickname }}</template>
-              </a-avatar>
-            </template>
-            <template v-else-if="column.dataIndex === 'operation'">
-              <a-space>
-                <a-tooltip title="编辑">
-                  <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
-                    <template #icon>
-                      <EditOutlined/>
-                    </template>
-                  </a-button>
-                </a-tooltip>
-                <a-tooltip title="分配角色">
-                  <a-button shape="circle" type="dashed" @click="openMenuModal2(record )">
-                    <template #icon>
-                      <AlignLeftOutlined/>
-                    </template>
-                  </a-button>
-                </a-tooltip>
-                <a-tooltip :title="record.status == 0?'启用':'停用'">
-                  <a-button shape="circle" type="dashed" @click="changeUserStatus(record.id, record)">
-                    <template #icon>
-                      <CheckOutlined v-if="record.status==0"/>
-                      <CloseOutlined v-else/>
-                    </template>
-                  </a-button>
-                </a-tooltip>
-                <a-tooltip title="重置密码">
-                  <a-button shape="circle" type="dashed" @click="resetPassword(record.id )">
-                    <template #icon>
-                      <LockOutlined/>
-                    </template>
-                  </a-button>
-                </a-tooltip>
-                <a-tooltip title="删除">
-                  <a-button shape="circle" type="dashed" @click="del(record.id)">
-                    <template #icon>
-                      <DeleteOutlined/>
-                    </template>
-                  </a-button>
-                </a-tooltip>
-              </a-space>
-            </template>
-          </template>
-        </a-table>
+    <a-page-header sub-title="用户管理" title="用户">
+      <template #extra>
+        <!--            <template v-if="hasPermissionOr('用户列表导入')">-->
+        <a-button type="primary" @click="openImport()">导入</a-button>
+        <a-button type="primary" @click="openAdd()">新增</a-button>
+        <!--            </template>-->
+        <a-button type="primary" @click="load({current:1})">查询</a-button>
       </template>
+    </a-page-header>
+    <a-row>
+      <b>检索条件</b>
+    </a-row>
+    <a-row>
+      <a-form :layout="'inline'">
+        <a-form-item label="用户名">
+          <a-input v-model:value="search.nickname" allowClear/>
+        </a-form-item>
+
+      </a-form>
+    </a-row>
+    <a-table :columns="columns"
+             :data-source="data"
+             :loading="loading"
+             :pagination="page"
+             :rowKey="(record)=>record.id"
+             :scroll="tableScroll"
+             bordered
+             style="width: 100%" @change="tableChange">
+      <template #expandedRowRender="{ record }">
+        <a-row>
+          <a-col :span="12">
+            手机号：{{ record.phone }}
+          </a-col>
+          <a-col :span="12">
+            邮箱：{{ record.email }}
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            过期时间：{{ record.expiredTime }}
+          </a-col>
+          <a-col :span="12">
+            描述：{{ record.describe }}
+          </a-col>
+        </a-row>
+      </template>
+      <template #bodyCell="{ text, record, index, column }">
+        <template v-if="column.dataIndex === 'status'">
+          {{ getSelectLabel(status, record.status) }}
+        </template>
+        <template v-if="column.dataIndex === 'iconUrl'">
+          <a-avatar :src="record.iconUrl" size="large" style="background-color: #66ccff">
+            <template v-if="1==1">{{ record.nickname }}</template>
+          </a-avatar>
+        </template>
+        <template v-else-if="column.dataIndex === 'operation'">
+          <a-space>
+            <a-tooltip title="编辑">
+              <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
+                <template #icon>
+                  <EditOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="分配角色">
+              <a-button shape="circle" type="dashed" @click="openMenuModal2(record )">
+                <template #icon>
+                  <AlignLeftOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip :title="record.status == 0?'启用':'停用'">
+              <a-button shape="circle" type="dashed" @click="changeUserStatus(record.id, record)">
+                <template #icon>
+                  <CheckOutlined v-if="record.status==0"/>
+                  <CloseOutlined v-else/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="重置密码">
+              <a-button shape="circle" type="dashed" @click="resetPassword(record.id )">
+                <template #icon>
+                  <LockOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="删除">
+              <a-button shape="circle" type="dashed" @click="del(record.id)">
+                <template #icon>
+                  <DeleteOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+          </a-space>
+        </template>
+      </template>
+    </a-table>
 
 
-    </base-page>
     <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
                 :okCallback="load" :rules="rules"
                 :title="'用户'">
@@ -118,12 +122,10 @@ import FormModal, {Ext, InputType, ModalField, SelectField} from "@/components/b
 import ImportModal from "@/components/base/ImportModal.vue";
 import MenuModal from "@/views/sys/sysuser/MenuModal.vue";
 import ChangePassword from "@/views/home/ChangePassword.vue";
-import SysUserApi from "@/api/SysUserApi";
-import {createVNode, defineComponent, reactive, ref} from "vue";
-import Qs from "qs";
-import {AxiosResponse} from "axios";
-
-let api = new SysUserApi();
+import {createVNode, defineComponent, onMounted, ref} from "vue";
+import {PageInfo} from "@/base/Page";
+import SysUserApi from "@/api/sys/SysUserApi";
+import SysDictApi from "@/api/sys/SysDictApi";
 
 export default defineComponent({
   name: 'SysUser',
@@ -156,16 +158,21 @@ export default defineComponent({
         // {title: '过期时间', key: 'expiredTime', dataIndex: 'expiredTime', width: "180px"},
         {title: '最后登录', key: 'lastLoginTime', dataIndex: 'lastLoginTime', width: "180px", sorter: true},
         {title: '头像', key: 'iconUrl', dataIndex: 'iconUrl'},
-        {title: '操作', dataIndex: 'operation',fixed: 'right', width: "210px"},
+        {title: '操作', dataIndex: 'operation', fixed: 'right', width: "210px"},
       ],
       //form中的字段
       formColumns: [
         ModalField.init('登录名', 'username', InputType.String),
         ModalField.init('用户名', 'nickname', InputType.String),
-        ModalField.init('密码', 'password', InputType.Password, <Ext>{edit:false} ),
+        ModalField.init('密码', 'password', InputType.Password, <Ext>{edit: false}),
         ModalField.init('手机号', 'phone', InputType.String),
         ModalField.init('Email', 'email', InputType.String),
-        ModalField.init('状态', 'status', InputType.Select, <Ext>{ selectParameter:{array:[SelectField.init("启用", 1), SelectField.init("禁用", 0)],dictName:"启用状态"}} ),
+        ModalField.init('状态', 'status', InputType.Select, <Ext>{
+          selectParameter: {
+            array: [SelectField.init("启用", 1), SelectField.init("禁用", 0)],
+            dictName: "启用状态"
+          }
+        }),
         ModalField.init('过期时间', 'expiredTime', InputType.DateTime),
         ModalField.init('ICON', 'iconUrl', InputType.Image),
         ModalField.init('描述', 'describe', InputType.Textarea),
@@ -182,9 +189,9 @@ export default defineComponent({
               }
               let originalValue = (<any>this.check).username;
               SysUserApi.checkUseruame(value, originalValue).then(res => {
-                if (res.data.code == '40001') {
+                if (res.data.code == 40001) {
                   callback(res.data.msg)
-                } else if (res.data.code == '200') {
+                } else if (res.data.code == 200) {
                   callback()
                 } else {
                   callback("错误")
@@ -202,9 +209,9 @@ export default defineComponent({
               }
               let originalValue = (<any>this.check).nickname;
               SysUserApi.checkNickname(value, originalValue).then(res => {
-                if (res.data.code == '40001') {
+                if (res.data.code == 40001) {
                   callback(res.data.msg)
-                } else if (res.data.code == '200') {
+                } else if (res.data.code == 200) {
                   callback()
                 } else {
                   callback("错误")
@@ -268,12 +275,7 @@ export default defineComponent({
       form.validate()
     },
     menuModalOkCallback(data: any) {
-      console.log(data)
-      this.$axios({
-        method: "post",
-        url: this.url.edit,
-        data: Qs.stringify((data), {indices: false})
-      }).then((res: AxiosResponse) => {
+      SysUserApi.editWithResource(data).then(() => {
         this.$message.success("操作成功")
       });
     },
@@ -287,7 +289,7 @@ export default defineComponent({
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定重置密码吗？',
         onOk: () => {
-          return SysUserApi.resetPassword(id).then(res => {
+          return SysUserApi.resetPassword(id).then(() => {
             this.$message.success("操作成功")
           })
         },
@@ -300,7 +302,7 @@ export default defineComponent({
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定' + text + '用户吗？',
         onOk: () => {
-          return SysUserApi.changeUserStatus(id).then(res => {
+          return SysUserApi.changeUserStatus(id).then(() => {
             this.$message.success("操作成功")
             const status = record.status == 0 ? 1 : 0;
             record.status = status
@@ -331,40 +333,16 @@ export default defineComponent({
     this.load()
   },
   setup() {
-    //表格加载状态
-    let loading = ref(false)
-    //分页
-    let page = reactive({current: 1, total: 0})
-    //排序
-    let sort = reactive({field: null, order: null})
-    //查询数据
-    let search = reactive({})
-    //表格数据
-    let data = ref([])
+    const tablePageOption = PageInfo(SysUserApi)
 
-    const load = function (param?: any) {
-      loading.value = true
-      if (!!param && !!param.current) {
-        page.current = param.current
-      }
-      SysUserApi.list(search, page, sort).then(res => {
-        data.value.length = 0
-        data.value = data.value.concat(res.data.data.records)
-        page.current = res.data.data.current
-        page.total = res.data.data.total
-        loading.value = false
-      })
-    }
-    const tableChange = function (pageParam: any, filters: any, sorter: any) {
-      page.current = pageParam.current
-      page.total = pageParam.total
-      sort.field = sorter.field
-      sort.order = sorter.order
-      load()
-    }
-    const tablePageOption = {loading, data, page, search, load, tableChange}
+    let status = ref([])
+    onMounted(async () => {
+      const res = await SysDictApi.getSelect('启用状态')
+      status.value = res.data.data
+    });
 
     return {
+      status,
       ...tablePageOption
     }
   }

@@ -19,6 +19,10 @@ public enum DeviceTypeEnum {
      * py小工具
      */
     PY_SMALL_TOOL("pySmallTool"),
+    /**
+     * py小工具
+     */
+    ELECTRON_TOOL("electronTool"),
     ;
 
     public String value;

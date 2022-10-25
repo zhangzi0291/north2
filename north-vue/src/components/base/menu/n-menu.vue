@@ -8,10 +8,10 @@
     </template>
     <template v-for="child in menu.child">
       <template v-if="child.child || !child.data.resourceUrl">
-        <n-menu :menu="child" :key="child.id"/>
+        <n-menu :key="child.id" :menu="child"/>
       </template>
       <template v-else>
-        <a-menu-item :key="child.data.resourceUrl" :title="child.data.resourceType+''">
+        <a-menu-item :key="child.data.resourceUrl" :type="child.data.resourceType+''">
           <component :is="$icons[child.data.resourceIcon]"/>
           <span>{{ child.data.resourceName }}</span>
         </a-menu-item>

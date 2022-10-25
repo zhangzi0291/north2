@@ -1,7 +1,7 @@
 package com.north.genealogy.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.north.base.LogicDeleteBaseModel;
+import com.north.base.DeleteLogicBaseModel;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @since 2021-04-14
  */
 @TableName("genealogy_person")
-public class GenealogyPerson extends LogicDeleteBaseModel {
+public class GenealogyPerson extends DeleteLogicBaseModel {
 
     private static final long serialVersionUID = 1L;
 

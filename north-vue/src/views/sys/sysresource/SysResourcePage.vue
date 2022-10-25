@@ -3,60 +3,74 @@
 </style>
 <template>
   <div>
-    <base-page :breadcrumbs="breadcrumbs">
-      <template #content>
-        <a-page-header sub-title="菜单按钮配置" title="资源树">
-          <template #extra>
-            <a-button type="primary" @click="load()">刷新</a-button>
-            <a-button type="primary" @click="openAdd()">新增</a-button>
-          </template>
-        </a-page-header>
-        <a-table :childrenColumnName="'child'" :columns="columns" :data-source="data" :defaultExpandAllRows="true"
-                 :loading="loading"
-                 :pagination="false"
-                 :rowKey="(record)=>record.id" :scroll="{ x: 900, y: 500 }" bordered>
-          <template #icon="{ text }">
-            <span>
-               <component :is="$icons[text]"/>
-            </span>
-          </template>
-          <template #operation="{ record }">
-            <a-space>
-              <a-tooltip title="添加子节点">
-                <a-button shape="circle" type="dashed" @click="openAdd(record.id,record)">
-                  <template #icon>
-                    <PlusOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="编辑">
-                <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
-                  <template #icon>
-                    <EditOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="删除">
-                <a-button shape="circle" type="dashed" @click="del(record.id)">
-                  <template #icon>
-                    <DeleteOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-            </a-space>
-          </template>
-        </a-table>
-
+    <a-page-header sub-title="菜单按钮配置" title="资源树">
+      <template #extra>
+        <a-button type="primary" @click="load()">刷新</a-button>
+        <a-button type="primary" @click="openAdd()">新增</a-button>
       </template>
+    </a-page-header>
+    <a-table :childrenColumnName="'child'"
+             :columns="columns"
+             :data-source="data"
+             :defaultExpandAllRows="true"
+             :loading="loading"
+             :pagination="false"
+             :rowKey="(record)=>record.id" :scroll="tableScroll" bordered>
+      <template #bodyCell="{ text, record, index, column }">
+        <template v-if="column.dataIndex == 'data.resourceName'">
+          {{ record.data.resourceName }}
+        </template>
+        <template v-if="column.dataIndex === 'data.resourceIcon'">
+          <span>
+               <component :is="record.data.resourceIcon"/>
+            </span>
+        </template>
+        <template v-if="column.dataIndex === 'data.resourceType'">
+          <span>
+            {{ getSelectLabel(resourceTypes, record.data.resourceType) }}
+          </span>
+        </template>
+        <template v-if="column.dataIndex == 'data.resourceUrl'">
+          {{ record.data.resourceUrl }}
+        </template>
+        <template v-if="column.dataIndex == 'data.describe'">
+          {{ record.data.describe }}
+        </template>
+        <template v-if="column.dataIndex === 'operation'">
+          <a-space>
+            <a-tooltip title="添加子节点">
+              <a-button shape="circle" type="dashed" @click="openAdd(record.id,record)">
+                <template #icon>
+                  <PlusOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="编辑">
+              <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
+                <template #icon>
+                  <EditOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="删除">
+              <a-button shape="circle" type="dashed" @click="del(record.id)">
+                <template #icon>
+                  <DeleteOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+          </a-space>
+        </template>
+      </template>
+    </a-table>
 
-    </base-page>
 
     <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
-                :okCallback="load" :init="formInit" :rules="rules"
+                :init="formInit" :okCallback="load" :rules="rules"
                 :title="'资源'">
       <template #parentId="{data}">
         <a-select v-model:value="data['parentId']" @click="openMenuModal(data)">
-          <a-select-option :value="parent.id">
+          <a-select-option v-model:value="parent.id">
             {{ parent.resourceName }}
           </a-select-option>
         </a-select>
@@ -68,25 +82,20 @@
 </template>
 <script lang="ts">
 
-import {Options, Vue} from 'vue-class-component';
-import {createVNode} from 'vue';
+import {createVNode, defineComponent, onMounted, ref} from 'vue';
 
-import SysResourceApi from '@/api/SysResourceApi'
 import FormModal, {Ext, InputType, ModalField, SelectField} from '@/components/base/FormModal.vue'
 import MenuModal from "@/views/sys/sysresource/MenuModal.vue";
 import {AxiosResponse} from "axios";
-import SysDictApi from "@/api/SysDictApi";
+import SysDictApi from "@/api/sys/SysDictApi";
+import SysResourceApi from "@/api/sys/SysResourceApi";
 
-@Options({
+export default defineComponent({
   name: 'SysResource',
   components: {
     FormModal, MenuModal
   },
   data() {
-    let resourceTypes = [];
-    SysDictApi.getSelect('资源类型').then((res: AxiosResponse) => {
-      resourceTypes = res.data.data
-    });
     return {
       //表格加载状态
       loading: false,
@@ -107,28 +116,22 @@ import SysDictApi from "@/api/SysDictApi";
       //表格字段
       columns: [
         {title: '资源名称', key: 'data.resourceName', dataIndex: 'data.resourceName',},
-        {title: '资源ICON', key: 'data.resourceIcon', dataIndex: 'data.resourceIcon', slots: {customRender: "icon"},},
-        {
-          title: '资源类型', key: 'data.resourceType', dataIndex: 'data.resourceType',
-          customRender: function (record: any) {
-            for (let resourceType of resourceTypes) {
-              let type = (<any>resourceType)
-              if (type.value == record.record.data.resourceType) {
-                return type.lable
-              }
-            }
-            return record.record.data.resourceType == 1 ? "菜单" : "资源"
-          }
-        },
+        {title: '资源ICON', key: 'data.resourceIcon', dataIndex: 'data.resourceIcon'},
+        {title: '资源类型', key: 'data.resourceType', dataIndex: 'data.resourceType',},
         {title: '资源路径', key: 'data.resourceUrl', dataIndex: 'data.resourceUrl',},
         {title: '描述', key: 'data.describe', dataIndex: 'data.describe',},
-        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "150px",},
+        {title: '操作', dataIndex: 'operation', fixed: 'right', width: "150px",},
       ],
       //form中的字段
       formColumns: [
         ModalField.init('资源名称', 'resourceName', InputType.String),
         ModalField.init('资源ICON', 'resourceIcon', InputType.String),
-        ModalField.init('资源类型', 'resourceType', InputType.Select,<Ext>{selectParameter:{array:[new SelectField("菜单", "1"), new SelectField("资源", "2")],dictName:'资源类型'}}),
+        ModalField.init('资源类型', 'resourceType', InputType.Select, <Ext>{
+          selectParameter: {
+            array: [new SelectField("菜单", "1"), new SelectField("资源", "2")],
+            dictName: '资源类型'
+          }
+        }),
         ModalField.init('资源路径', 'resourceUrl', InputType.String),
         ModalField.init('父资源ID', 'parentId', InputType.Slot),
         ModalField.init('排序', 'resourceOrder', InputType.Number),
@@ -145,9 +148,9 @@ import SysDictApi from "@/api/SysDictApi";
               }
               let originalValue = (<any>this.check).resourceName;
               SysResourceApi.checkResourceName(value, originalValue).then(res => {
-                if (res.data.code == '40001') {
+                if (res.data.code == 40001) {
                   callback(res.data.msg)
-                } else if (res.data.code == '200') {
+                } else if (res.data.code == 200) {
                   callback()
                 } else {
                   callback("错误")
@@ -162,7 +165,6 @@ import SysDictApi from "@/api/SysDictApi";
       check: {
         resourceName: ""
       },
-      resourceTypes: []
     }
   },
   methods: {
@@ -173,8 +175,8 @@ import SysDictApi from "@/api/SysDictApi";
         this.loading = false
       })
     },
-    async openAdd(parentId: string, data: any) {
-      await this.$refs.form.open({parentId: parentId})
+    openAdd(parentId: string, data: any) {
+      this.$refs.form.open({parentId: parentId})
     },
     async openEdit(id: string) {
       await this.$refs.form.open({id: id})
@@ -187,10 +189,9 @@ import SysDictApi from "@/api/SysDictApi";
     },
     formInit() {
       let data = this.$refs.form.getData()
-      if (!!data.parentId && data.parentId != -1) {
+      if (data.parentId && data.parentId != -1) {
         SysResourceApi.getResource(data.parentId).then((res: AxiosResponse) => {
           let d = res.data.data;
-          console.log(d)
           this.parent = {
             resourceName: d.resourceName,
             id: d.id,
@@ -224,10 +225,15 @@ import SysDictApi from "@/api/SysDictApi";
   mounted() {
   },
   setup() {
+    let resourceTypes = ref([])
+    onMounted(async () => {
+      const res = await SysDictApi.getSelect('资源类型')
+      resourceTypes.value = res.data.data
+    });
+
+
+    return {resourceTypes}
   }
 })
-
-export default class SysResource extends Vue {
-}
 
 </script>

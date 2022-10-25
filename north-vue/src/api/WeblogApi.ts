@@ -1,73 +1,39 @@
 import {AxiosResponse} from "axios"
-import Qs from "qs";
-
-const app = window.vm
-
-const axios = app.config.globalProperties.$axios
+import HttpClient, {RespData} from "@/plugins/axios/HttpClient";
+import {BaseCrulApi} from "@/api/BaseApi";
 
 const url = {
     list: "/weblog/list",
-    publicList: "/weblog/publicList",
     all: "/weblog/all",
     get: "/weblog/get",
     add: "/weblog/addWeblog",
     del: "/weblog/del",
+    publicList: "/weblog/publicList",
 
 }
 
 
-export default class WeblogApi {
+class WeblogApi extends BaseCrulApi {
 
-    public static list(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
-        return axios({
-            method: 'get',
-            url: url.list,
-            params: Object.assign(data, page, sort)
-        })
+    constructor() {
+        super({
+            list: "/weblog/list",
+            all: "/weblog/all",
+            get: "/weblog/get",
+            add: "/weblog/addWeblog",
+            del: "/weblog/del",
+        });
     }
 
-    public static publicList(data: any, page?: any, sort?: any): Promise<AxiosResponse> {
-        return axios({
+    public publicList(data: any, page?: any, sort?: any): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'get',
             url: url.publicList,
             params: Object.assign(data, page, sort)
         })
     }
 
-    public static get(id: string): Promise<AxiosResponse> {
-        return axios({
-            method: 'get',
-            url: url.get,
-            params: {
-                id: id
-            }
-        })
-    }
-
-    public static getAll(): Promise<AxiosResponse> {
-        return axios({
-            method: 'get',
-            url: url.all,
-        })
-    }
-
-    public static del(ids: Array<string>): Promise<AxiosResponse> {
-        return axios({
-            method: 'post',
-            url: url.del,
-            data: Qs.stringify({
-                ids: ids
-            }, {indices: false})
-        })
-    }
-
-    public static add(data: any): Promise<AxiosResponse> {
-        return axios({
-            method: 'post',
-            url: url.add,
-            data: data
-        })
-    }
-
-
 }
+
+const api = new WeblogApi()
+export default api

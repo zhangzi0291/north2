@@ -1,4 +1,5 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
+import EtApp from "@/views/et/app/EtApp.vue";
 
 // const About = () => import(/* webpackChunkName: "About" */ '@/views/About.vue')
 const Index = () => import(/* webpackChunkName: "Index" */ '@/views/Index.vue')
@@ -33,6 +34,12 @@ const pyRegister = () => import(/* webpackChunkName: "pyRegister" */ '@/views/py
 const pyChangePwd = () => import(/* webpackChunkName: "pyChangePwd" */ '@/views/pytool/ChangePwdPage.vue')
 const pyApp = () => import(/* webpackChunkName: "pyApp" */ '@/views/pytool/app/AppPage.vue')
 const pyHomePage = () => import(/* webpackChunkName: "pyHomePage" */ '@/views/pytool/homepage/HomePage.vue')
+/**
+ * et工具
+ */
+const etApp = () => import(/* webpackChunkName: "pyRegister" */ '@/views/et/app/EtApp.vue')
+const etRole = () => import(/* webpackChunkName: "pyRegister" */ '@/views/et/role/EtRole.vue')
+const etUser = () => import(/* webpackChunkName: "pyRegister" */ '@/views/et/user/EtUser.vue')
 
 /**
  * 博客后台
@@ -142,6 +149,21 @@ const routes = [
                 path: "/blog/updateWeblog",
                 name: "编辑博客",
                 component: updateWeblog
+            },
+            {
+                path: "/et/app",
+                name: "etApp",
+                component: etApp
+            },
+            {
+                path: "/et/role",
+                name: "etRole",
+                component: etRole
+            },
+            {
+                path: "/et/userrole",
+                name: "etUser",
+                component: etUser
             }
 
         ]

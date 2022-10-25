@@ -24,7 +24,7 @@
     <a-layout-content class="content">
       <a-card :title="'登录'" style="width: 450px">
 
-        <a-form ref="loginForm" v-bind="layout" :model="loginData" :rules="loginRules" hideRequiredMark>
+        <a-form ref="loginForm" :model="loginData" :rules="loginRules" hideRequiredMark v-bind="layout">
           <a-form-item label="用户名" name="username">
             <a-input v-model:value="loginData.username"/>
           </a-form-item>
@@ -53,11 +53,10 @@
 </template>
 <script lang="ts">
 import {AxiosResponse} from "axios";
-import {NamePath} from "ant-design-vue/es/form/interface";
-import SysLoginApi, {LoginData} from "@/api/SysLoginApi";
 import {defineComponent} from "vue";
-import BaseApi from "@/api/BaseApi";
 import GenSlider from "@/components/GenSlider.vue";
+import BaseApi from "@/api/BaseApi";
+import SysLoginApi, {LoginData} from "@/api/sys/SysLoginApi";
 
 const MD5 = require('md5.js')
 export default defineComponent({
@@ -106,7 +105,7 @@ export default defineComponent({
     login() {
       const loginForm: any = this.$refs.loginForm
 
-      loginForm.validate().then((nameList: NamePath[]) => {
+      loginForm.validate().then(() => {
         this.tmpPwd = this.loginData.password;
         this.loginData.password = new MD5().update(this.loginData.password).digest('hex');
         let data: LoginData = this.loginData
@@ -127,8 +126,7 @@ export default defineComponent({
           BaseApi.setPermissionsByStorage(res.data.data.permissions)
           BaseApi.setRolesByStorage(res.data.data.roles)
 
-          let href = res.data.data.redirect
-          window.location.href = href
+          window.location.href = res.data.data.redirect
         }).catch(() => {
           this.loginData.password = this.tmpPwd;
         });

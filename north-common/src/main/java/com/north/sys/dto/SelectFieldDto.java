@@ -9,16 +9,16 @@ import java.io.Serializable;
  */
 public class SelectFieldDto implements Serializable {
 
-    private String lable;
+    private String label;
 
     private Object value;
 
-    public String getLable() {
-        return lable;
+    public String getLabel() {
+        return label;
     }
 
-    public void setLable(String lable) {
-        this.lable = lable;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Object getValue() {
@@ -32,7 +32,7 @@ public class SelectFieldDto implements Serializable {
     @Override
     public String toString() {
         return "SelectFieldDto{" +
-                "lable='" + lable + '\'' +
+                "label='" + label + '\'' +
                 ", value=" + value +
                 '}';
     }

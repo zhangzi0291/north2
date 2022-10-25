@@ -6,7 +6,7 @@
 }
 </style>
 <template>
-  <a-card size="small" class="contextMenu" :style="{position: 'absolute',left: x+'px',top: y+'px'}">
+  <a-card :style="{position: 'absolute',left: x+'px',top: y+'px'}" class="contextMenu" size="small">
     <template v-if="item.type!='edge'">
       <a-row>
         <a-button block @click="callBack('setConfig')">配置参数</a-button>

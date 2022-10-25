@@ -3,80 +3,73 @@
 </style>
 <template>
   <a-modal :onCancel="cancel" :onOk="ok" :title="title" :visible="visible">
-    <a-form ref="form" v-bind="layout" :model="data" :rules="rules">
-      <template v-for="item in columns" :key="item.key+item.title">
+    <a-form ref="form" :model="data" :rules="rules" v-bind="layout">
+      <a-form-item v-for="item in columnsComputed" :key="item.key+item.title" :label="item.title" :name="item.key">
         <!--  插槽  -->
-        <a-form-item v-if="canEdit(item.key) && item.type == 'Slot'" :label="item.title" :name="item.key">
+        <template v-if="item.type == 'Slot'">
           <slot :data="data" :name="item.slot"/>
-        </a-form-item>
+        </template>
         <!--  字符串  -->
-        <a-form-item v-else-if="canEdit(item.key) && item.type == 'String'" :label="item.title" :name="item.key">
-          <a-input v-model:value="data[item.key]" allowClear/>
-        </a-form-item>
+        <template v-else-if="item.type == 'String'" :label="item.title" :name="item.key">
+          <a-input v-model:value.sync="data[item.key]" allowClear/>
+        </template>
         <!--  文本框  -->
-        <a-form-item v-else-if="canEdit(item.key) && item.type == 'Textarea'" :label="item.title" :name="item.key">
+        <template v-else-if="item.type == 'Textarea'" :label="item.title" :name="item.key">
           <a-textarea v-model:value="data[item.key]" allowClear/>
-        </a-form-item>
+        </template>
         <!--  密码  -->
-        <a-form-item v-else-if="canEdit(item.key) && item.type == 'Password'" :label="item.title" :name="item.key">
+        <template v-else-if="item.type == 'Password'" :label="item.title" :name="item.key">
           <a-input-password v-model:value="data[item.key]"/>
-        </a-form-item>
+        </template>
         <!--  数字  -->
-        <a-form-item v-else-if="canEdit(item.key) && item.type == 'Number'" :label="item.title" :name="item.key">
+        <template v-else-if="item.type == 'Number'" :label="item.title" :name="item.key">
           <a-input-number v-model:value="data[item.key]">
             {{ data[item.key] }}
           </a-input-number>
-        </a-form-item>
+        </template>
         <!--  下拉框  -->
-        <a-form-item v-else-if="canEdit(item.key) && item.type == 'Select'" :label="item.title" :name="item.key">
+        <template v-else-if="item.type == 'Select'" :label="item.title" :name="item.key">
           <a-select v-model:value="data[item.key]">
             <template v-for="select in item.array">
-              <a-select-option :value="select.value">
+              <a-select-option v-model:value="select.value">
                 {{ select.label }}
               </a-select-option>
             </template>
           </a-select>
-        </a-form-item>
+        </template>
         <!--  日期时间  -->
-        <a-form-item v-else-if="canEdit(item.key) && item.type == 'DateTime'" :label="item.title" :name="item.key">
-          <a-date-picker v-model:value="data[item.key]" valueFormat="YYYY-MM-DD HH:mm:ss" show-time  />
-        </a-form-item>
+        <template v-else-if="item.type == 'DateTime'" :label="item.title" :name="item.key">
+          <a-date-picker v-model:value="data[item.key]" show-time valueFormat="YYYY-MM-DD HH:mm:ss"/>
+        </template>
         <!--  日期  -->
-        <a-form-item v-else-if="canEdit(item.key) && item.type == 'Date'" :label="item.title" :name="item.key">
-          <a-date-picker v-model:value="data[item.key]" />
-        </a-form-item>
+        <template v-else-if="item.type == 'Date'" :label="item.title" :name="item.key">
+          <a-date-picker v-model:value="data[item.key]"/>
+        </template>
         <!--  上传文件  -->
-        <a-form-item v-else-if="canEdit(item.key) && item.type == 'File'" :label="item.title" :name="item.key">
-          <a-upload :before-upload="beforeUpload" :file-list="fileList[item.key]" @change="handleChange($event, item)"
-                    :customRequest="customRequest">
-            <a-button v-if="fileList[item.key].length  < item.ext.fileNum">
-              <upload-outlined></upload-outlined>
-              上传
-            </a-button>
-          </a-upload>
-        </a-form-item>
+        <template v-else-if="item.type == 'File'" :label="item.title" :name="item.key">
+          <upload-file :init-file-list="fileList[item.key]" @fileChange="fileChange($event,item.key)"></upload-file>
+        </template>
         <!--  上传图片 -->
-        <a-form-item v-else-if="canEdit(item.key) && item.type == 'Image'" :label="item.title" :name="item.key">
-          <upload-image @imageChange="imageChange($event,item.key)" :init-file-list="fileList[item.key]"></upload-image>
-        </a-form-item>
+        <template v-else-if="item.type == 'Image'" :label="item.title" :name="item.key">
+          <upload-image :init-file-list="fileList[item.key]" @imageChange="imageChange($event,item.key)"></upload-image>
+        </template>
 
         <template v-else>
 
         </template>
 
-      </template>
+      </a-form-item>
     </a-form>
   </a-modal>
 </template>
 <script lang="ts">
-
-import {Options, Vue} from 'vue-class-component';
 import {AxiosResponse} from 'axios';
-import { Dayjs } from 'dayjs';
-import SysDictApi from "@/api/SysDictApi";
+import {Dayjs} from 'dayjs';
 import UploadImage from "@/components/UploadImage.vue";
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
 import {defineComponent} from "vue";
+import SysDictApi from '@/api/sys/SysDictApi';
+import UploadFile from "@/components/UploadFile.vue";
 
 export class SelectField {
 
@@ -89,8 +82,7 @@ export class SelectField {
   }
 
   public static init(label: string, value: any) {
-    const selectField = new SelectField(label,value)
-    return selectField
+    return new SelectField(label, value)
   }
 
 }
@@ -116,9 +108,9 @@ export enum InputType {
   Slot = "Slot",
 }
 
-class SelectParameter{
+class SelectParameter {
   array: SelectField[] = [];
-  dictName:string;
+  dictName: string;
 }
 
 export class ModalField {
@@ -132,6 +124,33 @@ export class ModalField {
   public array: Array<Object> | undefined;
   public url: string | undefined;
   public ext: Ext = new Ext();
+
+  public static init(title: string, key: string, type: InputType, ext?: Ext) {
+    const modalField = new ModalField()
+    modalField.key = key;
+    modalField.title = title;
+    modalField.type = type;
+    modalField.slot = key;
+    if (ext == undefined) {
+      ext = new Ext();
+    }
+    if (ext.edit != undefined) {
+      modalField.edit = ext.edit;
+    }
+    if (ext.edit != undefined) {
+      modalField.edit = ext.edit;
+    }
+    if (ext.selectParameter != undefined) {
+      if (ext.selectParameter.array) {
+        modalField.array = ext.selectParameter.array
+      }
+      if (ext.selectParameter.dictName) {
+        modalField.getSelect(ext.selectParameter.dictName);
+      }
+    }
+
+    return modalField
+  }
 
   public init(title: string, key: string, type: InputType, edit?: Boolean, ext?: Ext) {
     this.key = key;
@@ -147,46 +166,6 @@ export class ModalField {
     return this
   }
 
-  public static init(title: string, key: string, type: InputType, ext?: Ext) {
-    const modalField = new ModalField()
-    modalField.key = key;
-    modalField.title = title;
-    modalField.type = type;
-    modalField.slot = key;
-    console.log(ext == undefined)
-    if (ext == undefined) {
-      ext = new Ext();
-    }
-    if (ext.edit != undefined) {
-      modalField.edit = ext.edit;
-    }
-    if (ext.edit != undefined) {
-      modalField.edit = ext.edit;
-    }
-    if (ext.selectParameter != undefined) {
-      if(ext.selectParameter.array){
-        modalField.array = ext.selectParameter.array
-      }
-      if(ext.selectParameter.dictName){
-        modalField.getSelect(ext.selectParameter.dictName);
-      }
-    }
-
-    return modalField
-  }
-
-  public initSelect(title: string, key: string, ext: Ext, array: SelectField[] | undefined, dictName?: string) {
-    this.key = key;
-    this.title = title;
-    this.type = InputType.Select;
-    this.array = array;
-    this.ext = ext;
-    if (dictName) {
-      this.getSelect(dictName);
-    }
-    return this
-  }
-
   public getSelect(dictName: string) {
     SysDictApi.getSelect(dictName).then((res: AxiosResponse) => {
       this.array = res.data.data
@@ -196,10 +175,9 @@ export class ModalField {
 }
 
 
-
 export default defineComponent({
   name: 'FormModal',
-  components: {UploadImage},
+  components: {UploadImage, UploadFile},
   data() {
     return {
       url: "",
@@ -207,10 +185,16 @@ export default defineComponent({
       data: {},
       fileList: {},
       img: "",
+      isEdit: false,
       layout: {
         labelCol: {span: 8},
         wrapperCol: {span: 14},
       },
+    }
+  },
+  computed: {
+    columnsComputed: function () {
+      return this.columns.filter(column=> !this.data.id || column.edit )
     }
   },
   props: {
@@ -263,7 +247,7 @@ export default defineComponent({
       }
       for (let column of this.columns) {
         if (column.type == "File" || column.type == "Image") {
-          if (this.fileList[column.key].length > 0) {
+          if (this.fileList[column.key] != null && this.fileList[column.key].length > 0) {
             this.fileList[column.key].forEach((file: any) => {
               formData.append(column.ext.name, file.originFileObj as any);
             });
@@ -273,7 +257,7 @@ export default defineComponent({
 
       data = formData
       this.$refs.form.validate().then(() => {
-        this.$axios({
+        this.$http.request({
           method: "post",
           url: this.url,
           data: data
@@ -294,7 +278,7 @@ export default defineComponent({
       if (data == undefined) {
         data = {}
       }
-      if (!!data.id) {
+      if (data.id) {
         await this.list(data.id)
         for (let columnsKey in this.columns) {
           if (this.columns[columnsKey].type == 'Image') {
@@ -304,14 +288,16 @@ export default defineComponent({
           }
         }
         this.url = this.editUrl
+        this.isEdit = true
       } else {
         this.url = this.addUrl
         this.data = data
+        this.isEdit = false
       }
       this.init()
     },
     async list(id: String) {
-      await this.$axios({
+      await this.$http.request({
         method: "get",
         url: this.getUrl,
         params: {
@@ -321,7 +307,7 @@ export default defineComponent({
         this.data = res.data.data
         for (let column of this.columns) {
           if (column.type == "File" || column.type == "Image") {
-            if (!!this.data[column.key]) {
+            if (this.data[column.key]) {
               this.fileList[column.key] = [{url: this.data[column.key]}]
             }
           }
@@ -353,7 +339,10 @@ export default defineComponent({
     imageChange(fileList, key) {
       this.fileList[key] = fileList
     },
-    validate(){
+    fileChange(fileList, key) {
+      this.fileList[key] = fileList
+    },
+    validate() {
       this.$refs.form.validate()
     }
   },

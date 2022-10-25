@@ -24,8 +24,10 @@ public class SpringWebSocketHandlerInterceptor extends HttpSessionHandshakeInter
         if (StpUtil.isLogin()) {
             WebSocketUserInfo userInfo = getUserinfo(StpUtil.getTokenValue());
             attributes.put("userInfo", userInfo);
+            return true;
         }
-        return super.beforeHandshake(request, response, wsHandler, attributes);
+        return false;
+//        return super.beforeHandshake(request, response, wsHandler, attributes);
 
     }
 

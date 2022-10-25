@@ -19,9 +19,11 @@ public class Constant {
 
     public static final String SATOKEN_REDIS_ROLE_KEY = "north.satoken.role.";
 
-    public static final String SYS_MODULE_NAME = "sys";
+    public class IMAGE_MODULE{
+        public static final String SYS_MODULE_NAME = "sys";
 
-    public static final String GENEALOGY_MODULE_NAME = "genealogy";
+        public static final String GENEALOGY_MODULE_NAME = "genealogy";
+    }
 
     public static String CONTEXT_PATH;
 

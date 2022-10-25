@@ -4,21 +4,20 @@
 <template>
   <div style="width:100%;height:100%">
     <div ref="chart" style="width:100%;height:100%"></div>
-<!--    <show-person ref="showPerson" :okCallback="okCallback"></show-person>-->
+    <!--    <show-person ref="showPerson" :okCallback="okCallback"></show-person>-->
   </div>
 
 </template>
 
 <script lang="ts">
-import GenealogyApi from '@/api/GenealogyApi';
 import {defineComponent} from "vue";
+import GenealogyApi from "@/api/GenealogyApi";
 
 const echarts = require('echarts');
 
 export default defineComponent({
   name: "GenealogyTree",
-  components: {
-  },
+  components: {},
   data() {
     return {
       genealogyTree: <any>{},
@@ -43,7 +42,7 @@ export default defineComponent({
     },
     initGenealogyTree() {
       this.chart = echarts.init(this.$refs.chart);
-      let layoutAnimation = this.genealogyTree.nodes.length > 100 ? false : true
+      let layoutAnimation = this.genealogyTree.nodes.length <= 100
 
       for (let index in this.genealogyTree.nodes) {
         let node = this.genealogyTree.nodes[index]
@@ -77,9 +76,6 @@ export default defineComponent({
               gravity: 0.001,//引力
               edgeLength: [40, 100],//默认距离
               layoutAnimation: layoutAnimation,
-            },
-            symbolSize: (value: number, params: any) => {
-              return 20;
             },
             //节点上的文本
             label: {

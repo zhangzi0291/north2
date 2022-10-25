@@ -1,7 +1,7 @@
 package com.north.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.north.base.DeleteBaseModel;
+import com.north.base.DeleteRealBaseModel;
 
 import java.util.StringJoiner;
 
@@ -14,7 +14,7 @@ import java.util.StringJoiner;
  * @since 2021-12-08
  */
 @TableName("json_table_mate")
-public class JsonTableMate extends DeleteBaseModel {
+public class JsonTableMate extends DeleteRealBaseModel {
 
     private static final long serialVersionUID = 1L;
 

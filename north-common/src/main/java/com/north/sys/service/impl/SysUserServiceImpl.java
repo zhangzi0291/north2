@@ -88,10 +88,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public void login(SysUser user, String deviceType, Long timeout) {
+        //敏感信息去除
+        user.setPassword(null);
+        user.setEmail(null);
+        user.setPhone(null);
         //登陆
         StpUtil.login(user.getId(), deviceType);
         if (timeout != null) {
-            StpUtil.getTokenInfo().setTokenActivityTimeout(timeout);
+            StpUtil.setTokenValue(StpUtil.getTokenValue(), timeout.intValue());
         }
         //设置session里的参数
         StpUtil.getSession().set("username", user.getUsername());

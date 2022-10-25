@@ -63,7 +63,7 @@ public class ValidateAspect {
      */
     private void validate(String[] parameterNames, Object[] arguments, ValidateParam validateParam) {
         String message = doCheck(validateParam, parameterNames, arguments);
-        ValidatorExceptionEnum.VALIDATOR_ERROR.assertFalse(message == null,message);
+        ValidatorExceptionEnum.VALIDATOR_ERROR.assertTrue(message == null,message);
     }
 
     /**

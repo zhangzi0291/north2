@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * @version 1.0
  * @since 2021-02-24
  */
-public class DeleteBaseModel implements Serializable, IBaseModel {
+public class DeleteRealBaseModel implements Serializable, IBaseModel {
 
     /**
      * 乐观锁

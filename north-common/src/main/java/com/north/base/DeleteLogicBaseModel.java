@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @version 1.0
  * @since 2021-02-24
  */
-public class LogicDeleteBaseModel implements Serializable, IBaseModel {
+public class DeleteLogicBaseModel implements Serializable, IBaseModel {
 
     /**
      * 是否删除

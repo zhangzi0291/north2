@@ -2,7 +2,7 @@ package com.north.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.north.base.LogicDeleteBaseModel;
+import com.north.base.DeleteLogicBaseModel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ import java.util.StringJoiner;
  * @since 2020-12-29
  */
 @TableName("sys_org")
-public class SysOrg extends LogicDeleteBaseModel implements Serializable {
+public class SysOrg extends DeleteLogicBaseModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -101,6 +101,9 @@ public interface INorthException {
         }
         int code = this.getCode();
         int httpCode = this.getHttpCode();
+        if (msg == null) {
+            msg = "";
+        }
         throw new NorthException(httpCode, code, msg, null);
     }
 

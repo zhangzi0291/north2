@@ -15,7 +15,6 @@ import com.north.base.BaseController;
 import com.north.base.Constant;
 import com.north.base.api.ApiErrorCode;
 import com.north.base.api.R;
-import com.north.base.enump.CacheKeyEnum;
 import com.north.sys.dto.SelectFieldDto;
 import com.north.sys.entity.SysDict;
 import com.north.sys.service.ISysDictService;
@@ -88,7 +87,7 @@ public class SysDictController extends BaseController<SysDict, ISysDictService> 
         List<SelectFieldDto> resultList = new ArrayList<>();
         list.forEach(sysDict -> {
             SelectFieldDto fieldDto = new SelectFieldDto();
-            fieldDto.setLable(sysDict.getDictKey());
+            fieldDto.setLabel(sysDict.getDictKey());
             fieldDto.setValue(sysDictService.getDictValue(sysDict));
             resultList.add(fieldDto);
         });

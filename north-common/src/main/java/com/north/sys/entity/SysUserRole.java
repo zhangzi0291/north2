@@ -1,11 +1,7 @@
 package com.north.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.north.base.DeleteBaseModel;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import com.north.base.DeleteRealBaseModel;
 
 /**
  * <p>
@@ -16,7 +12,7 @@ import java.time.LocalDateTime;
  * @since 2020-12-29
  */
 @TableName("sys_user_role")
-public class SysUserRole extends DeleteBaseModel {
+public class SysUserRole extends DeleteRealBaseModel {
 
     private static final long serialVersionUID = 1L;
 

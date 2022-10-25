@@ -1,14 +1,11 @@
 <style lang="less">
 .index-card {
   border-radius: 0.5rem;
-  margin: auto;
   width: 80%;
   box-shadow: 0 4px 10px rgba(0, 2, 4, 0.06), 0 0 rgba(0, 2, 4, 0.11);
-  padding: 28px;
-  margin-bottom: 38px;
-  padding-top: 5px;
   background-color: #ffffff;
-  margin-bottom: 20px;
+  margin: auto auto 20px;
+  padding: 5px 28px 28px;
 }
 
 .index-header {
@@ -56,14 +53,14 @@
                 <EyeOutlined/>
                 {{ item.pageView ? item.pageView : 0 }}
               </span>
-              <time :datetime="item.createdTime" pubdate>
+              <time :datetime="item.createdTime">
                 {{ item.createdTime }}
               </time>
             </a-space>
           </div>
           <div class="index-excerpt">
-            <a-image v-if="item.weblogTitleImage" style="width: 100%"
-                     :src="BASE_URL+'/sysFile/download?id='+item.weblogTitleImage"
+            <a-image v-if="item.weblogTitleImage" :src="BASE_URL+'/sysFile/download?id='+item.weblogTitleImage"
+                     style="width: 100%"
             />
             <template v-if="item.weblogText">
               <md-editor :modelValue="item.weblogText" previewOnly/>

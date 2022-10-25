@@ -24,9 +24,12 @@
     "protobufjs": "^6.11.2",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
-    "vue-router": "^4.0.0-0"
+    "vue-router": "^4.0.0-0",
+    "vuex": "^4.0.2",
+    "vuex-along": "^1.2.13"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",

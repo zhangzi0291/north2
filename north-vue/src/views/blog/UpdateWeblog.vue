@@ -7,7 +7,7 @@
         <a-input v-model:value="data.weblogTitle" allowClear/>
       </a-form-item>
       <a-form-item label="标题图片">
-        <upload-image @imageChange="imageChange" :init-file-list="fileList"></upload-image>
+        <upload-image :init-file-list="fileList" @imageChange="imageChange"></upload-image>
       </a-form-item>
       <a-form-item label="文章文本">
         <md-editor v-model="data.weblogText"/>
@@ -24,7 +24,6 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import WeblogApi from "@/api/WeblogApi";
-import {AxiosResponse} from "axios";
 
 
 export default defineComponent({
@@ -60,7 +59,7 @@ export default defineComponent({
       }
       console.log(this.fileList)
       console.log(formData)
-      WeblogApi.add(formData).then((res: AxiosResponse) => {
+      WeblogApi.add(formData).then(() => {
         this.$message.success("操作成功")
       });
     },

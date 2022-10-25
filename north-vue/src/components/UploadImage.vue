@@ -5,7 +5,7 @@
 <template>
   <div>
     <a-upload :before-upload="beforeUpload" :customRequest="customRequest" :file-list="fileList"
-              list-type="picture-card" accept="image/*"
+              accept="image/*" list-type="picture-card"
               @change="handleChange($event, item)" @preview="handlePreview"
     >
       <div v-if="fileList.length < maxImageNum">
@@ -22,7 +22,6 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import {ModalField} from "@/components/base/FormModal.vue";
 
 export default defineComponent({
   name: "UploadImage",
@@ -66,7 +65,7 @@ export default defineComponent({
 
       return true
     },
-    handleChange(fileItem: any, item: ModalField) {
+    handleChange(fileItem: any) {
       let file = fileItem.file
       if (file.status == 'uploading') {
         file.status = 'done'
@@ -82,7 +81,7 @@ export default defineComponent({
       //不做任何实现不会自动上传
     },
     async handlePreview(file: any) {
-      if (!!file.url) {
+      if (file.url) {
         this.previewImage = file.url
       } else {
         this.previewImage = await this.loadImage(file.originFileObj)

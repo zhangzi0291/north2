@@ -7,7 +7,7 @@
       <a-page-header>
         <template #title>
           <a-breadcrumb>
-            <a-breadcrumb-item v-for="breadcrumb in breadcrumbs" :href="breadcrumb.href" :key="breadcrumb.name">
+            <a-breadcrumb-item v-for="breadcrumb in breadcrumbs" :key="breadcrumb.name" :href="breadcrumb.href">
               <a :href="'#'+breadcrumb.href">
                 <component :is="$icons[breadcrumb.icon]"/>
                 <span>{{ breadcrumb.name }}</span>
@@ -17,7 +17,7 @@
         </template>
       </a-page-header>
     </slot>
-    <a-card style="width: 100%;height: 100%;" :bodyStyle="{height:'100%'}">
+    <a-card :bodyStyle="{height:'100%'}" style="width: 100%;height: 100%;">
       <slot name="content">
       </slot>
     </a-card>

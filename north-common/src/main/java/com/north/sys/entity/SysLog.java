@@ -2,7 +2,7 @@ package com.north.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.north.base.LogicDeleteBaseModel;
+import com.north.base.DeleteLogicBaseModel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ import java.util.StringJoiner;
  * @since 2021-03-09
  */
 @TableName("sys_log")
-public class SysLog extends LogicDeleteBaseModel {
+public class SysLog extends DeleteLogicBaseModel {
 
     private static final long serialVersionUID = 1L;
 

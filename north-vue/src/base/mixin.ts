@@ -1,4 +1,12 @@
+import {SelectField} from "@/components/base/FormModal.vue";
+
 const computed = {
+    BASE_URL(){
+        return window.BASE_URL
+    },
+    tableScroll() {
+        return {x: 900, y: 500}
+    },
     user() {
         let user = <any>window.localStorage.getItem("user")
         if (user != null) {
@@ -12,6 +20,13 @@ const computed = {
     },
 }
 const methods = {
+    getSelectLabel(selectArray: Array<SelectField>, value: string) {
+        for (let selectField of selectArray) {
+            if (selectField.value == value) {
+                return selectField.label
+            }
+        }
+    },
     //是否含有指定权限 [指定多个，只要其一验证通过即可]，admin用户全部通过
     hasPermissionOr(...permission: string[]) {
         // @ts-ignore

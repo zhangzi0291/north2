@@ -3,8 +3,8 @@
 </style>
 
 <template>
-  <a-modal :onCancel="cancel" :onOk="ok" :title="'修改密码'" :visible="visible" :width="600">
-    <a-form ref="form" v-bind="layout" :model="data" :rules="rules">
+    <a-modal :onCancel="cancel" :onOk="ok" :title="'修改密码'" :visible="visible" :width="600">
+    <a-form ref="form" :model="data" :rules="rules" v-bind="layout">
       <a-form-item label="旧密码" name="oldPassword">
         <a-input-password v-model:value="data.oldPassword"/>
       </a-form-item>
@@ -20,8 +20,7 @@
 
 <script lang="ts">
 import {defineComponent, toRef} from 'vue'
-import SysUserApi from "@/api/SysUserApi";
-import {AxiosResponse} from "axios";
+import SysUserApi from "@/api/sys/SysUserApi";
 
 export default defineComponent({
   name: 'ChangePassword',
@@ -41,9 +40,9 @@ export default defineComponent({
             validator: (rule: any, value: any, callback: any) => {
               // @ts-ignore
               SysUserApi.checkPassword(this.userId, value).then(res => {
-                if (res.data.code == '40001') {
+                if (res.data.code == 40001) {
                   callback(res.data.msg)
-                } else if (res.data.code == '200') {
+                } else if (res.data.code == 200) {
                   callback()
                 } else {
                   callback("错误")
@@ -73,7 +72,7 @@ export default defineComponent({
   },
   methods: {
     ok() {
-      SysUserApi.changePassword(this.userId, this.data.newPassword, this.data.oldPassword).then((res: AxiosResponse) => {
+      SysUserApi.changePassword(this.userId, this.data.newPassword, this.data.oldPassword).then(() => {
         this.$message.success("操作成功")
         this.visible = false
       });

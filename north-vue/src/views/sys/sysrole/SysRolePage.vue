@@ -3,56 +3,54 @@
 </style>
 <template>
   <div>
-    <base-page :breadcrumbs="breadcrumbs">
-      <template #content>
-        <a-page-header sub-title="角色配置" title="角色">
-          <template #extra>
-            <a-button type="primary" @click="openAdd()">新增</a-button>
-            <a-button type="primary" @click="load({current:1})">查询</a-button>
-          </template>
-        </a-page-header>
-        <a-row>
-          <b>检索条件</b>
-        </a-row>
-        <a-row>
-          <a-form layout="inline">
-            <a-form-item label="角色名">
-              <a-input v-model:value="search.roleName" allowClear/>
-            </a-form-item>
-          </a-form>
-        </a-row>
-        <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 500 }" :pagination="page" @change="tableChange"
-                 bordered>
-          <template #operation="{ record }">
-            <a-space>
-              <a-tooltip title="编辑">
-                <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
-                  <template #icon>
-                    <EditOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="分配资源">
-                <a-button shape="circle" type="dashed" @click="openMenuModal2(record )">
-                  <template #icon>
-                    <AlignLeftOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="删除">
-                <a-button shape="circle" type="dashed" @click="del(record.id)">
-                  <template #icon>
-                    <DeleteOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-            </a-space>
-          </template>
-        </a-table>
+    <a-page-header sub-title="角色配置" title="角色">
+      <template #extra>
+        <a-button type="primary" @click="openAdd()">新增</a-button>
+        <a-button type="primary" @click="load({current:1})">查询</a-button>
       </template>
+    </a-page-header>
+    <a-row>
+      <b>检索条件</b>
+    </a-row>
+    <a-row>
+      <a-form :layout="'inline'">
+        <a-form-item label="角色名">
+          <a-input v-model:value="search.roleName" allowClear/>
+        </a-form-item>
+      </a-form>
+    </a-row>
+    <a-table :columns="columns" :data-source="data" :loading="loading" :pagination="page"
+             :rowKey="(record)=>record.id" :scroll="tableScroll" bordered
+             @change="tableChange">
+      <template #bodyCell="{ text, record, index, column }">
+        <template v-if="column.dataIndex === 'operation'">
+          <a-space>
+            <a-tooltip title="编辑">
+              <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
+                <template #icon>
+                  <EditOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="分配资源">
+              <a-button shape="circle" type="dashed" @click="openMenuModal2(record )">
+                <template #icon>
+                  <AlignLeftOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="删除">
+              <a-button shape="circle" type="dashed" @click="del(record.id)">
+                <template #icon>
+                  <DeleteOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+          </a-space>
+        </template>
+      </template>
+    </a-table>
 
-    </base-page>
     <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
                 :okCallback="load" :rules="rules"
                 :title="'角色'">
@@ -61,19 +59,17 @@
       </template>
     </form-modal>
 
-    <menu-modal ref="menuModal" :title="'资源分配'" :okCallback="menuModalOkCallback"></menu-modal>
-    <menu-modal ref="menuModal2" :title="'资源分配'" :okCallback="menuModalOkCallback"></menu-modal>
+    <menu-modal ref="menuModal" :okCallback="menuModalOkCallback" :title="'资源分配'"></menu-modal>
+    <menu-modal ref="menuModal2" :okCallback="menuModalOkCallback" :title="'资源分配'"></menu-modal>
   </div>
 </template>
 <script lang="ts">
-import SysRoleApi from '@/api/SysRoleApi'
 import FormModal, {InputType, ModalField} from "@/components/base/FormModal.vue";
 import MenuModal from "@/views/sys/sysresource/MenuModal.vue";
-import {createVNode, defineComponent, reactive, ref} from "vue";
+import {createVNode, defineComponent} from "vue";
 import Qs from "qs";
-import {AxiosResponse} from "axios";
-
-let api = new SysRoleApi();
+import {PageInfo} from "@/base/Page";
+import SysRoleApi from "@/api/sys/SysRoleApi";
 
 export default defineComponent({
   name: 'SysRole',
@@ -97,7 +93,7 @@ export default defineComponent({
       columns: [
         {title: '角色名称', key: 'roleName', dataIndex: 'roleName',},
         {title: '角色描述', key: 'describe', dataIndex: 'describe',},
-        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "150px",},
+        {title: '操作', dataIndex: 'operation', fixed: 'right', width: "150px",},
       ],
       //form中的字段
       formColumns: [
@@ -116,9 +112,9 @@ export default defineComponent({
               }
               let originalValue = (<any>this.check).roleName;
               SysRoleApi.checkRoleName(value, originalValue).then(res => {
-                if (res.data.code == '40001') {
+                if (res.data.code == 40001) {
                   callback(res.data.msg)
-                } else if (res.data.code == '200') {
+                } else if (res.data.code == 200) {
                   callback()
                 } else {
                   callback("错误")
@@ -174,11 +170,11 @@ export default defineComponent({
     },
     menuModalOkCallback(data: any) {
       console.log(data)
-      this.$axios({
+      this.$http.request({
         method: "post",
         url: this.url.edit,
         data: Qs.stringify((data), {indices: false})
-      }).then((res: AxiosResponse) => {
+      }).then(() => {
         this.$message.success("操作成功")
       });
     },
@@ -200,38 +196,7 @@ export default defineComponent({
     this.load()
   },
   setup() {
-    //表格加载状态
-    let loading = ref(false)
-    //分页
-    let page = reactive({current: 1, total: 0})
-    //排序
-    let sort = reactive({field: null, order: null})
-    //查询数据
-    let search = reactive({})
-    //表格数据
-    let data = ref([])
-
-    const load = function (param?: any) {
-      loading.value = true
-      if (!!param && !!param.current) {
-        page.current = param.current
-      }
-      SysRoleApi.list(search, page, sort).then(res => {
-        data.value.length = 0
-        data.value = data.value.concat(res.data.data.records)
-        page.current = res.data.data.current
-        page.total = res.data.data.total
-        loading.value = false
-      })
-    }
-    const tableChange = function (pageParam: any, filters: any, sorter: any) {
-      page.current = pageParam.current
-      page.total = pageParam.total
-      sort.field = sorter.field
-      sort.order = sorter.order
-      load()
-    }
-    const tablePageOption = {loading, data, page, search, load, tableChange}
+    const tablePageOption = PageInfo(SysRoleApi)
 
     return {
       ...tablePageOption

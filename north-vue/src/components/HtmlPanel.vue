@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <iframe id="iframe" :src="url" frameborder="0" width='100%' height='100%' onload="SetCwinHeight()"></iframe>
+    <iframe id="iframe" :src="url" height='100%' onload="SetCwinHeight()" width='100%'></iframe>
   </div>
 </template>
 

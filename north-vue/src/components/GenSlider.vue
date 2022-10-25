@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-button @click="openModal" block>
+    <a-button block @click="openModal">
       <template v-if="!isValid">
         点击按钮进行验证
       </template>
@@ -8,13 +8,13 @@
         <CheckOutlined/>
       </template>
     </a-button>
-    <a-modal :width="278" :visible="visible" :footer="null" :closable="false" @cancel="hideModal">
-      <div class="slider">
+    <a-modal :closable="false" :footer="null" :visible="visible" :width="278" @cancel="hideModal">
+      <div ref="slider" class="slider">
         <div class="content">
           <div class="bg-img-div">
             <img id="bg-img" :src="bgImg" alt/>
           </div>
-          <div ref="sliderImgDiv" class="slider-img-div" :style="moveBtnStyle">
+          <div ref="sliderImgDiv" :style="moveBtnStyle" class="slider-img-div">
             <img id="slider-img" :src="sliderImg" alt/>
           </div>
         </div>
@@ -22,7 +22,7 @@
           <div class="slider-move-track">
             拖动滑块完成拼图
           </div>
-          <div class="slider-move-btn" :style="imgDivStyle" @mousedown="down"></div>
+          <div :style="imgDivStyle" class="slider-move-btn" @mousedown="down"></div>
         </div>
         <div class="bottom">
           <div class="close-btn" @click="hideModal"></div>
@@ -35,8 +35,8 @@
 
 <script lang="ts">
 
+import SysLoginApi from "@/api/sys/SysLoginApi";
 import {defineComponent} from "vue";
-import SysLoginApi from "@/api/SysLoginApi";
 
 export default defineComponent({
   name: "GenSlider",
@@ -51,9 +51,9 @@ export default defineComponent({
       imgDivStyle: {},
       bgImg: "",
       sliderImg: "",
-      startSlidingTime:0,
-      entSlidingTime:0,
-      trackArr:[]
+      startSlidingTime: 0,
+      entSlidingTime: 0,
+      trackArr: []
     }
   },
   methods: {
@@ -82,6 +82,13 @@ export default defineComponent({
     },
     move(event) {
       let moveX = event.pageX - this.startX;
+      const maxX = this.$refs.slider.getBoundingClientRect().right - this.$refs.slider.getBoundingClientRect().left - 70
+      if(moveX < 0){
+        moveX = 0
+      }
+      if(moveX > maxX){
+        moveX = maxX
+      }
       let moveY = event.pageY - this.startY;
       this.moveX = moveX
       this.moveBtnStyle = {
@@ -91,11 +98,10 @@ export default defineComponent({
         transform: "translate(" + this.moveX + "px, 0px)"
       }
       this.movePercent = moveX / this.bgImgWidth;
-      this.trackArr.push({x: moveX, y:moveY, t: (new Date().getTime() - this.startSlidingTime.getTime())});
+      this.trackArr.push({x: moveX, y: moveY, t: (new Date().getTime() - this.startSlidingTime.getTime())});
 
     },
-    up(event) {
-      console.log(this.movePercent, this.bgImgWidth);
+    up() {
       this.entSlidingTime = new Date()
       this.moveX = 0
       this.moveBtnStyle = {
@@ -186,7 +192,7 @@ export default defineComponent({
 }
 
 .refresh-btn, .close-btn, .slider-move-track, .slider-move-btn {
-  background:  url('~@/assets/images/sprite.1.2.4.png') no-repeat;
+  background: url(~@/assets/images/sprite.1.2.4.png) no-repeat;
 }
 
 .refresh-btn, .close-btn {

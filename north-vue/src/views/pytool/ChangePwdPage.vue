@@ -22,7 +22,7 @@
   <a-layout style="height:100%" @keyup.enter="keydown">
     <a-layout-content class="content">
       <a-card :title="'修改密码'" style="width: 450px">
-        <a-form ref="form" v-bind="layout" :model="data" :rules="rules">
+        <a-form ref="form" :model="data" :rules="rules" v-bind="layout">
           <a-form-item label="用户名" name="username">
             <a-input v-model:value="data.username"/>
           </a-form-item>
@@ -50,11 +50,9 @@
 </template>
 <script lang="ts">
 import {Options, Vue} from "vue-class-component";
-import {AxiosResponse} from "axios";
-import SysLoginApi from "@/api/SysLoginApi";
-import {NamePath} from "ant-design-vue/es/form/interface";
 import {toRef} from "vue";
-import SysUserApi from "@/api/SysUserApi";
+import SysLoginApi from "@/api/sys/SysLoginApi";
+import SysUserApi from "@/api/sys/SysUserApi";
 
 @Options({
   name: 'register',
@@ -78,10 +76,10 @@ import SysUserApi from "@/api/SysUserApi";
               if (!data.username) {
                 return callback("用户名未填写")
               }
-              SysUserApi.checkPassword(this.userId, value, data.username).then(res => {
-                if (res.data.code == '40001') {
+              SysUserApi.checkPassword(this.userId, value, data.username).then((res) => {
+                if (res.data.code == 40001) {
                   callback(res.data.msg)
-                } else if (res.data.code == '200') {
+                } else if (res.data.code == 200) {
                   callback()
                 } else {
                   callback("错误")
@@ -111,8 +109,8 @@ import SysUserApi from "@/api/SysUserApi";
   },
   methods: {
     ok() {
-      this.$refs.form.validate().then((nameList: NamePath[]) => {
-        SysLoginApi.pyChangePassword(this.data.key, this.data.username, this.data.newPassword, this.data.oldPassword).then((res: AxiosResponse) => {
+      this.$refs.form.validate().then(() => {
+        SysLoginApi.pyChangePassword(this.data.key, this.data.username, this.data.newPassword, this.data.oldPassword).then(() => {
           this.$message.success("修改成功")
           this.data = {}
         })

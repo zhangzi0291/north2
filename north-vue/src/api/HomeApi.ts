@@ -1,8 +1,5 @@
 import {AxiosResponse} from "axios"
-
-const app = window.vm
-
-const axios = app.config.globalProperties.$axios
+import HttpClient, {RespData} from "@/plugins/axios/HttpClient";
 
 const url = {
     getTotalUser: "/home/getTotalUser",
@@ -13,33 +10,37 @@ const url = {
 }
 
 
-export default class HomeApi {
+class HomeApi {
 
-    public static getTotalUser(): Promise<AxiosResponse> {
-        return axios({
+    public getTotalUser(): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'get',
             url: url.getTotalUser,
         })
     }
 
-    public static getOnlineUser(): Promise<AxiosResponse> {
-        return axios({
+    public getOnlineUser(): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'get',
             url: url.getOnlineUser,
         })
     }
 
-    public static getTodayUser(): Promise<AxiosResponse> {
-        return axios({
+    public getTodayUser(): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'get',
             url: url.getTodayUser,
         })
     }
 
-    public static getHardwareInfo(): Promise<AxiosResponse> {
-        return axios({
+    public getHardwareInfo(): Promise<AxiosResponse<RespData>> {
+        return HttpClient.request({
             method: 'get',
             url: url.getHardwareInfo,
         })
     }
 }
+
+const homeApi = new HomeApi()
+
+export default homeApi

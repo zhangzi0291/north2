@@ -3,51 +3,49 @@
 </style>
 <template>
   <div>
-    <base-page :breadcrumbs="breadcrumbs">
-      <template #content>
-        <a-page-header sub-title="字典配置" title="字典">
-          <template #extra>
-            <a-button type="primary" @click="openExport()">导出</a-button>
-            <a-button type="primary" @click="openAdd()">新增</a-button>
-            <a-button type="primary" @click="load({current:1})">查询</a-button>
-          </template>
-        </a-page-header>
-        <a-row>
-          <b>检索条件</b>
-        </a-row>
-        <a-row>
-          <a-form layout="inline">
-            <a-form-item label="字典名称">
-              <a-input v-model:value="search.dictName" allowClear/>
-            </a-form-item>
-
-          </a-form>
-        </a-row>
-        <a-table :columns="columns" :data-source="data" :loading="loading" :rowKey="(record)=>record.id"
-                 :scroll="{ x: 900, y: 210 }" :pagination="page" @change="tableChange"
-                 bordered>
-          <template #operation="{ record }">
-            <a-space>
-              <a-tooltip title="编辑">
-                <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
-                  <template #icon>
-                    <EditOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip title="删除">
-                <a-button shape="circle" type="dashed" @click="del(record.id)">
-                  <template #icon>
-                    <DeleteOutlined/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-            </a-space>
-          </template>
-        </a-table>
+    <a-page-header sub-title="字典配置" title="字典">
+      <template #extra>
+        <a-button type="primary" @click="openExport()">导出</a-button>
+        <a-button type="primary" @click="openAdd()">新增</a-button>
+        <a-button type="primary" @click="load({current:1})">查询</a-button>
       </template>
+    </a-page-header>
+    <a-row>
+      <b>检索条件</b>
+    </a-row>
+    <a-row>
+      <a-form :layout="'inline'">
+        <a-form-item label="字典名称">
+          <a-input v-model:value="search.dictName" allowClear/>
+        </a-form-item>
 
-    </base-page>
+      </a-form>
+    </a-row>
+    <a-table :columns="columns" :data-source="data" :loading="loading" :pagination="page"
+             :rowKey="(record)=>record.id" :scroll="tableScroll" bordered
+             @change="tableChange">
+      <template #bodyCell="{ text, record, index, column }">
+        <template v-if="column.dataIndex === 'operation'">
+          <a-space>
+            <a-tooltip title="编辑">
+              <a-button shape="circle" type="dashed" @click="openEdit(record.id)">
+                <template #icon>
+                  <EditOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="删除">
+              <a-button shape="circle" type="dashed" @click="del(record.id)">
+                <template #icon>
+                  <DeleteOutlined/>
+                </template>
+              </a-button>
+            </a-tooltip>
+          </a-space>
+        </template>
+      </template>
+    </a-table>
+
     <form-modal ref="form" :addUrl="url.add" :columns="formColumns" :editUrl="url.edit" :getUrl="url.get"
                 :okCallback="load" :rules="rules" :title="'字典'">
       <template #resources="{data}">
@@ -59,14 +57,14 @@
 </template>
 <script lang="ts">
 import FormModal, {Ext, InputType, ModalField} from "@/components/base/FormModal.vue";
-import MenuModal from "@/views/sys/sysrole/MenuModal.vue";
-import {createVNode, defineComponent, reactive, ref} from "vue";
-import SysDictApi from "@/api/SysDictApi";
+import {createVNode, defineComponent,} from "vue";
+import {PageInfo} from "@/base/Page";
+import SysDictApi from "@/api/sys/SysDictApi";
 
 export default defineComponent({
   name: 'SysDict',
   components: {
-    FormModal, MenuModal
+    FormModal,
   },
   data() {
     return {
@@ -85,17 +83,17 @@ export default defineComponent({
       //表格字段
       columns: [
         {title: '字典名称', key: 'dictName', dataIndex: 'dictName', sorter: true,},
-        {title: '字典Lable', key: 'dictKey', dataIndex: 'dictKey', sorter: true,},
+        {title: '字典label', key: 'dictKey', dataIndex: 'dictKey', sorter: true,},
         {title: '字典Value', key: 'dictValue', dataIndex: 'dictValue',},
         {title: '描述', key: 'describe', dataIndex: 'describe',},
-        {title: '操作', dataIndex: 'operation', slots: {customRender: 'operation'}, fixed: 'right', width: "100px",},
+        {title: '操作', dataIndex: 'operation', fixed: 'right', width: "100px",},
       ],
       //form中的字段
       formColumns: [
         ModalField.init('字典名称', 'dictName', InputType.String),
-        ModalField.init('字典Lable', 'dictKey', InputType.String),
+        ModalField.init('字典label', 'dictKey', InputType.String),
         ModalField.init('字典Value', 'dictValue', InputType.String),
-        ModalField.init('值类型', 'valueType',InputType.Select, <Ext>{selectParameter:{dictName:'字典值类型'}}),
+        ModalField.init('值类型', 'valueType', InputType.Select, <Ext>{selectParameter: {dictName: '字典值类型'}}),
         ModalField.init('排序', 'dictOrder', InputType.Number),
         ModalField.init('扩展字段', 'dictExt', InputType.Textarea),
         ModalField.init('描述', 'describe', InputType.Textarea),
@@ -138,7 +136,7 @@ export default defineComponent({
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要删除吗？',
         onOk: () => {
-          return SysDictApi.del([id]).then(res => {
+          return SysDictApi.del([id]).then(() => {
             this.load()
           })
         },
@@ -152,38 +150,7 @@ export default defineComponent({
     this.load()
   },
   setup() {
-    //表格加载状态
-    let loading = ref(false)
-    //分页
-    let page = reactive({current: 1, total: 0})
-    //排序
-    let sort = reactive({field: null, order: null})
-    //查询数据
-    let search = reactive({})
-    //表格数据
-    let data = ref([])
-
-    const load = function (param?: any) {
-      loading.value = true
-      if (!!param && !!param.current) {
-        page.current = param.current
-      }
-      SysDictApi.list(search, page, sort).then(res => {
-        data.value.length = 0
-        data.value = data.value.concat(res.data.data.records)
-        page.current = res.data.data.current
-        page.total = res.data.data.total
-        loading.value = false
-      })
-    }
-    const tableChange = function (pageParam: any, filters: any, sorter: any) {
-      page.current = pageParam.current
-      page.total = pageParam.total
-      sort.field = sorter.field
-      sort.order = sorter.order
-      load()
-    }
-    const tablePageOption = {loading, data, page, search, load, tableChange}
+    const tablePageOption = PageInfo(SysDictApi)
 
     return {
       ...tablePageOption

@@ -28,32 +28,26 @@ export interface IHomeInfo {
 /** Represents a HomeInfo. */
 export class HomeInfo implements IHomeInfo {
 
+    /** HomeInfo id. */
+    public id: string;
+    /** HomeInfo totalUser. */
+    public totalUser: number;
+    /** HomeInfo onlineUser. */
+    public onlineUser: number;
+    /** HomeInfo todayUser. */
+    public todayUser: number;
+    /** HomeInfo cpu. */
+    public cpu?: (HomeInfo.ICpuInfo | null);
+    /** HomeInfo memery. */
+    public memery?: (HomeInfo.IMemeryInfo | null);
+    /** HomeInfo disk. */
+    public disk: HomeInfo.IDiskInfo[];
+
     /**
      * Constructs a new HomeInfo.
      * @param [properties] Properties to set
      */
     constructor(properties?: IHomeInfo);
-
-    /** HomeInfo id. */
-    public id: string;
-
-    /** HomeInfo totalUser. */
-    public totalUser: number;
-
-    /** HomeInfo onlineUser. */
-    public onlineUser: number;
-
-    /** HomeInfo todayUser. */
-    public todayUser: number;
-
-    /** HomeInfo cpu. */
-    public cpu?: (HomeInfo.ICpuInfo | null);
-
-    /** HomeInfo memery. */
-    public memery?: (HomeInfo.IMemeryInfo | null);
-
-    /** HomeInfo disk. */
-    public disk: HomeInfo.IDiskInfo[];
 
     /**
      * Creates a new HomeInfo instance using the specified properties.
@@ -144,20 +138,18 @@ export namespace HomeInfo {
     /** Represents a CpuInfo. */
     class CpuInfo implements ICpuInfo {
 
+        /** CpuInfo system. */
+        public system: string;
+        /** CpuInfo process. */
+        public process: string;
+        /** CpuInfo loadAverage. */
+        public loadAverage: string;
+
         /**
          * Constructs a new CpuInfo.
          * @param [properties] Properties to set
          */
         constructor(properties?: HomeInfo.ICpuInfo);
-
-        /** CpuInfo system. */
-        public system: string;
-
-        /** CpuInfo process. */
-        public process: string;
-
-        /** CpuInfo loadAverage. */
-        public loadAverage: string;
 
         /**
          * Creates a new CpuInfo instance using the specified properties.
@@ -243,17 +235,16 @@ export namespace HomeInfo {
     /** Represents a MemeryInfo. */
     class MemeryInfo implements IMemeryInfo {
 
+        /** MemeryInfo used. */
+        public used: string;
+        /** MemeryInfo total. */
+        public total: string;
+
         /**
          * Constructs a new MemeryInfo.
          * @param [properties] Properties to set
          */
         constructor(properties?: HomeInfo.IMemeryInfo);
-
-        /** MemeryInfo used. */
-        public used: string;
-
-        /** MemeryInfo total. */
-        public total: string;
 
         /**
          * Creates a new MemeryInfo instance using the specified properties.
@@ -342,20 +333,18 @@ export namespace HomeInfo {
     /** Represents a DiskInfo. */
     class DiskInfo implements IDiskInfo {
 
+        /** DiskInfo used. */
+        public used: string;
+        /** DiskInfo total. */
+        public total: string;
+        /** DiskInfo name. */
+        public name: string;
+
         /**
          * Constructs a new DiskInfo.
          * @param [properties] Properties to set
          */
         constructor(properties?: HomeInfo.IDiskInfo);
-
-        /** DiskInfo used. */
-        public used: string;
-
-        /** DiskInfo total. */
-        public total: string;
-
-        /** DiskInfo name. */
-        public name: string;
 
         /**
          * Creates a new DiskInfo instance using the specified properties.
@@ -445,20 +434,18 @@ export interface INotificationMessage {
 /** Represents a NotificationMessage. */
 export class NotificationMessage implements INotificationMessage {
 
+    /** NotificationMessage id. */
+    public id: string;
+    /** NotificationMessage title. */
+    public title: string;
+    /** NotificationMessage message. */
+    public message: string;
+
     /**
      * Constructs a new NotificationMessage.
      * @param [properties] Properties to set
      */
     constructor(properties?: INotificationMessage);
-
-    /** NotificationMessage id. */
-    public id: string;
-
-    /** NotificationMessage title. */
-    public title: string;
-
-    /** NotificationMessage message. */
-    public message: string;
 
     /**
      * Creates a new NotificationMessage instance using the specified properties.

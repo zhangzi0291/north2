@@ -59,9 +59,10 @@
       <div class="logo">
         {{ logoName }}
       </div>
-      <a-menu v-model:selectedKeys="selectedKeys" mode="inline" theme="dark"
-              @click="clickMenu">
-
+      <a-menu :mode="'inline'"
+              v-model:openKeys="openKeys"
+              v-model:selectedKeys="selectedKeys"
+              theme="dark" @click="clickMenu">
         <template v-for="menu in menus">
           <template v-if="menu.child || !menu.data.resourceUrl ">
             <n-menu :key="menu.id" :menu="menu"></n-menu>
@@ -138,19 +139,19 @@
           :style="{  'overflow-x':'auto',padding: '24px', background: '#fff' }"
       >
         <div style="width: 100%;height:calc( 100% - 64px);">
-          <a-page-header>
-            <template #title>
-              <a-breadcrumb>
-                <a-breadcrumb-item v-for="breadcrumb in breadcrumbs" :href="breadcrumb.href" :key="breadcrumb.name">
-                  <a :href="'#'+breadcrumb.href">
-                    <component :is="$icons[breadcrumb.icon]"/>
-                    <span>{{ breadcrumb.name }}</span>
-                  </a>
-                </a-breadcrumb-item>
-              </a-breadcrumb>
-            </template>
-          </a-page-header>
-          <a-card style="width: 100%;height: 100%;" :bodyStyle="{height:'100%'}">
+          <!--          <a-page-header>-->
+          <!--            <template #title>-->
+          <!--              <a-breadcrumb>-->
+          <!--                <a-breadcrumb-item v-for="breadcrumb in breadcrumbs" :href="breadcrumb.href" :key="breadcrumb.name">-->
+          <!--                  <a :href="'#'+breadcrumb.href">-->
+          <!--                    <component :is="$icons[breadcrumb.icon]"/>-->
+          <!--                    <span>{{ breadcrumb.name }}</span>-->
+          <!--                  </a>-->
+          <!--                </a-breadcrumb-item>-->
+          <!--              </a-breadcrumb>-->
+          <!--            </template>-->
+          <!--          </a-page-header>-->
+          <a-card :bodyStyle="{height:'100%'}" style="width: 100%;height: 100%;">
             <router-view @breadcrumbs="setBreadcrumbs"/>
           </a-card>
 
@@ -169,15 +170,13 @@
 </template>
 <script lang="ts">
 import nMenu from '@/components/base/menu/n-menu.vue'
-
-import SysResourceApi from '@/api/SysResourceApi'
-import BaseApi from '@/api/BaseApi'
 import ChangePassword from "@/views/home/ChangePassword.vue";
 import ChangeUserInfo from "@/views/home/ChangeUserInfo.vue";
-import SysLoginApi from "@/api/SysLoginApi";
 import {createVNode, defineComponent} from "vue";
 import {NotificationMessage} from "@/proto/Protobuf";
-
+import BaseApi from "@/api/BaseApi";
+import SysLoginApi from "@/api/sys/SysLoginApi";
+import SysResourceApi from "@/api/sys/SysResourceApi";
 
 export default defineComponent({
   name: 'Index',
@@ -187,28 +186,41 @@ export default defineComponent({
   data() {
     return {
       logoName: "LOGO",
-      selectedKeys: ["/"],
+      selectedKeys: this.$store.state.menuInfo.selectedKeys,
+      openKeys:this.$store.state.menuInfo.openKeys,
       collapsed: false,
       menus: [],
       reconnectInterval: {},
-      breadcrumbs:[],
+      breadcrumbs: [],
     }
   },
   computed: {},
-
+  watch:{
+    selectedKeys:function(nv,ov){
+      this.$store.commit("setMenuInfo",{
+        selectedKeys:nv
+      })
+    },
+    openKeys:function(nv,ov){
+      this.$store.commit("setMenuInfo",{
+        openKeys:nv
+      })
+    }
+  },
   methods: {
     setBreadcrumbs(breadcrumbs) {
       this.breadcrumbs = breadcrumbs
     },
     clickMenu(item: any) {
-      if (item.item.title == 4) {
+      // console.log(item)
+      if (item.item.type == 4) {
         this.$router.push({
           path: "/iframePanel",
           query: {
             url: item.key
           }
         });
-      } else if (item.item.title == 5) {
+      } else if (item.item.type == 5) {
         window.open(item.key, '_blank');
       } else {
         this.$router.push(item.key);
@@ -233,7 +245,7 @@ export default defineComponent({
         icon: createVNode(this.$icons["ExclamationCircleOutlined"]),
         content: '确定要退出吗？',
         onOk: () => {
-          return SysLoginApi.logout().then(res => {
+          return SysLoginApi.logout().then(() => {
             BaseApi.setWsIsClose(true);
             window.websocket.close()
             this.$router.push({path: '/login',})
@@ -264,11 +276,11 @@ export default defineComponent({
       }
     },
     wsBinaryHandler(msg: any) {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.readAsArrayBuffer(msg.data);
-      reader.onload = (e) => {
-        var buf = new Uint8Array(<ArrayBuffer>reader.result);
-        var notificationMessage = NotificationMessage.decode(buf)
+      reader.onload = () => {
+        const buf = new Uint8Array(<ArrayBuffer>reader.result);
+        const notificationMessage = NotificationMessage.decode(buf)
         this.openNotification(notificationMessage.title, notificationMessage.message);
       }
     },
@@ -286,7 +298,7 @@ export default defineComponent({
     }
   },
   created() {
-    this.selectedKeys = [this.$route.path]
+
     SysResourceApi.getMenu().then((res) => {
       this.menus = res.data.data
     });

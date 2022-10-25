@@ -3,7 +3,7 @@ package com.north.blog.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.north.base.LogicDeleteBaseModel;
+import com.north.base.DeleteLogicBaseModel;
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,7 +19,7 @@ import java.util.StringJoiner;
  * @since 2022-01-21
  */
 @TableName("weblog")
-public class Weblog extends LogicDeleteBaseModel {
+public class Weblog extends DeleteLogicBaseModel {
 
     private static final long serialVersionUID = 1L;
 

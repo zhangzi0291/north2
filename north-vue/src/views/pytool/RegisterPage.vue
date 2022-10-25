@@ -27,7 +27,7 @@
           <a-button type="link" @click="open">客户端下载</a-button>
         </template>
 
-        <a-form ref="registerForm" v-bind="layout" :model="registerData" :rules="registerRules" hideRequiredMark>
+        <a-form ref="registerForm" :model="registerData" :rules="registerRules" hideRequiredMark v-bind="layout">
           <a-form-item label="用户名" name="username">
             <a-input v-model:value="registerData.username"/>
           </a-form-item>
@@ -63,9 +63,7 @@
 </template>
 <script lang="ts">
 import {Options, Vue} from "vue-class-component";
-import {AxiosResponse} from "axios";
-import {NamePath} from "ant-design-vue/es/form/interface";
-import SysLoginApi, {RegisterData} from "@/api/SysLoginApi";
+import SysLoginApi, {RegisterData} from "@/api/sys/SysLoginApi";
 
 @Options({
   name: 'register',
@@ -125,9 +123,9 @@ import SysLoginApi, {RegisterData} from "@/api/SysLoginApi";
       }
     },
     register() {
-      this.$refs.registerForm.validate().then((nameList: NamePath[]) => {
+      this.$refs.registerForm.validate().then(() => {
         let data: RegisterData = this.registerData
-        SysLoginApi.pyToolRegister(data).then((res: AxiosResponse) => {
+        SysLoginApi.pyToolRegister(data).then(() => {
           this.isLogin = true
           this.$message.success("注册成功")
           this.registerData = {}

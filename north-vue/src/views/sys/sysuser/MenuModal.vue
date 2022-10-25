@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import {Options, Vue} from "vue-class-component";
-import SysRoleApi from '@/api/SysRoleApi';
+import SysRoleApi from "@/api/sys/SysRoleApi";
 
 @Options({
   name: 'MenuModal',
